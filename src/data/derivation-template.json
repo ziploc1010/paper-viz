@@ -1,0 +1,43 @@
+{
+  "id": "template-derivation",
+  "title": "Your Derivation Title",
+  "subtitle": "Complete Step-by-Step Solution",
+  "description": "Brief description of what this derivation covers and why it's important.",
+  "sections": [
+    {
+      "title": "Part 1: Foundation",
+      "steps": [
+        {
+          "id": "step-1-1",
+          "title": "1.1 Initial Setup",
+          "explanation": "Explain what we're starting with",
+          "equation": "E = mc^2",
+          "canvasHeight": 100
+        },
+        {
+          "id": "step-1-2",
+          "title": "1.2 Multiple Line Example",
+          "explanation": "When you have multiple equations, use an array",
+          "equation": [
+            "\\frac{\\partial u}{\\partial t} = \\alpha \\nabla^2 u",
+            "u(x,0) = f(x)",
+            "u(0,t) = u(L,t) = 0"
+          ],
+          "canvasHeight": 160
+        }
+      ]
+    },
+    {
+      "title": "Part 2: Development",
+      "steps": [
+        {
+          "id": "step-2-1",
+          "title": "2.1 Next Steps",
+          "explanation": "Continue your derivation...",
+          "equation": "\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}",
+          "canvasHeight": 120
+        }
+      ]
+    }
+  ]
+}

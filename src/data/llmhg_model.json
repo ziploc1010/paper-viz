@@ -1,0 +1,864 @@
+{
+  "id": "llmhg-architecture-model",
+  "title": "LLMHG Model Architecture",
+  "subtitle": "LLM-Guided Multi-View Hypergraph Learning for Human-Centric Explainable Recommendation",
+  "description": "Learn about the LLMHG architecture through interactive diagrams and coding exercises",
+  "svgDiagram": "<svg viewBox=\"0 0 900 1400\" xmlns=\"http://www.w3.org/2000/svg\">\n  <!-- Define styles matching the reference palette -->\n  <defs>\n    <filter id=\"shadow\">\n      <feDropShadow dx=\"2\" dy=\"2\" stdDeviation=\"2\" flood-opacity=\"0.2\"/>\n    </filter>\n  </defs>\n  \n  <!-- Main container with light purple background -->\n  <rect x=\"50\" y=\"20\" width=\"800\" height=\"1350\" rx=\"20\" fill=\"#E8E0F5\" stroke=\"#8B7BA8\" stroke-width=\"2\" filter=\"url(#shadow)\"/>\n  \n  <!-- Title -->\n  <text x=\"450\" y=\"60\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"22\" font-weight=\"bold\" fill=\"#2C2C2C\">\n    LLMHG Model Architecture\n  </text>\n  \n  <!-- Input Tokens - Pink rounded -->\n  <g class=\"component\" data-component=\"input\">\n    <rect x=\"275\" y=\"100\" width=\"350\" height=\"50\" rx=\"25\" fill=\"#FFE0E6\" stroke=\"#FF8FA3\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"130\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Input Tokens</text>\n  </g>\n  \n  <!-- Arrow -->\n  <path d=\"M 450 150 L 450 180\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"450,185 445,175 455,175\" fill=\"#5A5A5A\"/>\n  \n  <!-- Main Model Container -->\n  <g class=\"component\" data-component=\"llmhg\">\n    <rect x=\"100\" y=\"190\" width=\"700\" height=\"1070\" rx=\"15\" fill=\"#F0E8FF\" stroke=\"#A090D0\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"220\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"16\" font-weight=\"bold\">LLMHG</text>\n  </g>\n  \n  <!-- Embedding -->\n  <g class=\"component\" data-component=\"embedding\">\n    <rect x=\"200\" y=\"250\" width=\"500\" height=\"60\" rx=\"10\" fill=\"#E0D0F5\" stroke=\"#9080B0\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"285\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Embedding</text>\n    <text x=\"450\" y=\"300\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" fill=\"#666\">item_embedding</text>\n  </g>\n  \n  <!-- Arrow splits to two paths -->\n  <path d=\"M 450 310 L 450 340\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 450 340 L 250 370\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 450 340 L 650 370\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"250,375 255,365 245,365\" fill=\"#5A5A5A\"/>\n  <polygon points=\"650,375 645,365 655,365\" fill=\"#5A5A5A\"/>\n  \n  <!-- GRU -->\n  <g class=\"component\" data-component=\"gru\">\n    <rect x=\"150\" y=\"380\" width=\"200\" height=\"60\" rx=\"10\" fill=\"#C8E8C8\" stroke=\"#90C890\" stroke-width=\"2\"/>\n    <text x=\"250\" y=\"410\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">GRU</text>\n    <text x=\"250\" y=\"425\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" fill=\"#666\">gru_out</text>\n  </g>\n  \n  <!-- Arrow from GRU splits -->\n  <path d=\"M 250 440 L 250 470\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 250 470 L 180 500\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 250 470 L 320 500\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"180,505 185,495 175,495\" fill=\"#5A5A5A\"/>\n  <polygon points=\"320,505 315,495 325,495\" fill=\"#5A5A5A\"/>\n  \n  <!-- Label for last_hidden extraction -->\n  <text x=\"290\" y=\"465\" text-anchor=\"start\" font-family=\"Arial, sans-serif\" font-size=\"9\" fill=\"#666\" font-style=\"italic\">extract last</text>\n  \n  <!-- W1 -->\n  <g class=\"component\" data-component=\"w1\">\n    <rect x=\"120\" y=\"510\" width=\"120\" height=\"50\" rx=\"10\" fill=\"#B3D9E6\" stroke=\"#6FA8C8\" stroke-width=\"2\"/>\n    <text x=\"180\" y=\"530\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Linear</text>\n    <text x=\"180\" y=\"545\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">W1 \u2192 q1</text>\n  </g>\n  \n  <!-- W2 -->\n  <g class=\"component\" data-component=\"w2\">\n    <rect x=\"260\" y=\"510\" width=\"120\" height=\"50\" rx=\"10\" fill=\"#B3D9E6\" stroke=\"#6FA8C8\" stroke-width=\"2\"/>\n    <text x=\"320\" y=\"530\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Linear</text>\n    <text x=\"320\" y=\"545\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">W2 \u2192 q2</text>\n  </g>\n  \n  <!-- Arrows converge to v -->\n  <path d=\"M 180 560 L 180 590 L 230 590\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 320 560 L 320 590 L 270 590\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"235,590 225,585 225,595\" fill=\"#5A5A5A\"/>\n  <polygon points=\"265,590 275,585 275,595\" fill=\"#5A5A5A\"/>\n  \n  <!-- v -->\n  <g class=\"component\" data-component=\"v\">\n    <rect x=\"190\" y=\"570\" width=\"120\" height=\"50\" rx=\"10\" fill=\"#B3D9E6\" stroke=\"#6FA8C8\" stroke-width=\"2\"/>\n    <text x=\"250\" y=\"590\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Linear</text>\n    <text x=\"250\" y=\"605\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">v \u2192 alpha</text>\n  </g>\n  \n  <!-- Arrow from v and gru_out to sum -->\n  <path d=\"M 250 620 L 250 650\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 150 440 L 150 680 L 220 680\" stroke=\"#5A5A5A\" stroke-width=\"1\" stroke-dasharray=\"3,3\" fill=\"none\"/>\n  <text x=\"120\" y=\"560\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\" fill=\"#666\" font-style=\"italic\">gru_out</text>\n  <polygon points=\"250,655 245,645 255,645\" fill=\"#5A5A5A\"/>\n  <polygon points=\"225,680 215,675 215,685\" fill=\"#5A5A5A\"/>\n  \n  <!-- sum -->\n  <g class=\"component\" data-component=\"sum\">\n    <rect x=\"190\" y=\"660\" width=\"120\" height=\"50\" rx=\"10\" fill=\"#A8D8A8\" stroke=\"#70A870\" stroke-width=\"2\"/>\n    <text x=\"250\" y=\"685\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">sum</text>\n    <text x=\"250\" y=\"700\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">session_emb</text>\n  </g>\n  \n  <!-- Multi-View Hypergraphs Container -->\n  <rect x=\"450\" y=\"380\" width=\"300\" height=\"400\" rx=\"10\" fill=\"#FFE8CC\" stroke=\"#D4A574\" stroke-width=\"2\" stroke-dasharray=\"5,5\"/>\n  <text x=\"600\" y=\"410\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Multi-View Hypergraphs</text>\n  \n  <!-- build_hypergraphs -->\n  <g class=\"component\" data-component=\"build-hypergraphs\">\n    <rect x=\"470\" y=\"430\" width=\"260\" height=\"40\" rx=\"5\" fill=\"#FFD8AA\" stroke=\"#C49050\" stroke-width=\"2\"/>\n    <text x=\"600\" y=\"455\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">build_hypergraphs</text>\n  </g>\n  \n  <!-- Arrow from build_hypergraphs to three H_ components -->\n  <path d=\"M 600 470 L 510 500\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <path d=\"M 600 470 L 600 500\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <path d=\"M 600 470 L 690 500\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <polygon points=\"510,505 515,495 505,495\" fill=\"#5A5A5A\"/>\n  <polygon points=\"600,505 595,495 605,495\" fill=\"#5A5A5A\"/>\n  <polygon points=\"690,505 685,495 695,495\" fill=\"#5A5A5A\"/>\n  \n  <!-- Three Hypergraph Incidence Matrices -->\n  <g class=\"component\" data-component=\"h-cooccur\">\n    <rect x=\"470\" y=\"510\" width=\"80\" height=\"50\" rx=\"5\" fill=\"#FFD8AA\" stroke=\"#C49050\" stroke-width=\"2\"/>\n    <text x=\"510\" y=\"540\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-weight=\"bold\">H_cooccur</text>\n  </g>\n  \n  <g class=\"component\" data-component=\"h-sequential\">\n    <rect x=\"560\" y=\"510\" width=\"80\" height=\"50\" rx=\"5\" fill=\"#FFD8AA\" stroke=\"#C49050\" stroke-width=\"2\"/>\n    <text x=\"600\" y=\"540\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-weight=\"bold\">H_sequential</text>\n  </g>\n  \n  <g class=\"component\" data-component=\"h-semantic\">\n    <rect x=\"650\" y=\"510\" width=\"80\" height=\"50\" rx=\"5\" fill=\"#FFD8AA\" stroke=\"#C49050\" stroke-width=\"2\"/>\n    <text x=\"690\" y=\"540\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-weight=\"bold\">H_semantic</text>\n  </g>\n  \n  <!-- Arrows from H_ to HypergraphConvolution -->\n  <path d=\"M 510 560 L 510 590\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <path d=\"M 600 560 L 600 590\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <path d=\"M 690 560 L 690 590\" stroke=\"#5A5A5A\" stroke-width=\"1\" fill=\"none\"/>\n  <polygon points=\"510,595 505,585 515,585\" fill=\"#5A5A5A\"/>\n  <polygon points=\"600,595 595,585 605,585\" fill=\"#5A5A5A\"/>\n  <polygon points=\"690,595 685,585 695,585\" fill=\"#5A5A5A\"/>\n  \n  <!-- HypergraphConvolution -->\n  <g class=\"component\" data-component=\"hypergraph-convolution\">\n    <rect x=\"470\" y=\"600\" width=\"260\" height=\"80\" rx=\"5\" fill=\"#FFCC99\" stroke=\"#C49050\" stroke-width=\"2\"/>\n    <text x=\"600\" y=\"630\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">HypergraphConvolution</text>\n    <text x=\"600\" y=\"650\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#666\">hgnn_layers</text>\n    <text x=\"600\" y=\"665\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" fill=\"#666\">[3 layers per view]</text>\n  </g>\n  \n  <!-- Arrow from HypergraphConvolution -->\n  <path d=\"M 600 680 L 600 710\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"600,715 595,705 605,705\" fill=\"#5A5A5A\"/>\n  \n  <!-- view_embeddings -->\n  <g class=\"component\" data-component=\"view-embeddings\">\n    <rect x=\"470\" y=\"720\" width=\"260\" height=\"50\" rx=\"10\" fill=\"#FFE6F0\" stroke=\"#FF99CC\" stroke-width=\"2\"/>\n    <text x=\"600\" y=\"750\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">view_embeddings</text>\n    <text x=\"600\" y=\"762\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" fill=\"#666\">[3 view tensors]</text>\n  </g>\n  \n  <!-- Arrows converging to MultiViewAttention -->\n  <path d=\"M 250 710 L 250 830 L 380 830\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <path d=\"M 600 770 L 600 830 L 520 830\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <!-- last_hidden arrow from GRU area -->\n  <path d=\"M 350 470 L 400 470 L 400 800 L 450 800\" stroke=\"#5A5A5A\" stroke-width=\"1\" stroke-dasharray=\"3,3\" fill=\"none\"/>\n  <text x=\"410\" y=\"635\" text-anchor=\"start\" font-family=\"Arial, sans-serif\" font-size=\"9\" fill=\"#666\" font-style=\"italic\">last_hidden</text>\n  <polygon points=\"385,830 375,825 375,835\" fill=\"#5A5A5A\"/>\n  <polygon points=\"515,830 525,825 525,835\" fill=\"#5A5A5A\"/>\n  <polygon points=\"455,800 445,795 445,805\" fill=\"#5A5A5A\"/>\n  \n  <!-- MultiViewAttention -->\n  <g class=\"component\" data-component=\"multiview-attention\">\n    <rect x=\"200\" y=\"800\" width=\"500\" height=\"60\" rx=\"10\" fill=\"#B3D9E6\" stroke=\"#6FA8C8\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"830\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">MultiViewAttention</text>\n    <text x=\"450\" y=\"845\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#666\">view_attention \u2192 combined_view_emb</text>\n  </g>\n  \n  <!-- Arrow -->\n  <path d=\"M 450 860 L 450 890\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"450,895 445,885 455,885\" fill=\"#5A5A5A\"/>\n  \n  <!-- cat -->\n  <g class=\"component\" data-component=\"cat\">\n    <rect x=\"220\" y=\"900\" width=\"460\" height=\"60\" rx=\"10\" fill=\"#E0D0F5\" stroke=\"#9080B0\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"930\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">cat</text>\n    <text x=\"450\" y=\"945\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#666\">[session_emb, combined_view_emb]</text>\n  </g>\n  \n  <!-- Arrow -->\n  <path d=\"M 450 960 L 450 990\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"450,995 445,985 455,985\" fill=\"#5A5A5A\"/>\n  \n  <!-- Linear (W_final) -->\n  <g class=\"component\" data-component=\"w-final\">\n    <rect x=\"270\" y=\"1000\" width=\"360\" height=\"60\" rx=\"10\" fill=\"#B3CCE6\" stroke=\"#6F8FB8\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"1025\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Linear</text>\n    <text x=\"450\" y=\"1040\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">W_final</text>\n  </g>\n  \n  <!-- Arrow -->\n  <path d=\"M 450 1060 L 450 1090\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"450,1095 445,1085 455,1085\" fill=\"#5A5A5A\"/>\n  \n  <!-- Linear (output_layer) -->\n  <g class=\"component\" data-component=\"output-layer\">\n    <rect x=\"270\" y=\"1100\" width=\"360\" height=\"60\" rx=\"10\" fill=\"#B3CCE6\" stroke=\"#6F8FB8\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"1125\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Linear</text>\n    <text x=\"450\" y=\"1140\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" fill=\"#555\">output_layer</text>\n  </g>\n  \n  <!-- Arrow out of main container -->\n  <path d=\"M 450 1260 L 450 1290\" stroke=\"#5A5A5A\" stroke-width=\"2\" fill=\"none\"/>\n  <polygon points=\"450,1295 445,1285 455,1285\" fill=\"#5A5A5A\"/>\n  \n  <!-- Output Logits -->\n  <g class=\"component\" data-component=\"output-logits\">\n    <rect x=\"275\" y=\"1300\" width=\"350\" height=\"50\" rx=\"25\" fill=\"#C8E8C8\" stroke=\"#90C890\" stroke-width=\"2\"/>\n    <text x=\"450\" y=\"1330\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">Output Logits</text>\n  </g>\n  \n  <!-- Legend -->\n  <rect x=\"650\" y=\"1320\" width=\"150\" height=\"20\" rx=\"5\" fill=\"#FFE8CC\" stroke=\"#D4A574\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/>\n  <text x=\"725\" y=\"1335\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" fill=\"#666\">Optional components</text>\n</svg>",
+  "componentExplanations": {
+    "input": {
+      "title": "Input Tokens",
+      "explanation": "The starting point where user interaction sequences are tokenized. Each item in the sequence is converted to a unique index representing products, movies, or other items from the catalog."
+    },
+    "llmhg": {
+      "title": "LLMHG Model",
+      "explanation": "The main model that combines LLM-based interest extraction with hypergraph neural networks to create human-centric recommendations. It processes user sequences through multiple sophisticated components."
+    },
+    "embedding": {
+      "title": "Item Embeddings",
+      "explanation": "Converts item IDs into dense vector representations. These embeddings capture semantic relationships between items and serve as the foundation for both sequential modeling and hypergraph construction."
+    },
+    "gru": {
+      "title": "GRU Sequential Encoder",
+      "explanation": "A Gated Recurrent Unit that processes the sequence of item embeddings to capture temporal dependencies and user behavior patterns. Outputs hidden states for all time steps."
+    },
+    "w1": {
+      "title": "Query Projection (W1)",
+      "explanation": "Linear layer that transforms the last hidden state from GRU into query vectors for the attention mechanism. Part of the session-level attention computation."
+    },
+    "w2": {
+      "title": "Key Projection (W2)",
+      "explanation": "Linear layer that transforms all GRU hidden states into key vectors for attention computation. Works with W1 to compute attention scores."
+    },
+    "v": {
+      "title": "Attention Score Layer (v)",
+      "explanation": "Combines query and key projections to compute attention scores. Uses tanh activation and linear transformation to produce scalar attention weights."
+    },
+    "sum": {
+      "title": "Weighted Sum",
+      "explanation": "Applies attention weights to GRU hidden states to create session embedding. This represents the user's sequential behavior pattern in a single vector."
+    },
+    "build-hypergraphs": {
+      "title": "Hypergraph Construction",
+      "explanation": "Uses LLM to extract Interest Angles and categorize items into hyperedges. Creates three views: co-occurrence (items in same session), sequential (consecutive items), and semantic (LLM-based similarity)."
+    },
+    "h-cooccur": {
+      "title": "Co-occurrence Hypergraph",
+      "explanation": "Captures items that appear together in the same session. Each session forms a hyperedge connecting all items within it, representing co-purchase or co-viewing patterns."
+    },
+    "h-sequential": {
+      "title": "Sequential Hypergraph",
+      "explanation": "Models transition patterns between consecutive items. Creates hyperedges based on frequent item-to-item transitions observed in user sequences."
+    },
+    "h-semantic": {
+      "title": "Semantic Hypergraph",
+      "explanation": "Uses LLM knowledge to group semantically similar items. In the paper's simplified version, uses frequency bins as a proxy for semantic similarity."
+    },
+    "hypergraph-convolution": {
+      "title": "Hypergraph Neural Networks",
+      "explanation": "Applies hypergraph convolution operations to propagate information between connected items. Uses normalized Laplacian and learned edge weights to refine item representations."
+    },
+    "view-embeddings": {
+      "title": "View Embeddings",
+      "explanation": "The output representations from each hypergraph view after convolution. Contains enriched item embeddings that capture different aspects of user preferences."
+    },
+    "multiview-attention": {
+      "title": "Multi-View Attention",
+      "explanation": "Attention mechanism that dynamically combines the three hypergraph views based on the user's current state. Uses the GRU's last hidden state as query to weight different views."
+    },
+    "cat": {
+      "title": "Concatenation",
+      "explanation": "Combines the session embedding (from GRU path) with the combined view embedding (from hypergraph path) to create a comprehensive user representation."
+    },
+    "w-final": {
+      "title": "Final Transformation",
+      "explanation": "Linear layer that transforms the concatenated embeddings into the final hidden representation. Prepares the features for the output prediction layer."
+    },
+    "output-layer": {
+      "title": "Output Projection",
+      "explanation": "Final linear layer that projects from hidden dimension back to embedding dimension. Creates the representation used for computing similarity with all items."
+    },
+    "output-logits": {
+      "title": "Output Logits",
+      "explanation": "The final scores for all items computed via matrix multiplication with the item embedding matrix. These scores indicate the likelihood of each item being the next interaction."
+    }
+  },
+  "componentQuizzes": {
+    "input": {
+      "id": "input",
+      "title": "Input Sequences",
+      "equations": [
+        {
+          "id": "input-1",
+          "title": "User Sequence Definition",
+          "explanation": "Define the sequence of user interactions in chronological order.",
+          "equation": "S_u = [v_1^{(u)}, v_2^{(u)}, ..., v_t^{(u)}, ..., v_{n_u}^{(u)}]",
+          "canvasHeight": 150
+        },
+        {
+          "id": "input-2",
+          "title": "Item Constraint",
+          "explanation": "Each item in the sequence must belong to the item set.",
+          "equation": "v_t^{(u)} \\in V \\quad \\text{where } V = \\{v_1, v_2, ..., v_{|V|}\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "input-3",
+          "title": "Next Item Prediction",
+          "explanation": "The task is to predict the probability distribution over all items for the next interaction.",
+          "equation": "p(v_{n_u+1}^{(u)} = v | S_u)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "input-init",
+        "title": "Input Processing",
+        "explanation": "Process user interaction sequences for the model.",
+        "codeAnswer": "class SequenceProcessor:\n    def __init__(self, n_items, max_length=50):\n        self.n_items = n_items\n        self.max_length = max_length\n        \n    def process_sequences(self, sequences):\n        # Pad sequences to max_length\n        padded_seqs = []\n        lengths = []\n        \n        for seq in sequences:\n            length = min(len(seq), self.max_length)\n            # Truncate if too long\n            seq = seq[-self.max_length:]\n            # Pad with zeros if too short\n            padded = seq + [0] * (self.max_length - len(seq))\n            \n            padded_seqs.append(padded)\n            lengths.append(length)\n            \n        return torch.tensor(padded_seqs), torch.tensor(lengths)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "input-forward",
+        "title": "Batch Processing",
+        "explanation": "Prepare batched sequences with proper masking.",
+        "codeAnswer": "def forward_batch(self, sequences, lengths):\n    batch_size = sequences.size(0)\n    max_len = sequences.size(1)\n    \n    # Create attention mask\n    mask = torch.arange(max_len).unsqueeze(0) < lengths.unsqueeze(1)\n    \n    # Get embeddings\n    item_embeddings = self.item_embedding(sequences)\n    \n    # Apply mask\n    item_embeddings = item_embeddings * mask.unsqueeze(2).float()\n    \n    return item_embeddings, mask",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "embedding": {
+      "id": "embedding",
+      "title": "Item Embeddings",
+      "equations": [
+        {
+          "id": "embed-1",
+          "title": "Embedding Lookup",
+          "explanation": "Convert item indices to dense vectors.",
+          "equation": "\\mathbf{e}_i = \\mathrm{Embedding}(v_i) \\in \\mathbb{R}^d",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-2",
+          "title": "Embedding Matrix",
+          "explanation": "The embedding matrix contains representations for all items.",
+          "equation": "\\mathbf{E} \\in \\mathbb{R}^{|V| \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-init",
+        "title": "Embedding Layer Initialization",
+        "explanation": "Initialize the item embedding layer.",
+        "codeAnswer": "class LLMHG(nn.Module):\n    def __init__(self, n_items, embedding_dim=100):\n        super().__init__()\n        self.n_items = n_items\n        self.embedding_dim = embedding_dim\n        \n        # Item embeddings\n        self.item_embedding = nn.Embedding(\n            n_items, \n            embedding_dim, \n            padding_idx=0\n        )\n        \n        # Initialize with normal distribution\n        nn.init.normal_(self.item_embedding.weight, 0, 0.1)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-forward",
+        "title": "Embedding Forward Pass",
+        "explanation": "Look up embeddings for item sequences.",
+        "codeAnswer": "def embed_forward(self, sequences):\n    # sequences shape: (batch_size, seq_length)\n    # output shape: (batch_size, seq_length, embedding_dim)\n    \n    item_emb = self.item_embedding(sequences)\n    item_emb = self.dropout_layer(item_emb)\n    \n    return item_emb",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "gru": {
+      "id": "gru",
+      "title": "GRU Sequential Encoder",
+      "equations": [
+        {
+          "id": "gru-1",
+          "title": "GRU Update Gate",
+          "explanation": "Controls how much of the previous hidden state to keep.",
+          "equation": "z_t = \\sigma(W_z \\cdot [h_{t-1}, x_t])",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gru-2",
+          "title": "GRU Reset Gate",
+          "explanation": "Controls how much of the previous hidden state to forget.",
+          "equation": "r_t = \\sigma(W_r \\cdot [h_{t-1}, x_t])",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gru-3",
+          "title": "GRU Hidden State Update",
+          "explanation": "Compute new hidden state combining previous state and current input.",
+          "equation": "h_t = (1 - z_t) \\odot h_{t-1} + z_t \\odot \\tanh(W \\cdot [r_t \\odot h_{t-1}, x_t])",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "gru-init",
+        "title": "GRU Initialization",
+        "explanation": "Initialize GRU for sequential modeling.",
+        "codeAnswer": "# In LLMHG __init__\nself.hidden_dim = hidden_dim\n\n# GRU for sequential modeling\nself.gru = nn.GRU(\n    embedding_dim, \n    hidden_dim, \n    batch_first=True\n)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "gru-forward",
+        "title": "GRU Forward Pass",
+        "explanation": "Process sequences through GRU and extract outputs.",
+        "codeAnswer": "def gru_forward(self, item_emb, lengths):\n    # Pack sequences for efficient processing\n    packed = nn.utils.rnn.pack_padded_sequence(\n        item_emb, lengths.cpu(), \n        batch_first=True, \n        enforce_sorted=False\n    )\n    \n    # Forward through GRU\n    gru_out, _ = self.gru(packed)\n    \n    # Unpack\n    gru_out, _ = nn.utils.rnn.pad_packed_sequence(\n        gru_out, batch_first=True\n    )\n    \n    # Extract last hidden state for each sequence\n    last_hidden = []\n    for i, length in enumerate(lengths):\n        last_hidden.append(gru_out[i, length-1])\n    last_hidden = torch.stack(last_hidden)\n    \n    return gru_out, last_hidden",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "session-attention": {
+      "id": "session-attention",
+      "title": "Session-Level Attention",
+      "equations": [
+        {
+          "id": "attn-1",
+          "title": "Query Transformation",
+          "explanation": "Transform last hidden state to query vector.",
+          "equation": "q_1 = W_1(h_{last}) \\in \\mathbb{R}^{B \\times 1 \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-2",
+          "title": "Key Transformation",
+          "explanation": "Transform all hidden states to key vectors.",
+          "equation": "q_2 = W_2(h_{gru}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-3",
+          "title": "Attention Scores",
+          "explanation": "Compute attention weights and apply to hidden states.",
+          "equation": "\\alpha = \\text{softmax}(v(\\tanh(q_1 + q_2))), \\quad s_{emb} = \\sum_i \\alpha_i \\cdot h_{gru,i}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-init",
+        "title": "Attention Components Initialization",
+        "explanation": "Initialize W1, W2, and v for session attention.",
+        "codeAnswer": "# Session-level attention components\nself.W1 = nn.Linear(hidden_dim, hidden_dim, bias=False)\nself.W2 = nn.Linear(hidden_dim, hidden_dim, bias=False)\nself.v = nn.Linear(hidden_dim, 1, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-forward",
+        "title": "Session Attention Forward Pass",
+        "explanation": "Compute attention over GRU outputs to create session embedding.",
+        "codeAnswer": "def session_attention_forward(self, gru_out, last_hidden, lengths):\n    batch_size = gru_out.size(0)\n    max_len = gru_out.size(1)\n    device = gru_out.device\n    \n    # Compute attention components\n    q1 = self.W1(last_hidden).unsqueeze(1)  # (B, 1, hidden)\n    q2 = self.W2(gru_out)  # (B, L, hidden)\n    \n    # Compute attention scores\n    mask = torch.arange(max_len, device=device).unsqueeze(0) < lengths.unsqueeze(1)\n    alpha = self.v(torch.tanh(q1 + q2)).squeeze(2)  # (B, L)\n    alpha = alpha.masked_fill(~mask, float('-inf'))\n    alpha = F.softmax(alpha, dim=1)\n    \n    # Weighted sum of hidden states\n    session_emb = torch.sum(alpha.unsqueeze(2) * gru_out, dim=1)\n    \n    return session_emb, alpha",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "build-hypergraphs": {
+      "id": "build-hypergraphs",
+      "title": "Multi-View Hypergraph Construction",
+      "equations": [
+        {
+          "id": "hypergraph-1",
+          "title": "Hypergraph Definition",
+          "explanation": "A hypergraph with vertices (items) and hyperedges (categories).",
+          "equation": "G = (V, E) \\quad \\text{where } V = \\{v_1, ..., v_{|V|}\\}, E = \\{e_1, ..., e_{|E|}\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "hypergraph-2",
+          "title": "Incidence Matrix",
+          "explanation": "Binary matrix indicating which items belong to which hyperedges.",
+          "equation": "h(v, e) = \\begin{cases} 1, & \\text{if } v \\in e \\ 0, & \\text{otherwise} \\end{cases}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "hypergraph-3",
+          "title": "Hyperedge Degree",
+          "explanation": "The number of vertices in a hyperedge.",
+          "equation": "\\delta(e) = \\sum_{v \\in e} h(v, e)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "hypergraph-init",
+        "title": "Hypergraph Construction",
+        "explanation": "Build multi-view hypergraphs from training sessions.",
+        "codeAnswer": "def build_hypergraphs(self, train_sessions, top_k=50):\n    print(\"Building multi-view hypergraphs...\")\n    \n    # View 1: Co-occurrence hypergraph\n    cooccur_edges = []\n    for session in train_sessions:\n        if len(session) > 1:\n            # Each session forms a hyperedge\n            cooccur_edges.append(list(set(session)))\n    \n    # View 2: Sequential hypergraph\n    sequential_edges = []\n    transition_counts = defaultdict(lambda: defaultdict(int))\n    for session in train_sessions:\n        for i in range(len(session) - 1):\n            transition_counts[session[i]][session[i+1]] += 1\n    \n    # Create hyperedges from frequent transitions\n    for item1, transitions in transition_counts.items():\n        top_items = sorted(transitions.items(), \n                          key=lambda x: x[1], reverse=True)[:top_k]\n        if len(top_items) > 1:\n            edge = [item1] + [item2 for item2, _ in top_items]\n            sequential_edges.append(edge)\n    \n    # View 3: Semantic hypergraph (simplified)\n    item_freq = defaultdict(int)\n    for session in train_sessions:\n        for item in session:\n            item_freq[item] += 1\n    \n    # Group by frequency bins\n    freq_bins = defaultdict(list)\n    for item, freq in item_freq.items():\n        bin_idx = min(int(np.log(freq + 1)), 10)\n        freq_bins[bin_idx].append(item)\n    \n    semantic_edges = [items for items in freq_bins.values() \n                     if len(items) > 1]\n    \n    # Convert to incidence matrices\n    self.H_cooccur = self._build_incidence_matrix(\n        cooccur_edges, self.n_items)\n    self.H_sequential = self._build_incidence_matrix(\n        sequential_edges, self.n_items)\n    self.H_semantic = self._build_incidence_matrix(\n        semantic_edges, self.n_items)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "hypergraph-forward",
+        "title": "Build Incidence Matrix",
+        "explanation": "Convert hyperedges to sparse incidence matrix.",
+        "codeAnswer": "def _build_incidence_matrix(self, hyperedges, num_nodes):\n    if not hyperedges:\n        return None\n    \n    # Create sparse incidence matrix\n    rows, cols, data = [], [], []\n    for edge_idx, edge in enumerate(hyperedges):\n        for node in edge:\n            if node < num_nodes:\n                rows.append(node)\n                cols.append(edge_idx)\n                data.append(1.0)\n    \n    if not rows:\n        return None\n    \n    indices = torch.tensor([rows, cols], dtype=torch.long)\n    values = torch.tensor(data, dtype=torch.float)\n    shape = (num_nodes, len(hyperedges))\n    \n    H = torch.sparse_coo_tensor(indices, values, shape)\n    return H.to_dense()",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "hypergraph-convolution": {
+      "id": "hypergraph-convolution",
+      "title": "Hypergraph Convolution",
+      "equations": [
+        {
+          "id": "hgcn-1",
+          "title": "Hypergraph Convolution Operation",
+          "explanation": "Message passing through hyperedges with normalization.",
+          "equation": "X^{(l+1)} = \\sigma(D_v^{-1/2}HWD_e^{-1}H^TD_v^{-1/2}X^{(l)}\\Theta)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "hgcn-2",
+          "title": "Node and Edge Degrees",
+          "explanation": "Compute degree matrices for normalization.",
+          "equation": "d_v = H \\cdot \\mathbf{1}, \\quad d_e = H^T \\cdot \\mathbf{1}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "hgcn-3",
+          "title": "Two-Stage Message Passing",
+          "explanation": "First aggregate to hyperedges, then distribute back to nodes.",
+          "equation": "e_{feat} = D_e^{-1}H^T(D_v^{-1/2}X), \\quad y = D_v^{-1/2}H \\cdot e_{feat}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "hgcn-init",
+        "title": "Hypergraph Convolution Layer",
+        "explanation": "Initialize hypergraph convolution components.",
+        "codeAnswer": "class HypergraphConvolution(nn.Module):\n    def __init__(self, in_features, out_features, \n                 use_bias=True, activation=True):\n        super().__init__()\n        self.in_features = in_features\n        self.out_features = out_features\n        self.use_bias = use_bias\n        self.activation = activation\n        \n        self.weight = nn.Parameter(\n            torch.FloatTensor(in_features, out_features)\n        )\n        if use_bias:\n            self.bias = nn.Parameter(torch.FloatTensor(out_features))\n        else:\n            self.register_parameter('bias', None)\n        \n        self.reset_parameters()\n    \n    def reset_parameters(self):\n        nn.init.xavier_uniform_(self.weight)\n        if self.bias is not None:\n            nn.init.zeros_(self.bias)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "hgcn-forward",
+        "title": "Hypergraph Convolution Forward",
+        "explanation": "Perform hypergraph convolution with proper normalization.",
+        "codeAnswer": "def forward(self, x, H):\n    # x: node features [num_nodes, in_features]\n    # H: incidence matrix [num_nodes, num_edges]\n    \n    if H is None or H.shape[1] == 0:\n        # Handle empty hypergraph\n        output = torch.matmul(x, self.weight)\n        if self.bias is not None:\n            output = output + self.bias\n        return F.relu(output) if self.activation else output\n    \n    # Compute degree matrices\n    d_v = H.sum(1).clamp(min=1)  # node degrees\n    d_e = H.sum(0).clamp(min=1)  # hyperedge degrees\n    \n    # Normalize\n    d_v_sqrt_inv = torch.pow(d_v, -0.5).unsqueeze(1)\n    d_e_inv = torch.pow(d_e, -1).unsqueeze(0)\n    \n    # Transform features\n    x_transformed = torch.matmul(x, self.weight)\n    \n    # Message passing through hyperedges\n    H_normalized = d_v_sqrt_inv * H\n    hyperedge_features = torch.matmul(H_normalized.t(), x_transformed)\n    hyperedge_features = d_e_inv.t() * hyperedge_features\n    output = torch.matmul(H_normalized, hyperedge_features)\n    \n    if self.bias is not None:\n        output = output + self.bias\n    \n    if self.activation:\n        output = F.relu(output)\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "structure-learning": {
+      "id": "structure-learning",
+      "title": "Hypergraph Structure Learning",
+      "equations": [
+        {
+          "id": "struct-1",
+          "title": "Prototype Computation",
+          "explanation": "Compute prototype for each hyperedge with LLM guidance.",
+          "equation": "p(e_k) = (1 - \\lambda_k) \\cdot P^{\\mathrm{ori}}(e_k) + \\lambda_k \\cdot T_{e_k}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "struct-2",
+          "title": "Hyperedge Weight Function",
+          "explanation": "Combine intra-edge and inter-edge structure learning.",
+          "equation": "w(e) = \\frac{\\beta}{\\delta(e)(\\delta(e)-1)} \\sum_{\\{v_i,v_j\\} \\in e} \\exp\\left(-\\frac{\\|\\phi(x_i) - \\phi(x_j)\\|^2}{\\mu}\\right) + (1-\\beta) \\frac{\\sum_{e_k \\in E} \\|P(e) - P(e_k)\\|^2}{n_e}",
+          "canvasHeight": 200
+        },
+        {
+          "id": "struct-3",
+          "title": "Structure Learning Loss",
+          "explanation": "Minimize disturbance to hyperedges using normalized Laplacian.",
+          "equation": "\\mathcal{L}_{str}(F, G) = \\frac{1}{2} \\sum_{e \\in E} \\sum_{(v_i,v_j) \\in e} \\frac{w(e)}{\\delta(e)} \\left\\| \\frac{F_{v_i}}{\\sqrt{d(v_i)}} - \\frac{F_{v_j}}{\\sqrt{d(v_j)}} \\right\\|^2",
+          "canvasHeight": 200
+        }
+      ],
+      "initialization": {
+        "id": "struct-init",
+        "title": "Structure Learning Components",
+        "explanation": "Initialize components for hypergraph refinement.",
+        "codeAnswer": "# Prototype computation with LLM guidance\ndef compute_prototype(self, ek, items, text_embedding):\n    # Initial prototype from item average\n    if len(items) > 0:\n        P_ori = torch.mean(self.item_embedding.weight[items], dim=0)\n    else:\n        P_ori = torch.zeros(self.embedding_dim)\n    \n    # Balance parameter based on text quality\n    lambda_k = torch.sigmoid(-self.h(text_embedding))\n    \n    # Combine with text information\n    prototype = (1 - lambda_k) * P_ori + lambda_k * text_embedding\n    \n    return prototype",
+        "language": "python"
+      },
+      "forward": {
+        "id": "struct-forward",
+        "title": "Hyperedge Weight Computation",
+        "explanation": "Compute refined weights for hyperedges.",
+        "codeAnswer": "def compute_hyperedge_weights(self, H, prototypes, beta=0.5, mu=1.0):\n    weights = []\n    \n    for e_idx in range(H.shape[1]):\n        # Get items in hyperedge\n        items = torch.where(H[:, e_idx] > 0)[0]\n        \n        if len(items) < 2:\n            weights.append(1.0)\n            continue\n        \n        # Intra-edge structure (item similarity within edge)\n        intra_score = 0\n        count = 0\n        for i in range(len(items)):\n            for j in range(i+1, len(items)):\n                feat_i = self.phi(self.item_embedding.weight[items[i]])\n                feat_j = self.phi(self.item_embedding.weight[items[j]])\n                dist = torch.norm(feat_i - feat_j, p=2) ** 2\n                intra_score += torch.exp(-dist / mu)\n                count += 1\n        \n        if count > 0:\n            intra_score = intra_score / count\n        \n        # Inter-edge structure (prototype sparsity)\n        inter_score = 0\n        for other_idx, other_proto in enumerate(prototypes):\n            if other_idx != e_idx:\n                dist = torch.norm(prototypes[e_idx] - other_proto, p=2) ** 2\n                inter_score += dist\n        inter_score = inter_score / (len(prototypes) - 1)\n        \n        # Combine scores\n        weight = beta * intra_score + (1 - beta) * inter_score\n        weights.append(weight)\n    \n    return torch.tensor(weights)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "multiview-attention": {
+      "id": "multiview-attention",
+      "title": "Multi-View Attention",
+      "equations": [
+        {
+          "id": "mv-attn-1",
+          "title": "View Attention Scores",
+          "explanation": "Compute attention scores for each hypergraph view.",
+          "equation": "score_i = v(\\tanh(W_{query}(h_{last}) + W_{view,i}(v_{emb,i})))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mv-attn-2",
+          "title": "Attention Weight Normalization",
+          "explanation": "Normalize scores across views using softmax.",
+          "equation": "\\alpha_i = \\frac{\\exp(score_i)}{\\sum_{j=1}^{N_{views}} \\exp(score_j)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mv-attn-3",
+          "title": "Combined View Embedding",
+          "explanation": "Weighted combination of view embeddings.",
+          "equation": "v_{combined} = \\sum_{i=1}^{N_{views}} \\alpha_i \\cdot v_{emb,i}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "mv-attn-init",
+        "title": "Multi-View Attention Initialization",
+        "explanation": "Initialize attention mechanism for combining views.",
+        "codeAnswer": "class MultiViewAttention(nn.Module):\n    def __init__(self, hidden_dim, num_views=3):\n        super().__init__()\n        self.hidden_dim = hidden_dim\n        self.num_views = num_views\n        \n        # Attention parameters for each view\n        self.W_views = nn.ModuleList([\n            nn.Linear(hidden_dim, hidden_dim, bias=False) \n            for _ in range(num_views)\n        ])\n        self.W_query = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.v = nn.Linear(hidden_dim, 1, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "mv-attn-forward",
+        "title": "Multi-View Attention Forward",
+        "explanation": "Combine multiple view embeddings based on user state.",
+        "codeAnswer": "def forward(self, view_embeddings, query_embedding):\n    # view_embeddings: list of [batch_size, hidden_dim]\n    # query_embedding: [batch_size, hidden_dim]\n    \n    # Transform query\n    query_transformed = self.W_query(query_embedding)\n    \n    # Compute attention scores for each view\n    attention_scores = []\n    for i, view_emb in enumerate(view_embeddings):\n        view_transformed = self.W_views[i](view_emb)\n        score = self.v(torch.tanh(query_transformed + view_transformed))\n        attention_scores.append(score)\n    \n    # Normalize attention scores\n    attention_scores = torch.cat(attention_scores, dim=1)\n    attention_weights = F.softmax(attention_scores, dim=1)\n    \n    # Weighted combination of views\n    combined_embedding = torch.zeros_like(view_embeddings[0])\n    for i, view_emb in enumerate(view_embeddings):\n        combined_embedding += attention_weights[:, i:i+1] * view_emb\n    \n    return combined_embedding, attention_weights",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "representation-fusion": {
+      "id": "representation-fusion",
+      "title": "Representation Fusion",
+      "equations": [
+        {
+          "id": "fusion-1",
+          "title": "Concatenation",
+          "explanation": "Combine session and hypergraph embeddings.",
+          "equation": "z = [s_{emb}; v_{combined}] \\in \\mathbb{R}^{2d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "fusion-2",
+          "title": "Final Transformation",
+          "explanation": "Transform concatenated embeddings to final representation.",
+          "equation": "h_{final} = \\tanh(W_{final}(z)) \\in \\mathbb{R}^d",
+          "canvasHeight": 150
+        },
+        {
+          "id": "fusion-3",
+          "title": "Output Scores",
+          "explanation": "Compute scores for all items via embedding similarity.",
+          "equation": "\\text{scores} = e_{final} \\cdot \\mathbf{E}^T \\in \\mathbb{R}^{|V|}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "fusion-init",
+        "title": "Fusion Layer Initialization",
+        "explanation": "Initialize final transformation layers.",
+        "codeAnswer": "# Final prediction layers\nself.W_final = nn.Linear(hidden_dim * 2, hidden_dim)\nself.output_layer = nn.Linear(hidden_dim, embedding_dim, bias=False)\n\n# Dropout for regularization\nself.dropout_layer = nn.Dropout(dropout)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "fusion-forward",
+        "title": "Complete Forward Pass",
+        "explanation": "Full forward pass combining all components.",
+        "codeAnswer": "def forward(self, sequences, lengths):\n    batch_size = sequences.size(0)\n    device = sequences.device\n    \n    # Get item embeddings\n    item_emb = self.item_embedding(sequences)\n    item_emb = self.dropout_layer(item_emb)\n    \n    # GRU encoding\n    gru_out, last_hidden = self.gru_forward(item_emb, lengths)\n    \n    # Session attention\n    session_emb, _ = self.session_attention_forward(\n        gru_out, last_hidden, lengths\n    )\n    \n    # Multi-view hypergraph processing\n    view_embeddings = []\n    all_item_emb = self.item_embedding.weight\n    \n    for view_idx in range(self.num_views):\n        # Select hypergraph\n        if view_idx == 0 and self.H_cooccur is not None:\n            H = self.H_cooccur.to(device)\n        elif view_idx == 1 and self.H_sequential is not None:\n            H = self.H_sequential.to(device)\n        elif view_idx == 2 and self.H_semantic is not None:\n            H = self.H_semantic.to(device)\n        else:\n            H = None\n        \n        # Apply hypergraph convolutions\n        h = all_item_emb\n        for layer in self.hgnn_layers[view_idx]:\n            h = layer(h, H)\n            if layer != self.hgnn_layers[view_idx][-1]:\n                h = self.dropout_layer(h)\n        \n        # Get embeddings for batch items\n        batch_items = sequences.view(-1)\n        batch_item_emb = h[batch_items].view(batch_size, -1, h.size(-1))\n        \n        # Aggregate for each sequence\n        mask = torch.arange(sequences.size(1), device=device).unsqueeze(0)\n        mask = mask < lengths.unsqueeze(1)\n        masked_emb = batch_item_emb * mask.unsqueeze(2).float()\n        view_emb = masked_emb.sum(1) / lengths.unsqueeze(1).float()\n        view_embeddings.append(view_emb)\n    \n    # Multi-view attention\n    if len(view_embeddings) == self.num_views:\n        combined_view_emb, _ = self.view_attention(\n            view_embeddings, last_hidden\n        )\n    else:\n        combined_view_emb = last_hidden\n    \n    # Combine embeddings\n    combined = torch.cat([session_emb, combined_view_emb], dim=1)\n    combined = self.dropout_layer(combined)\n    \n    # Final transformation\n    final_hidden = torch.tanh(self.W_final(combined))\n    final_emb = self.output_layer(final_hidden)\n    \n    # Compute scores\n    scores = torch.matmul(final_emb, self.item_embedding.weight.T)\n    \n    return scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "loss-function": {
+      "id": "loss-function",
+      "title": "Training Objectives",
+      "equations": [
+        {
+          "id": "loss-1",
+          "title": "Prediction Loss",
+          "explanation": "Cross-entropy loss for next item prediction.",
+          "equation": "\\mathcal{L}_{pre} = -\\sum_{u=1}^{|U|} y_u \\log(\\hat{y}_u) + (1 - y_u)\\log(1 - \\hat{y}_u)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "loss-2",
+          "title": "Structure Learning Loss",
+          "explanation": "Hypergraph Laplacian regularization for structure refinement.",
+          "equation": "\\mathcal{L}_{str} = \\mathrm{Tr}(F^T L_H F) = \\mathrm{Tr}(F^T(I - D_v^{-1/2}HWD_e^{-1}H^TD_v^{-1/2})F)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "loss-3",
+          "title": "Total Loss",
+          "explanation": "Combine prediction and structure learning objectives.",
+          "equation": "\\mathcal{L} = \\mathcal{L}_{str} + \\alpha \\mathcal{L}_{pre}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "loss-init",
+        "title": "Loss Function Setup",
+        "explanation": "Initialize loss computation components.",
+        "codeAnswer": "def compute_structure_loss(self, F, H, W):\n    # F: hyperedge predictions\n    # H: incidence matrix\n    # W: hyperedge weights\n    \n    # Compute degree matrices\n    d_v = (H @ W @ torch.ones(H.shape[1])).diag()\n    d_e = (H.T @ torch.ones(H.shape[0])).diag()\n    \n    # Compute normalized Laplacian\n    D_v_sqrt_inv = torch.pow(d_v + 1e-10, -0.5)\n    D_e_inv = torch.pow(d_e + 1e-10, -1.0)\n    \n    # L_H = I - D_v^{-1/2} H W D_e^{-1} H^T D_v^{-1/2}\n    I = torch.eye(H.shape[0])\n    L_H = I - D_v_sqrt_inv @ H @ W @ D_e_inv @ H.T @ D_v_sqrt_inv\n    \n    # Structure loss\n    loss = torch.trace(F.T @ L_H @ F)\n    \n    return loss",
+        "language": "python"
+      },
+      "forward": {
+        "id": "loss-forward",
+        "title": "Training Forward Pass",
+        "explanation": "Compute complete loss for LLMHG training.",
+        "codeAnswer": "def forward(self, scores, targets, hypergraph_features=None, alpha=1.0):\n    # Prediction loss\n    batch_size = scores.size(0)\n    prediction_loss = F.cross_entropy(\n        scores.view(-1, scores.size(-1)),\n        targets.view(-1),\n        ignore_index=0\n    )\n    \n    # Structure learning loss (if hypergraph features provided)\n    structure_loss = 0\n    if hypergraph_features is not None:\n        for view_idx, (F, H, W) in enumerate(hypergraph_features):\n            if H is not None and W is not None:\n                view_loss = self.compute_structure_loss(F, H, W)\n                structure_loss += view_loss\n    \n    # Total loss\n    total_loss = structure_loss + alpha * prediction_loss\n    \n    return total_loss, prediction_loss, structure_loss",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "llmhg": {
+      "id": "llmhg",
+      "title": "LLMHG Model Container",
+      "equations": [
+        {
+          "id": "llmhg-1",
+          "title": "Model Architecture",
+          "explanation": "The complete LLMHG model combining sequential and hypergraph components.",
+          "equation": "LLMHG = f_{seq}(S_u) + f_{hypergraph}(V, E)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "llmhg-init",
+        "title": "LLMHG Model Initialization",
+        "explanation": "Initialize the complete LLMHG model.",
+        "codeAnswer": "class LLMHG(nn.Module):\n    def __init__(self, n_items, embedding_dim=100, hidden_dim=100, dropout=0.5):\n        super().__init__()\n        self.n_items = n_items\n        self.embedding_dim = embedding_dim\n        self.hidden_dim = hidden_dim\n        \n        # Initialize all components\n        self.build_model_components()\n        self.build_hypergraphs()",
+        "language": "python"
+      },
+      "forward": {
+        "id": "llmhg-forward",
+        "title": "Model Forward Pass",
+        "explanation": "Complete forward pass through LLMHG.",
+        "codeAnswer": "def forward(self, sequences, lengths):\n    # Sequential path\n    session_emb = self.sequential_encoder(sequences, lengths)\n    \n    # Hypergraph path\n    view_emb = self.hypergraph_encoder(sequences)\n    \n    # Combine and predict\n    scores = self.predictor(session_emb, view_emb)\n    return scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "w1": {
+      "id": "w1",
+      "title": "Query Projection W1",
+      "equations": [
+        {
+          "id": "w1-eq",
+          "title": "Query Transformation",
+          "explanation": "Linear transformation for attention query.",
+          "equation": "q_1 = W_1(h_{last}) \\in \\mathbb{R}^{B \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "w1-init",
+        "title": "W1 Layer Initialization",
+        "explanation": "Initialize query projection layer.",
+        "codeAnswer": "self.W1 = nn.Linear(hidden_dim, hidden_dim, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "w1-forward",
+        "title": "W1 Forward Pass",
+        "explanation": "Project last hidden state to query.",
+        "codeAnswer": "q1 = self.W1(last_hidden).unsqueeze(1)  # (B, 1, hidden)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "w2": {
+      "id": "w2",
+      "title": "Key Projection W2",
+      "equations": [
+        {
+          "id": "w2-eq",
+          "title": "Key Transformation",
+          "explanation": "Linear transformation for attention keys.",
+          "equation": "q_2 = W_2(H_{gru}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "w2-init",
+        "title": "W2 Layer Initialization",
+        "explanation": "Initialize key projection layer.",
+        "codeAnswer": "self.W2 = nn.Linear(hidden_dim, hidden_dim, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "w2-forward",
+        "title": "W2 Forward Pass",
+        "explanation": "Project all hidden states to keys.",
+        "codeAnswer": "q2 = self.W2(gru_out)  # (B, L, hidden)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "v": {
+      "id": "v",
+      "title": "Attention Score Layer",
+      "equations": [
+        {
+          "id": "v-eq",
+          "title": "Score Computation",
+          "explanation": "Compute scalar attention scores.",
+          "equation": "\\alpha = v(\\tanh(q_1 + q_2)) \\in \\mathbb{R}^{B \\times L}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "v-init",
+        "title": "Score Layer Initialization",
+        "explanation": "Initialize attention score projection.",
+        "codeAnswer": "self.v = nn.Linear(hidden_dim, 1, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "v-forward",
+        "title": "Score Computation Forward",
+        "explanation": "Compute attention scores from queries and keys.",
+        "codeAnswer": "alpha = self.v(torch.tanh(q1 + q2)).squeeze(2)  # (B, L)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "sum": {
+      "id": "sum",
+      "title": "Weighted Sum",
+      "equations": [
+        {
+          "id": "sum-eq",
+          "title": "Attention Aggregation",
+          "explanation": "Weighted sum of hidden states.",
+          "equation": "s = \\sum_{i=1}^L \\alpha_i \\cdot h_i",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "sum-init",
+        "title": "Sum Operation",
+        "explanation": "No parameters needed for weighted sum.",
+        "codeAnswer": "# Weighted sum is a parameter-free operation",
+        "language": "python"
+      },
+      "forward": {
+        "id": "sum-forward",
+        "title": "Weighted Sum Forward",
+        "explanation": "Apply attention weights to hidden states.",
+        "codeAnswer": "session_emb = torch.sum(alpha.unsqueeze(2) * gru_out, dim=1)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "h-cooccur": {
+      "id": "h-cooccur",
+      "title": "Co-occurrence Hypergraph",
+      "equations": [
+        {
+          "id": "h-cooccur-eq",
+          "title": "Co-occurrence Hyperedge",
+          "explanation": "Items appearing in the same session form hyperedges.",
+          "equation": "e_{cooccur} = \\{v_i | v_i \\in S_u\\}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "h-cooccur-init",
+        "title": "Build Co-occurrence Hypergraph",
+        "explanation": "Create hyperedges from session co-occurrences.",
+        "codeAnswer": "cooccur_edges = []\nfor session in train_sessions:\n    if len(session) > 1:\n        # Each session forms a hyperedge\n        cooccur_edges.append(list(set(session)))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "h-cooccur-forward",
+        "title": "Co-occurrence Matrix",
+        "explanation": "Convert to incidence matrix representation.",
+        "codeAnswer": "self.H_cooccur = self._build_incidence_matrix(\n    cooccur_edges, self.n_items)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "h-sequential": {
+      "id": "h-sequential",
+      "title": "Sequential Hypergraph",
+      "equations": [
+        {
+          "id": "h-seq-eq",
+          "title": "Sequential Hyperedge",
+          "explanation": "Frequent item transitions form hyperedges.",
+          "equation": "e_{seq} = \\{v_i \\cup \\mathrm{top\\text{-}k}(v_i \\rightarrow v_j)\\}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "h-seq-init",
+        "title": "Build Sequential Hypergraph",
+        "explanation": "Create hyperedges from item transitions.",
+        "codeAnswer": "# Count transitions\ntransition_counts = defaultdict(lambda: defaultdict(int))\nfor session in train_sessions:\n    for i in range(len(session) - 1):\n        transition_counts[session[i]][session[i+1]] += 1",
+        "language": "python"
+      },
+      "forward": {
+        "id": "h-seq-forward",
+        "title": "Sequential Matrix",
+        "explanation": "Build incidence matrix from transitions.",
+        "codeAnswer": "self.H_sequential = self._build_incidence_matrix(\n    sequential_edges, self.n_items)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "h-semantic": {
+      "id": "h-semantic",
+      "title": "Semantic Hypergraph",
+      "equations": [
+        {
+          "id": "h-sem-eq",
+          "title": "Semantic Hyperedge",
+          "explanation": "Semantically similar items grouped by LLM.",
+          "equation": "e_{sem} = \\{v_i | \\mathrm{LLM}(v_i) \\in \\mathrm{category}_k\\}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "h-sem-init",
+        "title": "Build Semantic Hypergraph",
+        "explanation": "Group items by semantic similarity.",
+        "codeAnswer": "# Simplified: group by frequency bins\nfreq_bins = defaultdict(list)\nfor item, freq in item_freq.items():\n    bin_idx = min(int(np.log(freq + 1)), 10)\n    freq_bins[bin_idx].append(item)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "h-sem-forward",
+        "title": "Semantic Matrix",
+        "explanation": "Create incidence matrix from semantic groups.",
+        "codeAnswer": "self.H_semantic = self._build_incidence_matrix(\n    semantic_edges, self.n_items)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "view-embeddings": {
+      "id": "view-embeddings",
+      "title": "View Embeddings",
+      "equations": [
+        {
+          "id": "view-emb-eq",
+          "title": "View Representations",
+          "explanation": "Embeddings from each hypergraph view.",
+          "equation": "E_{view}^{(i)} = \\mathrm{HGNN}_i(X, H_i)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "view-emb-init",
+        "title": "View Storage",
+        "explanation": "Storage for multi-view embeddings.",
+        "codeAnswer": "# View embeddings are computed dynamically\nview_embeddings = []",
+        "language": "python"
+      },
+      "forward": {
+        "id": "view-emb-forward",
+        "title": "Aggregate View Embeddings",
+        "explanation": "Collect embeddings from all views.",
+        "codeAnswer": "# Aggregate embeddings for current batch\nfor view_idx in range(self.num_views):\n    view_emb = self.aggregate_view_embedding(\n        h, sequences, lengths\n    )\n    view_embeddings.append(view_emb)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "cat": {
+      "id": "cat",
+      "title": "Concatenation",
+      "equations": [
+        {
+          "id": "cat-eq",
+          "title": "Feature Concatenation",
+          "explanation": "Combine sequential and hypergraph features.",
+          "equation": "[s_{seq}; s_{hyper}] \\in \\mathbb{R}^{2d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "cat-init",
+        "title": "Concatenation Operation",
+        "explanation": "Parameter-free concatenation.",
+        "codeAnswer": "# Concatenation is a parameter-free operation",
+        "language": "python"
+      },
+      "forward": {
+        "id": "cat-forward",
+        "title": "Concatenate Features",
+        "explanation": "Concatenate along feature dimension.",
+        "codeAnswer": "combined = torch.cat([session_emb, combined_view_emb], dim=1)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "w-final": {
+      "id": "w-final",
+      "title": "Final Transformation",
+      "equations": [
+        {
+          "id": "w-final-eq",
+          "title": "Final Linear Transform",
+          "explanation": "Transform concatenated features.",
+          "equation": "h_{final} = \\tanh(W_{final}([s_{seq}; s_{hyper}]))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "w-final-init",
+        "title": "W_final Initialization",
+        "explanation": "Initialize final transformation layer.",
+        "codeAnswer": "self.W_final = nn.Linear(hidden_dim * 2, hidden_dim)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "w-final-forward",
+        "title": "Final Transform Forward",
+        "explanation": "Apply final transformation.",
+        "codeAnswer": "final_hidden = torch.tanh(self.W_final(combined))",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output-layer": {
+      "id": "output-layer",
+      "title": "Output Projection",
+      "equations": [
+        {
+          "id": "output-layer-eq",
+          "title": "Output Layer",
+          "explanation": "Project to embedding dimension for scoring.",
+          "equation": "e_{out} = W_{out}(h_{final}) \\in \\mathbb{R}^d",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-layer-init",
+        "title": "Output Layer Initialization",
+        "explanation": "Initialize output projection.",
+        "codeAnswer": "self.output_layer = nn.Linear(hidden_dim, embedding_dim, bias=False)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-layer-forward",
+        "title": "Output Projection Forward",
+        "explanation": "Project to embedding space.",
+        "codeAnswer": "final_emb = self.output_layer(final_hidden)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output-logits": {
+      "id": "output-logits",
+      "title": "Output Logits",
+      "equations": [
+        {
+          "id": "output-logits-eq",
+          "title": "Score Computation",
+          "explanation": "Compute scores for all items.",
+          "equation": "scores = e_{out} \\cdot E^T \\in \\mathbb{R}^{|V|}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-logits-init",
+        "title": "Logits Computation",
+        "explanation": "No additional parameters needed.",
+        "codeAnswer": "# Logits computed via matrix multiplication",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-logits-forward",
+        "title": "Compute Item Scores",
+        "explanation": "Score all items via dot product.",
+        "codeAnswer": "scores = torch.matmul(final_emb, self.item_embedding.weight.T)",
+        "language": "python"
+      },
+      "type": "custom"
+    }
+  }
+}

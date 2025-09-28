@@ -1,0 +1,544 @@
+{
+  "id": "diffusion-models",
+  "title": "Diffusion Models",
+  "subtitle": "Complete Step-by-Step Equation Solutions",
+  "description": "Derive all diffusion model equations from forward process through training objective.",
+  "sections": [
+    {
+      "title": "Part 1: Forward Diffusion Process",
+      "steps": [
+        {
+          "id": "d1-1",
+          "title": "1.1 Single Step Forward Process",
+          "explanation": "Define the forward diffusion step",
+          "equation": [
+            "q(x_t | x_{t-1}) = \\mathcal{N}(x_t; \\sqrt{1-\\beta_t}x_{t-1}, \\beta_t I)",
+            "x_t = \\sqrt{1-\\beta_t}x_{t-1} + \\sqrt{\\beta_t}\\epsilon_t"
+          ],
+          "canvasHeight": 100
+        },
+        {
+          "id": "d1-2",
+          "title": "1.2 Two-Step Expansion",
+          "explanation": "Expand $x_t$ in terms of $x_{t-2}$",
+          "equation": [
+            "x_t = \\sqrt{1-\\beta_t}(\\sqrt{1-\\beta_{t-1}}x_{t-2} + \\sqrt{\\beta_{t-1}}\\epsilon_{t-1}) + \\sqrt{\\beta_t}\\epsilon_t",
+            "= \\sqrt{\\alpha_t}\\sqrt{\\alpha_{t-1}}x_{t-2} + \\sqrt{\\alpha_t}\\sqrt{\\beta_{t-1}}\\epsilon_{t-1} + \\sqrt{\\beta_t}\\epsilon_t"
+          ],
+          "canvasHeight": 100
+        },
+        {
+          "id": "d1-3",
+          "title": "1.3 Multi-Step Expansion",
+          "explanation": "Continue expanding to $x_0$",
+          "equation": [
+            "= \\sqrt{\\alpha_t\\alpha_{t-1}\\alpha_{t-2}}x_{t-3} + \\sqrt{\\alpha_t\\alpha_{t-1}}\\sqrt{\\beta_{t-2}}\\epsilon_{t-2} + \\sqrt{\\alpha_t}\\sqrt{\\beta_{t-1}}\\epsilon_{t-1} + \\sqrt{\\beta_t}\\epsilon_t",
+            "= \\sqrt{\\bar{\\alpha}_t}x_0 + \\sum_{s=1}^{t}\\sqrt{\\beta_s\\prod_{j=s+1}^{t}\\alpha_j}\\epsilon_s"
+          ],
+          "canvasHeight": 120
+        },
+        {
+          "id": "d1-4",
+          "title": "1.4 Defining Accumulated Noise",
+          "explanation": "Define $\\eta_t$ and its distribution",
+          "equation": [
+            "\\eta_t = \\sum_{s=1}^{t}\\beta_s\\prod_{j=s+1}^{t}\\alpha_j\\epsilon_s",
+            "\\eta_t \\sim (0, \\Sigma_t)",
+            "\\Sigma_t = \\sum_{s=1}^{t}\\beta_s\\prod_{j=s+1}^{t}\\alpha_j I"
+          ],
+          "canvasHeight": 200
+        },
+        {
+          "id": "d1-5",
+          "title": "1.5 Proof by Induction: $\\Sigma_t = 1 - \\bar{\\alpha}_t$",
+          "explanation": "Prove that the variance equals $1 - \\bar{\\alpha}_t$. Base case ($t=1$):",
+          "equation": [
+            "\\sum_{s=1}^{1}\\beta_s\\prod_{j=s+1}^{1}\\alpha_j = \\beta_1 = 1 - \\alpha_1",
+            "\\bar{\\Sigma}_1 = \\beta_1 = 1-\\bar{\\alpha}_1"
+          ],
+          "canvasHeight": 120
+        },
+        {
+          "id": "d1-6",
+          "title": "1.5 Inductive Step",
+          "explanation": "Assume true for $t$, prove for $t+1$:",
+          "equation": [
+            "\\sum_{s=1}^{t+1}\\beta_s\\prod_{j=s+1}^{t+1}\\alpha_j = \\sum_{s=1}^{t}\\beta_s\\prod_{j=s+1}^{t+1}\\alpha_j + \\beta_{t+1}",
+            "= \\sum_{s=1}^{t}\\beta_s\\prod_{j=s+1}^{t}\\alpha_j \\cdot \\alpha_{t+1} + \\beta_{t+1}",
+            "= \\alpha_{t+1}\\sum_{s=1}^{t}\\beta_s\\prod_{j=s+1}^{t}\\alpha_j + \\beta_{t+1}",
+            "= \\alpha_{t+1}(1-\\bar{\\alpha}_t) + \\beta_{t+1}"
+          ],
+          "canvasHeight": 260
+        },
+        {
+          "id": "d1-7",
+          "title": "1.5 Complete Inductive Step",
+          "explanation": "Simplify using $\\alpha_t + \\beta_t = 1$:",
+          "equation": [
+            "= \\alpha_{t+1} - \\alpha_{t+1}\\bar{\\alpha}_t + 1 - \\alpha_{t+1}",
+            "= 1 - \\alpha_{t+1}\\bar{\\alpha}_t",
+            "= 1 - \\bar{\\alpha}_{t+1}"
+          ],
+          "canvasHeight": 140
+        },
+        {
+          "id": "d1-8",
+          "title": "1.6 Final Forward Process Formula",
+          "explanation": "Write $x_t$ directly in terms of $x_0$",
+          "equation": [
+            "\\eta_t \\sim (0, \\Sigma_t)",
+            "\\eta_t = (1-\\bar{\\alpha}_t)I",
+            "x_t = \\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t}\\epsilon"
+          ],
+          "canvasHeight": 140
+        }
+      ]
+    },
+    {
+      "title": "Part 2: Forward Process Distributions and Covariance",
+      "steps": [
+        {
+          "id": "d2-1",
+          "title": "2.1 Writing All Forward Distributions",
+          "explanation": "Write all conditional distributions",
+          "equation": [
+            "q(x_t | x_0) = \\mathcal{N}(\\sqrt{\\bar{\\alpha}_t}x_0, (1-\\bar{\\alpha}_t)I)",
+            "q(x_t | x_{t-1}) = \\mathcal{N}(\\sqrt{\\alpha_t}x_{t-1}, \\beta_t I)",
+            "q(x_{t-1} | x_0) = \\mathcal{N}(\\sqrt{\\bar{\\alpha}_{t-1}}x_0, (1-\\bar{\\alpha}_{t-1})I)"
+          ],
+          "canvasHeight": 140
+        },
+        {
+          "id": "d2-2",
+          "title": "2.2 Joint Distribution Factorization",
+          "explanation": "Write $q(x_0, x_{t-1}, x_t)$",
+          "equation": "q(x_0, x_{t-1}, x_t) = q(x_t | x_{t-1})q(x_{t-1} | x_0)q(x_0)",
+          "canvasHeight": 60
+        },
+        {
+          "id": "d2-3",
+          "title": "2.3 Computing Means",
+          "explanation": "Define $\\mu_t$ and $\\mu_{t-1}$",
+          "equation": [
+            "\\mu_t = \\sqrt{\\bar{\\alpha}_t}x_0",
+            "\\mu_{t-1} = \\sqrt{\\bar{\\alpha}_{t-1}}x_0",
+            "\\Sigma_t = (1-\\bar{\\alpha}_t)I",
+            "\\Sigma_{t-1} = (1-\\bar{\\alpha}_{t-1})I"
+          ],
+          "canvasHeight": 190
+        },
+        {
+          "id": "d2-4",
+          "title": "2.4 Covariance Calculation Part 1",
+          "explanation": "Set up $\\text{Cov}(x_{t-1}, x_t | x_0)$",
+          "equation": [
+            "\\text{Cov}(x_{t-1}, x_t | x_0) = \\mathbb{E}[(x_{t-1} - \\mathbb{E}[x_{t-1}|x_0])(x_t - \\mathbb{E}[x_t|x_0])^T|x_0]",
+            "= \\mathbb{E}[(x_{t-1} - \\sqrt{\\bar{\\alpha}_{t-1}}x_0)(x_t - \\sqrt{\\bar{\\alpha}_t}x_0)^T|x_0]"
+          ],
+          "canvasHeight": 100
+        },
+        {
+          "id": "d2-5",
+          "title": "2.5 Defining Centered Variables",
+          "explanation": "Define $z_{t-1}$ and express $z_t$",
+          "equation": [
+            "z_{t-1} = x_{t-1} - \\mathbb{E}[x_{t-1}|x_0] = x_{t-1} - \\sqrt{\\bar{\\alpha}_{t-1}}x_0",
+            "z_t = x_t - \\sqrt{\\bar{\\alpha}_t}x_0"
+          ],
+          "canvasHeight": 100
+        },
+        {
+          "id": "d2-6",
+          "title": "2.6 Expanding $z_t$",
+          "explanation": "Express $z_t$ in terms of $z_{t-1}$",
+          "equation": [
+            "z_t = x_t - \\sqrt{\\bar{\\alpha}_t}x_0",
+            "= \\sqrt{\\alpha_t}x_{t-1} + \\sqrt{\\beta_t}\\epsilon_t - \\sqrt{\\bar{\\alpha}_t}x_0",
+            "= \\sqrt{\\alpha_t}(z_{t-1} + \\sqrt{\\bar{\\alpha}_{t-1}}x_0) + \\sqrt{\\beta_t}\\epsilon_t - \\sqrt{\\bar{\\alpha}_t}x_0",
+            "= \\sqrt{\\alpha_t}z_{t-1} + \\sqrt{\\alpha_t}\\sqrt{\\bar{\\alpha}_{t-1}}x_0 + \\sqrt{\\beta_t}\\epsilon_t - \\sqrt{\\bar{\\alpha}_t}x_0",
+            "= \\sqrt{\\alpha_t}z_{t-1} + \\sqrt{\\beta_t}\\epsilon_t"
+          ],
+          "canvasHeight": 240
+        },
+        {
+          "id": "d2-7",
+          "title": "2.7 Final Covariance Calculation",
+          "explanation": "Complete the covariance calculation",
+          "equation": [
+            "\\text{Cov}(x_{t-1}, x_t | x_0) = \\mathbb{E}[z_{t-1}(\\sqrt{\\alpha_t}z_{t-1} + \\sqrt{\\beta_t}\\epsilon_t)^T]",
+            "= \\sqrt{\\alpha_t}\\mathbb{E}[z_{t-1}z_{t-1}^T] + \\sqrt{\\beta_t}\\mathbb{E}[z_{t-1}\\epsilon_t^T]",
+            "= \\sqrt{\\alpha_t}\\mathbb{E}[z_{t-1}z_{t-1}^T] + 0",
+            "= \\sqrt{\\alpha_t}(1-\\bar{\\alpha}_{t-1})I"
+          ],
+          "canvasHeight": 190
+        }
+      ]
+    },
+    {
+      "title": "Part 3: Posterior Distribution $q(x_{t-1}|x_t, x_0)$",
+      "steps": [
+        {
+          "id": "d3-1",
+          "title": "3.1 Setting Up Bayes' Rule",
+          "explanation": "Apply Bayes' rule",
+          "equation": "q(x_{t-1}|x_t, x_0) = \\frac{q(x_t|x_{t-1}, x_0)q(x_{t-1}|x_0)}{q(x_t|x_0)}",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d3-2",
+          "title": "3.2 Simplifying with Markov Property",
+          "explanation": "Use Markov property",
+          "equation": [
+            "q(x_t|x_{t-1}, x_0) = q(x_t|x_{t-1})",
+            "q(x_{t-1}|x_t, x_0) = \\frac{q(x_t|x_{t-1})q(x_{t-1}|x_0)}{q(x_t|x_0)}"
+          ],
+          "canvasHeight": 120
+        },
+        {
+          "id": "d3-3",
+          "title": "3.3 Writing Gaussian Forms",
+          "explanation": "Write each distribution explicitly",
+          "equation": [
+            "q(x_t|x_{t-1}) = \\mathcal{N}(x_t; \\sqrt{\\alpha_t}x_{t-1}, \\beta_t I)",
+            "q(x_{t-1}|x_0) = \\mathcal{N}(x_{t-1}; \\sqrt{\\bar{\\alpha}_{t-1}}x_0, (1-\\bar{\\alpha}_{t-1})I)",
+            "q(x_t|x_0) = \\mathcal{N}(x_t; \\sqrt{\\bar{\\alpha}_t}x_0, (1-\\bar{\\alpha}_t)I)"
+          ],
+          "canvasHeight": 140
+        },
+        {
+          "id": "d3-4",
+          "title": "3.4 Taking the Logarithm",
+          "explanation": "Write log of posterior",
+          "equation": "\\log q(x_{t-1}|x_t, x_0) = \\log q(x_t|x_{t-1}) + \\log q(x_{t-1}|x_0) - \\log q(x_t|x_0)",
+          "canvasHeight": 60
+        },
+        {
+          "id": "d3-5",
+          "title": "3.5 Expanding Gaussian Log Terms",
+          "explanation": "Expand each log Gaussian",
+          "equation": "\\propto -\\frac{\\|x_t - \\sqrt{\\alpha_t}x_{t-1}\\|^2}{2\\beta_t} - \\frac{\\|x_{t-1} - \\sqrt{\\bar{\\alpha}_{t-1}}x_0\\|^2}{2(1-\\bar{\\alpha}_{t-1})} + C",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d3-6",
+          "title": "3.6 Expanding Squared Terms",
+          "explanation": "Expand all squared norms",
+          "equation": [
+            "= -\\frac{1}{2\\beta_t}(x_t^2 - 2\\sqrt{\\alpha_t}x_t^Tx_{t-1} + \\alpha_t x_{t-1}^2)",
+            "- \\frac{1}{2(1-\\bar{\\alpha}_{t-1})}(x_{t-1}^2 - 2\\sqrt{\\bar{\\alpha}_{t-1}}x_{t-1}^Tx_0 + \\bar{\\alpha}_{t-1}x_0^2) + C"
+          ],
+          "canvasHeight": 150
+        },
+        {
+          "id": "d3-7",
+          "title": "3.7 Collecting $x_{t-1}^2$ Terms",
+          "explanation": "Group all $x_{t-1}^2$ coefficients",
+          "equation": [
+            "x_{t-1}^2: -\\frac{\\alpha_t}{2\\beta_t} - \\frac{1}{2(1-\\bar{\\alpha}_{t-1})}",
+            "= -\\frac{1}{2}\\left(\\frac{\\alpha_t}{\\beta_t} + \\frac{1}{1-\\bar{\\alpha}_{t-1}}\\right)"
+          ],
+          "canvasHeight": 130
+        },
+        {
+          "id": "d3-8",
+          "title": "3.8 Finding Common Denominator for $A$",
+          "explanation": "Simplify coefficient $A$",
+          "equation": [
+            "A = \\frac{\\alpha_t}{\\beta_t} + \\frac{1}{1-\\bar{\\alpha}_{t-1}}",
+            "= \\frac{\\alpha_t(1-\\bar{\\alpha}_{t-1}) + \\beta_t}{\\beta_t(1-\\bar{\\alpha}_{t-1})}"
+          ],
+          "canvasHeight": 130
+        },
+        {
+          "id": "d3-9",
+          "title": "3.9 Simplifying $A$ Further",
+          "explanation": "Use $\\alpha_t + \\beta_t = 1$",
+          "equation": [
+            "A = \\frac{\\alpha_t - \\alpha_t\\bar{\\alpha}_{t-1} + \\beta_t}{\\beta_t(1-\\bar{\\alpha}_{t-1})}",
+            "= \\frac{(\\alpha_t + \\beta_t) - \\alpha_t\\bar{\\alpha}_{t-1}}{\\beta_t(1-\\bar{\\alpha}_{t-1})}",
+            "= \\frac{1 - \\alpha_t\\bar{\\alpha}_{t-1}}{\\beta_t(1-\\bar{\\alpha}_{t-1})}",
+            "= \\frac{1 - \\bar{\\alpha}_t}{\\beta_t(1-\\bar{\\alpha}_{t-1})}"
+          ],
+          "canvasHeight": 250
+        },
+        {
+          "id": "d3-10",
+          "title": "3.10 Defining Posterior Variance",
+          "explanation": "Find $\\tilde{\\beta}_t$",
+          "equation": "\\tilde{\\beta}_t = \\frac{1}{A} = \\frac{\\beta_t(1-\\bar{\\alpha}_{t-1})}{1-\\bar{\\alpha}_t}",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d3-11",
+          "title": "3.11 Collecting Linear $x_{t-1}$ Terms",
+          "explanation": "Group all $x_{t-1}$ coefficients",
+          "equation": "x_{t-1}: \\frac{\\sqrt{\\alpha_t}x_t}{\\beta_t} + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}x_0}{1-\\bar{\\alpha}_{t-1}}",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d3-12",
+          "title": "3.12 Defining $B$",
+          "explanation": "Express coefficient $B$",
+          "equation": "B = \\frac{\\sqrt{\\alpha_t}x_t + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}\\beta_t}{1-\\bar{\\alpha}_{t-1}}x_0}{\\beta_t}",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d3-13",
+          "title": "3.13 Finding Posterior Mean",
+          "explanation": "Calculate $\\tilde{\\mu}_t$",
+          "equation": "\\tilde{\\mu}_t(x_t, x_0) = \\frac{B}{A} = \\tilde{\\beta}_t \\cdot \\left(\\frac{\\sqrt{\\alpha_t}x_t}{\\beta_t} + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}x_0}{1-\\bar{\\alpha}_{t-1}}\\right)",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d3-14",
+          "title": "3.14 Expanding $\\tilde{\\mu}_t$",
+          "explanation": "Substitute $\\tilde{\\beta}_t$ and expand",
+          "equation": [
+            "\\tilde{\\mu}_t(x_t, x_0) = \\frac{\\beta_t(1-\\bar{\\alpha}_{t-1})}{1-\\bar{\\alpha}_t} \\cdot \\left(\\frac{\\sqrt{\\alpha_t}x_t}{\\beta_t} + \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}x_0}{1-\\bar{\\alpha}_{t-1}}\\right)",
+            "= \\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t}}{1-\\bar{\\alpha}_t}x_t + \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}}{1-\\bar{\\alpha}_t}x_0"
+          ],
+          "canvasHeight": 150
+        }
+      ]
+    },
+    {
+      "title": "Part 4: Reparameterization for Noise Prediction",
+      "steps": [
+        {
+          "id": "d4-1",
+          "title": "4.1 Solving for $x_0$",
+          "explanation": "Express $x_0$ in terms of $x_t$ and $\\epsilon$",
+          "equation": [
+            "x_t = \\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t}\\epsilon",
+            "\\sqrt{\\bar{\\alpha}_t}x_0 = x_t - \\sqrt{1-\\bar{\\alpha}_t}\\epsilon",
+            "x_0 = \\frac{x_t - \\sqrt{1-\\bar{\\alpha}_t}\\epsilon}{\\sqrt{\\bar{\\alpha}_t}}"
+          ],
+          "canvasHeight": 170
+        },
+        {
+          "id": "d4-2",
+          "title": "4.2 Substituting $x_0$ into $\\tilde{\\mu}_t$",
+          "explanation": "Replace $x_0$ in the posterior mean formula",
+          "equation": "\\tilde{\\mu}_t(x_t, x_0) = \\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t}}{1-\\bar{\\alpha}_t}x_t + \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}}{1-\\bar{\\alpha}_t} \\cdot \\frac{x_t - \\sqrt{1-\\bar{\\alpha}_t}\\epsilon}{\\sqrt{\\bar{\\alpha}_t}}",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d4-3",
+          "title": "4.3 Expanding the Second Term",
+          "explanation": "Simplify the $x_0$ substitution",
+          "equation": [
+            "= \\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t}}{1-\\bar{\\alpha}_t}x_t + \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}}{\\sqrt{\\bar{\\alpha}_t}(1-\\bar{\\alpha}_t)}x_t - \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}\\sqrt{1-\\bar{\\alpha}_t}}{\\sqrt{\\bar{\\alpha}_t}(1-\\bar{\\alpha}_t)}\\epsilon",
+            "= \\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t}}{1-\\bar{\\alpha}_t}x_t + \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}}{\\sqrt{\\bar{\\alpha}_t}(1-\\bar{\\alpha}_t)}x_t - \\frac{\\beta_t\\sqrt{\\bar{\\alpha}_{t-1}}}{\\sqrt{\\bar{\\alpha}_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon"
+          ],
+          "canvasHeight": 150
+        },
+        {
+          "id": "d4-4",
+          "title": "4.4 Simplifying $\\sqrt{\\bar{\\alpha}_{t-1}}/\\sqrt{\\bar{\\alpha}_t}$",
+          "explanation": "Use the relationship $\\bar{\\alpha}_t = \\alpha_t \\cdot \\bar{\\alpha}_{t-1}$",
+          "equation": "\\frac{\\sqrt{\\bar{\\alpha}_{t-1}}}{\\sqrt{\\bar{\\alpha}_t}} = \\frac{\\sqrt{\\bar{\\alpha}_{t-1}}}{\\sqrt{\\alpha_t\\bar{\\alpha}_{t-1}}} = \\frac{1}{\\sqrt{\\alpha_t}}",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d4-5",
+          "title": "4.5 Continuing the Simplification",
+          "explanation": "Substitute and combine $x_t$ terms",
+          "equation": "\\tilde{\\mu}_t = \\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t}}{1-\\bar{\\alpha}_t}x_t + \\frac{\\beta_t}{\\sqrt{\\alpha_t}(1-\\bar{\\alpha}_t)}x_t - \\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d4-6",
+          "title": "4.6 Factoring Out $x_t$ Terms",
+          "explanation": "Combine $x_t$ coefficients",
+          "equation": [
+            "= \\left[\\frac{(1-\\bar{\\alpha}_{t-1})\\sqrt{\\alpha_t} + \\frac{\\beta_t}{\\sqrt{\\alpha_t}}}{1-\\bar{\\alpha}_t}\\right]x_t - \\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon",
+            "= \\left[\\frac{\\alpha_t(1-\\bar{\\alpha}_{t-1}) + \\beta_t}{\\sqrt{\\alpha_t}(1-\\bar{\\alpha}_t)}\\right]x_t - \\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon"
+          ],
+          "canvasHeight": 150
+        },
+        {
+          "id": "d4-7",
+          "title": "4.7 Using $\\alpha_t + \\beta_t = 1$ Again",
+          "explanation": "Simplify the $x_t$ coefficient",
+          "equation": [
+            "\\alpha_t(1-\\bar{\\alpha}_{t-1}) + \\beta_t = \\alpha_t - \\alpha_t\\bar{\\alpha}_{t-1} + \\beta_t",
+            "= \\alpha_t + \\beta_t - \\alpha_t\\bar{\\alpha}_{t-1}",
+            "= 1 - \\alpha_t\\bar{\\alpha}_{t-1}",
+            "= 1 - \\bar{\\alpha}_t"
+          ],
+          "canvasHeight": 190
+        },
+        {
+          "id": "d4-8",
+          "title": "4.8 Final Simplification",
+          "explanation": "Complete the derivation",
+          "equation": [
+            "\\tilde{\\mu}_t = \\frac{1 - \\bar{\\alpha}_t}{\\sqrt{\\alpha_t}(1-\\bar{\\alpha}_t)}x_t - \\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon",
+            "= \\frac{1}{\\sqrt{\\alpha_t}}x_t - \\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon",
+            "\\tilde{\\mu}_t(x_t, x_0) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(x_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon\\right)"
+          ],
+          "canvasHeight": 220
+        }
+      ]
+    },
+    {
+      "title": "Part 5: The Variational Lower Bound",
+      "steps": [
+        {
+          "id": "d5-1",
+          "title": "5.1 Starting with Log-Likelihood",
+          "explanation": "Write $p_\\theta(x_0)$",
+          "equation": [
+            "p_\\theta(x_0, x_1, ..., x_{t-1}, x_T) = p(x_T)\\prod_{t=1}^{T}p(x_{t-1}|x_t)",
+            "p_\\theta(x_0) = \\int p(x_T)\\prod_{t=1}^{T}p(x_{t-1}|x_t)dx_{1:T}"
+          ],
+          "canvasHeight": 150
+        },
+        {
+          "id": "d5-2",
+          "title": "5.2 Taking the Log",
+          "explanation": "Apply log to marginal likelihood",
+          "equation": "\\log p_\\theta(x_0) = \\log \\int \\frac{q(x_{1:T}|x_0)p(x_{0:T})}{q(x_{1:T}|x_0)}dx_{1:T}",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d5-3",
+          "title": "5.3 Applying Jensen's Inequality",
+          "explanation": "Use Jensen's inequality (log is concave)",
+          "equation": [
+            "\\geq \\int q(x_{1:T}|x_0)\\log\\frac{p(x_{0:T})}{q(x_{1:T}|x_0)}dx_{1:T}",
+            "= \\mathbb{E}_{q(x_{1:T}|x_0)}\\left[\\log p(x_T) + \\sum_{t=1}^{T}\\log p(x_{t-1}|x_t) + \\log p(x_0|x_1)\\right]"
+          ],
+          "canvasHeight": 140
+        },
+        {
+          "id": "d5-4",
+          "title": "5.4 Subtracting $q$ Terms",
+          "explanation": "Expand the denominator",
+          "equation": "\\mathcal{L}(x_0) = \\mathbb{E}_{q(x_{1:T}|x_0)}\\left[\\log p(x_T) + \\sum_{t=1}^{T}\\log p(x_{t-1}|x_t) - \\sum_{t=1}^{T}\\log q(x_t|x_{t-1})\\right]",
+          "canvasHeight": 80
+        },
+        {
+          "id": "d5-5",
+          "title": "5.5 Using Markov Property",
+          "explanation": "Apply the Markov property of $q$",
+          "equation": "q(x_t|x_{t-1}, x_0) = q(x_t|x_{t-1})",
+          "canvasHeight": 60
+        },
+        {
+          "id": "d5-6",
+          "title": "5.6 Rearranging with Bayes Rule",
+          "explanation": "Use $q(x_{t-1}|x_t, x_0) = q(x_t|x_{t-1})q(x_{t-1}|x_0)/q(x_t|x_0)$",
+          "equation": "q(x_t|x_{t-1}) = \\frac{q(x_{t-1}|x_t, x_0)q(x_t|x_0)}{q(x_{t-1}|x_0)}",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d5-7",
+          "title": "5.7 Substituting Back",
+          "explanation": "Replace $q$ terms in the ELBO",
+          "equation": "= \\mathbb{E}_{q(x_{1:T}|x_0)}\\left[\\log p(x_T) + \\sum_{t=2}^{T}\\log\\frac{p(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)} + \\log\\frac{p(x_0|x_1)}{q(x_1|x_0)}\\right]",
+          "canvasHeight": 100
+        },
+        {
+          "id": "d5-8",
+          "title": "5.8 Identifying KL Divergences",
+          "explanation": "Express as negative KL divergences",
+          "equation": "= -\\mathbb{E}_{q_{1:T|x_0}}\\left[\\log\\frac{p(x_T)}{q(x_T|x_0)} + \\sum_{t=2}^{T}\\log\\frac{p(x_{t-1}|x_t)}{q(x_{t-1}|x_t,x_0)} + \\log p(x_0|x_1)\\right]",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    {
+      "title": "Part 6: Breaking Down the ELBO Terms",
+      "steps": [
+        {
+          "id": "d6-1",
+          "title": "6.1 Term 1: Prior Matching",
+          "explanation": "Analyze the first term",
+          "equation": [
+            "\\mathbb{E}_{q(x_{1:T}|x_0)}\\left[\\log \\frac{p(x_T)}{q(x_T|x_0)}\\right]",
+            "= D_{KL}(q(x_T|x_0) \\| p(x_T))"
+          ],
+          "canvasHeight": 120
+        },
+        {
+          "id": "d6-2",
+          "title": "6.2 Term 2: Denoising Matching",
+          "explanation": "Analyze the middle terms",
+          "equation": [
+            "\\int q(x_{1:T}|x_0) \\log \\frac{q(x_t)}{q(x_T|x_0)} dx_{1:T}",
+            "= \\int \\int q(x_{1:T}|x_0) dx_{1:T-1} \\log \\frac{q(x_T)}{q(x_T|x_0)} dx_T",
+            "= \\int q(x_T|x_0) \\log \\frac{q(x_T)}{q(x_T|x_0)} dx_T",
+            "= D_{KL}(q(x_T|x_0) \\| q(x_T))"
+          ],
+          "canvasHeight": 240
+        },
+        {
+          "id": "d6-3",
+          "title": "6.3 Term 3: Reconstruction",
+          "explanation": "Analyze the reconstruction term",
+          "equation": "\\mathbb{E}_{q(x_1|x_0)}[\\log p(x_0|x_1)]",
+          "canvasHeight": 60
+        }
+      ]
+    },
+    {
+      "title": "Part 7: DDPM Loss Derivation",
+      "steps": [
+        {
+          "id": "d7-1",
+          "title": "7.1 KL Between Gaussians",
+          "explanation": "Write the KL divergence formula",
+          "equation": "D_{KL}(p \\| q) = \\frac{1}{2}\\left[\\log\\frac{\\sigma_q^2}{\\sigma_p^2} + \\frac{\\sigma_p^2 + (\\mu_p - \\mu_q)^2}{\\sigma_q^2} - 1\\right]",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d7-2",
+          "title": "7.2 Applying to Diffusion",
+          "explanation": "Apply to $q(x_{t-1}|x_t,x_0) \\| p_\\theta(x_{t-1}|x_t)$",
+          "equation": "D_{KL}(q \\| p_\\theta) = \\frac{1}{2}\\left[\\log\\frac{\\tilde{\\beta}_t}{\\sigma_\\theta^2} - 1 + \\frac{\\tilde{\\beta}_t + \\|\\tilde{\\mu}_t - \\mu_\\theta\\|^2}{\\sigma_\\theta^2}\\right]",
+          "canvasHeight": 70
+        },
+        {
+          "id": "d7-3",
+          "title": "7.3 Parameterizing $\\mu_\\theta$",
+          "explanation": "Define the model mean",
+          "equation": [
+            "\\tilde{\\mu}_t(x_t, x_0) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(x_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon\\right)",
+            "\\mu_\\theta(x_t, t) = \\frac{1}{\\sqrt{\\alpha_t}}\\left(x_t - \\frac{\\beta_t}{\\sqrt{1-\\bar{\\alpha}_t}}\\epsilon_\\theta(x_t, t)\\right)"
+          ],
+          "canvasHeight": 150
+        },
+        {
+          "id": "d7-4",
+          "title": "7.4 Mean Squared Error",
+          "explanation": "Calculate $\\|\\tilde{\\mu}_t - \\mu_\\theta\\|^2$",
+          "equation": [
+            "\\frac{1}{2\\tilde{\\beta}_t}\\|\\tilde{\\mu}_t(x_t, x_0) - \\mu_\\theta(x_t, t)\\|^2",
+            "= \\frac{1}{2\\tilde{\\beta}_t}\\left\\|\\frac{\\beta_t}{\\sqrt{\\alpha_t}\\sqrt{1-\\bar{\\alpha}_t}}(\\epsilon - \\epsilon_\\theta)\\right\\|^2",
+            "= \\frac{\\beta_t^2}{2\\tilde{\\beta}_t\\alpha_t(1-\\bar{\\alpha}_t)}\\|\\epsilon - \\epsilon_\\theta(x_t, t)\\|^2"
+          ],
+          "canvasHeight": 200
+        },
+        {
+          "id": "d7-5",
+          "title": "7.5 Substituting $\\tilde{\\beta}_t$",
+          "explanation": "Replace $\\tilde{\\beta}_t$ with its formula",
+          "equation": [
+            "\\text{Let } \\tilde{\\beta}_t = \\sigma_t^2",
+            "x_t = \\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t}\\epsilon",
+            "L_{t-1} = \\mathbb{E}_{x_0,\\epsilon}\\left[\\frac{\\beta_t^2}{2\\sigma_t^2\\alpha_t(1-\\bar{\\alpha}_t)}\\|\\epsilon - \\epsilon_\\theta(\\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t}\\epsilon, t)\\|^2\\right]"
+          ],
+          "canvasHeight": 170
+        },
+        {
+          "id": "d7-6",
+          "title": "7.6 The Simple Loss",
+          "explanation": "Define the simplified objective (ignoring time-dependent weights)",
+          "equation": "L_{\\text{simple}} = \\mathbb{E}_{x_0,\\epsilon,t}\\left[\\|\\epsilon - \\epsilon_\\theta(\\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t}\\epsilon, t)\\|^2\\right]",
+          "canvasHeight": 60
+        }
+      ]
+    }
+  ]
+}

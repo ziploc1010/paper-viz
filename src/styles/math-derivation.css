@@ -1,0 +1,37 @@
+/* Touch and drawing optimization */
+.drawing-canvas {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Ensure KaTeX equations have proper spacing */
+.katex-display {
+  margin: 0 !important;
+  padding: 0.3em 0;
+}
+
+/* Prevent equation cutoff at top */
+.katex-display:first-child {
+  padding-top: 0.1em;
+}
+
+/* Prevent equation overflow */
+.equation-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Ensure equation container is centered vertically */
+.katex-display > .katex {
+  font-size: 1.15em;
+}
+
+/* Responsive equation sizing */
+@media (max-width: 768px) {
+  .katex {
+    font-size: 1.1em;
+  }
+}

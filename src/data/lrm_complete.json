@@ -1,0 +1,1417 @@
+{
+  "id": "lrm-hierarchy-model",
+  "title": "Large Reasoning Models (LRM) Efficiency Hierarchy",
+  "subtitle": "Interactive Learning Experience for Efficient Reasoning Methods",
+  "description": "Explore the comprehensive taxonomy of efficient reasoning methods in Large Reasoning Models through interactive diagrams and coding exercises",
+  "svgDiagram": "<svg viewBox=\"0 0 1400 1200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <!-- Define styles -->\n  <defs>\n    <style>\n      .title-box { fill: #D8D8F6; stroke: #9999CC; stroke-width: 1; }\n      .main-box { fill: #C8C8E8; stroke: #8888BB; stroke-width: 1; cursor: pointer; }\n      .main-box:hover { fill: #B8B8D8; }\n      .inference-box { fill: #FFE4B5; stroke: #DAA520; stroke-width: 1; cursor: pointer; }\n      .inference-box:hover { fill: #FFD8A0; }\n      .sft-box { fill: #E0D5F7; stroke: #8B7AA8; stroke-width: 1; cursor: pointer; }\n      .sft-box:hover { fill: #D5C8F0; }\n      .rl-box { fill: #FFE4E1; stroke: #CD5C5C; stroke-width: 1; cursor: pointer; }\n      .rl-box:hover { fill: #FFD8D4; }\n      .pretrain-box { fill: #B0E0E6; stroke: #4682B4; stroke-width: 1; cursor: pointer; }\n      .pretrain-box:hover { fill: #A0D4DB; }\n      .subquad-box { fill: #D4F1D4; stroke: #228B22; stroke-width: 1; cursor: pointer; }\n      .subquad-box:hover { fill: #C8E8C8; }\n      .future-box { fill: #FFDAB9; stroke: #CD853F; stroke-width: 1; cursor: pointer; }\n      .future-box:hover { fill: #FFCEAD; }\n      .text-main { font-family: Arial, sans-serif; font-size: 11px; fill: #333; font-weight: 500; }\n      .text { font-family: Arial, sans-serif; font-size: 9px; fill: #333; }\n      .text-small { font-family: Arial, sans-serif; font-size: 8px; fill: #333; }\n      .connector { stroke: #666; stroke-width: 1; fill: none; }\n    </style>\n  </defs>\n\n  <!-- Title -->\n  <rect x=\"20\" y=\"20\" width=\"220\" height=\"1160\" class=\"title-box\" rx=\"10\"/>\n  <text x=\"130\" y=\"600\" text-anchor=\"middle\" class=\"text-main\" transform=\"rotate(-90 130 600)\">Hierarchy of Efficient Reasoning Methods in Large Reasoning Models (LRMs)</text>\n\n  <!-- I. Efficient Reasoning during Inference -->\n  <g class=\"component\" data-component=\"efficient-reasoning-inference\">\n  <rect x=\"270\" y=\"50\" width=\"180\" height=\"30\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"69\" text-anchor=\"middle\" class=\"text-main\">I. Efficient Reasoning during Inference</text>\n  </g>\n  <line x1=\"240\" y1=\"65\" x2=\"270\" y2=\"65\" class=\"connector\"/>\n  \n  <!-- 1. Length Budgeting -->\n  <g class=\"component\" data-component=\"length-budgeting\">\n  <rect x=\"480\" y=\"30\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"47\" text-anchor=\"middle\" class=\"text\">Length Budgeting</text>\n  </g>\n  <line x1=\"450\" y1=\"65\" x2=\"470\" y2=\"65\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"65\" x2=\"470\" y2=\"42\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"42\" x2=\"480\" y2=\"42\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"length-budgeting-papers\">\n    <rect x=\"600\" y=\"10\" width=\"320\" height=\"90\" class=\"inference-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"25\" class=\"text\">TALE (Han et al., 2024)</text>\n    <text x=\"610\" y=\"38\" class=\"text\">Sketch-of-Thought (Aytes et al., 2025)</text>\n    <text x=\"610\" y=\"51\" class=\"text\">Planning Tokens (Wang et al., 2023b)</text>\n    <text x=\"610\" y=\"64\" class=\"text\">Chain of Draft (Xu et al., 2025a)</text>\n    <text x=\"610\" y=\"77\" class=\"text\">S1 (Muennighoff et al., 2025)</text>\n    <text x=\"610\" y=\"90\" class=\"text\">SafeChain (Jiang et al., 2025)</text>\n    <text x=\"760\" y=\"25\" class=\"text\">DSC (Wang et al., 2024b)</text>\n    <text x=\"760\" y=\"38\" class=\"text\">Dynasor (Fu et al., 2024b)</text>\n    <text x=\"760\" y=\"51\" class=\"text\">TSP (Wang et al., 2025e)</text>\n  </g>\n  <line x1=\"580\" y1=\"42\" x2=\"600\" y2=\"42\" class=\"connector\"/>\n  \n  <!-- 2. System Switch -->\n  <g class=\"component\" data-component=\"system-switch\">\n  <rect x=\"480\" y=\"110\" width=\"100\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"123\" text-anchor=\"middle\" class=\"text\">System Switch</text>\n  <text x=\"530\" y=\"135\" text-anchor=\"middle\" class=\"text-small\">(System 1 \u2194 System 2)</text>\n  </g>\n  <line x1=\"470\" y1=\"65\" x2=\"470\" y2=\"127\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"127\" x2=\"480\" y2=\"127\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"system-switch-papers\">\n    <rect x=\"600\" y=\"110\" width=\"320\" height=\"50\" class=\"inference-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"125\" class=\"text\">Dualformer (Su et al., 2024a)</text>\n    <text x=\"610\" y=\"138\" class=\"text\">System 1.x (Saha et al., 2024)</text>\n    <text x=\"610\" y=\"151\" class=\"text\">FaST (Sun et al., 2025a)</text>\n    <text x=\"760\" y=\"125\" class=\"text\">HaluSearch (Cheng et al., 2025a)</text>\n    <text x=\"760\" y=\"138\" class=\"text\">Dyna-Think (Pan et al., 2024)</text>\n  </g>\n  <line x1=\"580\" y1=\"127\" x2=\"600\" y2=\"127\" class=\"connector\"/>\n  \n  <!-- 3. Model Switch -->\n  <g class=\"component\" data-component=\"model-switch\">\n  <rect x=\"480\" y=\"170\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"187\" text-anchor=\"middle\" class=\"text\">Model Switch</text>\n  </g>\n  <line x1=\"470\" y1=\"65\" x2=\"470\" y2=\"182\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"182\" x2=\"480\" y2=\"182\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"model-switch-papers\">\n    <rect x=\"600\" y=\"170\" width=\"320\" height=\"65\" class=\"inference-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"185\" class=\"text\">BiLD (Kim et al., 2023)</text>\n    <text x=\"610\" y=\"198\" class=\"text\">EAGLE / EAGLE-2 (Li et al., 2024e, 2024d)</text>\n    <text x=\"610\" y=\"211\" class=\"text\">MEDUSA (Cai et al., 2024)</text>\n    <text x=\"610\" y=\"224\" class=\"text\">LayerSkip (Elhoushi et al., 2024)</text>\n    <text x=\"760\" y=\"185\" class=\"text\">Zooter (Lu et al., 2023)</text>\n    <text x=\"760\" y=\"198\" class=\"text\">RouteLLM (Ong et al., 2025)</text>\n    <text x=\"760\" y=\"211\" class=\"text\">MixLLM (Wang et al., 2025b)</text>\n  </g>\n  <line x1=\"580\" y1=\"182\" x2=\"600\" y2=\"182\" class=\"connector\"/>\n  \n  <!-- 4. Parallel Search -->\n  <g class=\"component\" data-component=\"parallel-search\">\n  <rect x=\"480\" y=\"245\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"262\" text-anchor=\"middle\" class=\"text\">Parallel Search</text>\n  </g>\n  <line x1=\"470\" y1=\"65\" x2=\"470\" y2=\"257\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"257\" x2=\"480\" y2=\"257\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"parallel-search-papers\">\n    <rect x=\"600\" y=\"245\" width=\"320\" height=\"65\" class=\"inference-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"260\" class=\"text\">SBoN (Sun et al., 2024a)</text>\n    <text x=\"610\" y=\"273\" class=\"text\">TreeBoN (Qiu et al., 2024)</text>\n    <text x=\"610\" y=\"286\" class=\"text\">STBoN (Wang et al., 2025d)</text>\n    <text x=\"610\" y=\"299\" class=\"text\">SelfCalibration (Huang et al., 2025a)</text>\n    <text x=\"760\" y=\"260\" class=\"text\">MetaReasoner (Sui et al., 2025)</text>\n    <text x=\"760\" y=\"273\" class=\"text\">TPO (Li et al., 2025d)</text>\n  </g>\n  <line x1=\"580\" y1=\"257\" x2=\"600\" y2=\"257\" class=\"connector\"/>\n\n  <!-- II. Efficient Reasoning with SFT -->\n  <g class=\"component\" data-component=\"efficient-reasoning-sft\">\n  <rect x=\"270\" y=\"330\" width=\"180\" height=\"30\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"349\" text-anchor=\"middle\" class=\"text-main\">II. Efficient Reasoning with SFT</text>\n  </g>\n  <line x1=\"240\" y1=\"345\" x2=\"270\" y2=\"345\" class=\"connector\"/>\n  \n  <!-- 1. Reasoning Chain Compression -->\n  <g class=\"component\" data-component=\"chain-compression\">\n  <rect x=\"480\" y=\"320\" width=\"100\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"333\" text-anchor=\"middle\" class=\"text\">Reasoning Chain</text>\n  <text x=\"530\" y=\"345\" text-anchor=\"middle\" class=\"text\">Compression</text>\n  </g>\n  <line x1=\"450\" y1=\"345\" x2=\"470\" y2=\"345\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"345\" x2=\"470\" y2=\"337\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"337\" x2=\"480\" y2=\"337\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"chain-compression-papers\">\n    <rect x=\"600\" y=\"320\" width=\"320\" height=\"65\" class=\"sft-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"335\" class=\"text\">TokenSkip (Xia et al., 2025)</text>\n    <text x=\"610\" y=\"348\" class=\"text\">SPIRIT-FT (Cui et al., 2025)</text>\n    <text x=\"610\" y=\"361\" class=\"text\">Skip Steps (Liu et al., 2024c)</text>\n    <text x=\"610\" y=\"374\" class=\"text\">Distill System 2 (Yu et al., 2024a)</text>\n    <text x=\"760\" y=\"335\" class=\"text\">C3ot (Kang et al., 2024)</text>\n    <text x=\"760\" y=\"348\" class=\"text\">Self-Training (Munkhbat et al., 2025)</text>\n  </g>\n  <line x1=\"580\" y1=\"337\" x2=\"600\" y2=\"337\" class=\"connector\"/>\n  \n  <!-- 2. Latent-Space SFT -->\n  <g class=\"component\" data-component=\"latent-sft\">\n  <rect x=\"480\" y=\"395\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"412\" text-anchor=\"middle\" class=\"text\">Latent-Space SFT</text>\n  </g>\n  <line x1=\"470\" y1=\"345\" x2=\"470\" y2=\"407\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"407\" x2=\"480\" y2=\"407\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"latent-sft-papers\">\n    <rect x=\"600\" y=\"395\" width=\"320\" height=\"90\" class=\"sft-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"410\" class=\"text\">Coconut (Hao et al., 2024)</text>\n    <text x=\"610\" y=\"423\" class=\"text\">CCoT (Cheng and Van Durme, 2024)</text>\n    <text x=\"610\" y=\"436\" class=\"text\">CODI (Shen et al., 2025c)</text>\n    <text x=\"610\" y=\"449\" class=\"text\">Token Assorted (Su et al., 2025)</text>\n    <text x=\"610\" y=\"462\" class=\"text\">SoftCoT (Xu et al., 2025b)</text>\n    <text x=\"610\" y=\"475\" class=\"text\">Heima (Shen et al., 2025a)</text>\n    <text x=\"760\" y=\"410\" class=\"text\">Implicit CoT (Deng et al., 2024)</text>\n    <text x=\"760\" y=\"423\" class=\"text\">LightThinker (Zhang et al., 2025a)</text>\n  </g>\n  <line x1=\"580\" y1=\"407\" x2=\"600\" y2=\"407\" class=\"connector\"/>\n\n  <!-- III. Efficient Reasoning with RL -->\n  <g class=\"component\" data-component=\"efficient-reasoning-rl\">\n  <rect x=\"270\" y=\"505\" width=\"180\" height=\"30\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"524\" text-anchor=\"middle\" class=\"text-main\">III. Efficient Reasoning with RL</text>\n  </g>\n  <line x1=\"240\" y1=\"520\" x2=\"270\" y2=\"520\" class=\"connector\"/>\n  \n  <!-- 1. With Length Reward -->\n  <g class=\"component\" data-component=\"rl-length\">\n  <rect x=\"480\" y=\"495\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"512\" text-anchor=\"middle\" class=\"text\">With Length Reward</text>\n  </g>\n  <line x1=\"450\" y1=\"520\" x2=\"470\" y2=\"520\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"520\" x2=\"470\" y2=\"507\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"507\" x2=\"480\" y2=\"507\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"rl-length-papers\">\n    <rect x=\"600\" y=\"495\" width=\"320\" height=\"65\" class=\"rl-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"510\" class=\"text\">O1-Pruner (Luo et al., 2025a)</text>\n    <text x=\"610\" y=\"523\" class=\"text\">Training (Arora and Zanette, 2025)</text>\n    <text x=\"610\" y=\"536\" class=\"text\">L1 (Aggarwal and Welleck, 2025)</text>\n    <text x=\"610\" y=\"549\" class=\"text\">Kimi-1.5 (Team et al., 2025)</text>\n    <text x=\"760\" y=\"510\" class=\"text\">DAST (Shen et al., 2025b)</text>\n    <text x=\"760\" y=\"523\" class=\"text\">Demystifying (Yeo et al., 2025)</text>\n  </g>\n  <line x1=\"580\" y1=\"507\" x2=\"600\" y2=\"507\" class=\"connector\"/>\n  \n  <!-- 2. Without Length Reward -->\n  <g class=\"component\" data-component=\"rl-without-length\">\n  <rect x=\"480\" y=\"570\" width=\"100\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"583\" text-anchor=\"middle\" class=\"text\">Without Length</text>\n  <text x=\"530\" y=\"595\" text-anchor=\"middle\" class=\"text\">Reward</text>\n  </g>\n  <line x1=\"470\" y1=\"520\" x2=\"470\" y2=\"587\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"587\" x2=\"480\" y2=\"587\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"rl-without-papers\">\n    <rect x=\"600\" y=\"570\" width=\"320\" height=\"50\" class=\"rl-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"585\" class=\"text\">Meta-RL (MRT) (Qu et al., 2025b)</text>\n    <text x=\"610\" y=\"598\" class=\"text\">IBPO (Yu et al., 2025b)</text>\n    <text x=\"610\" y=\"611\" class=\"text\">Overthink (Chen et al., 2025c)</text>\n    <text x=\"760\" y=\"585\" class=\"text\">Dr.GRPO (Liu et al., 2025c)</text>\n  </g>\n  <line x1=\"580\" y1=\"587\" x2=\"600\" y2=\"587\" class=\"connector\"/>\n\n  <!-- IV. Efficient Reasoning during Pretraining -->\n  <g class=\"component\" data-component=\"efficient-reasoning-pretraining\">\n  <rect x=\"270\" y=\"640\" width=\"180\" height=\"30\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"659\" text-anchor=\"middle\" class=\"text-main\">IV. Efficient Reasoning during Pretraining</text>\n  </g>\n  <line x1=\"240\" y1=\"655\" x2=\"270\" y2=\"655\" class=\"connector\"/>\n  \n  <!-- 1. Latent-space Pretraining -->\n  <g class=\"component\" data-component=\"latent-pretrain\">\n  <rect x=\"480\" y=\"630\" width=\"100\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"643\" text-anchor=\"middle\" class=\"text\">Latent-space</text>\n  <text x=\"530\" y=\"655\" text-anchor=\"middle\" class=\"text\">Pretraining</text>\n  </g>\n  <line x1=\"450\" y1=\"655\" x2=\"470\" y2=\"655\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"655\" x2=\"470\" y2=\"647\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"647\" x2=\"480\" y2=\"647\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"latent-pretrain-papers\">\n    <rect x=\"600\" y=\"630\" width=\"320\" height=\"50\" class=\"pretrain-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"645\" class=\"text\">BLT (Pagnoni et al., 2024)</text>\n    <text x=\"610\" y=\"658\" class=\"text\">LCMs (The et al., 2024)</text>\n    <text x=\"610\" y=\"671\" class=\"text\">CoCoMix (Tack et al., 2025)</text>\n    <text x=\"760\" y=\"645\" class=\"text\">LTMs (Kong et al., 2025)</text>\n  </g>\n  <line x1=\"580\" y1=\"647\" x2=\"600\" y2=\"647\" class=\"connector\"/>\n  \n  <!-- 2. Subquadratic Attention -->\n  <g class=\"component\" data-component=\"subquad-attention\">\n  <rect x=\"480\" y=\"690\" width=\"100\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"703\" text-anchor=\"middle\" class=\"text\">Subquadratic</text>\n  <text x=\"530\" y=\"715\" text-anchor=\"middle\" class=\"text\">Attention</text>\n  </g>\n  <line x1=\"470\" y1=\"655\" x2=\"470\" y2=\"707\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"707\" x2=\"480\" y2=\"707\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"subquad-attention-papers\">\n    <rect x=\"600\" y=\"690\" width=\"320\" height=\"90\" class=\"pretrain-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"705\" class=\"text\">Lightning Attention/2 (Qin et al., 2024e)</text>\n    <text x=\"610\" y=\"718\" class=\"text\">LASP-2 (Sun et al., 2025b)</text>\n    <text x=\"610\" y=\"731\" class=\"text\">GLA (Yang et al., 2023)</text>\n    <text x=\"610\" y=\"744\" class=\"text\">Gated DeltaNet (Yang et al., 2024d)</text>\n    <text x=\"610\" y=\"757\" class=\"text\">MoM (Du et al., 2025)</text>\n    <text x=\"610\" y=\"770\" class=\"text\">Mamba-2 (Dao and Gu, 2024)</text>\n    <text x=\"760\" y=\"705\" class=\"text\">RWKV-7 (Peng et al., 2025a)</text>\n    <text x=\"760\" y=\"718\" class=\"text\">NSA (Yuan et al., 2025a)</text>\n    <text x=\"760\" y=\"731\" class=\"text\">MoBA (Lu et al., 2025a)</text>\n  </g>\n  <line x1=\"580\" y1=\"707\" x2=\"600\" y2=\"707\" class=\"connector\"/>\n  \n  <!-- 3. Linearization -->\n  <g class=\"component\" data-component=\"linearization\">\n  <rect x=\"480\" y=\"790\" width=\"100\" height=\"25\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"530\" y=\"807\" text-anchor=\"middle\" class=\"text\">Linearization</text>\n  </g>\n  <line x1=\"470\" y1=\"655\" x2=\"470\" y2=\"802\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"802\" x2=\"480\" y2=\"802\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"linearization-papers\">\n    <rect x=\"600\" y=\"790\" width=\"320\" height=\"40\" class=\"pretrain-box\" rx=\"3\"/>\n    <text x=\"610\" y=\"805\" class=\"text\">Liger (Lan et al., 2025)</text>\n    <text x=\"610\" y=\"818\" class=\"text\">Llamba (Bick et al., 2025)</text>\n    <text x=\"760\" y=\"805\" class=\"text\">LoLCATs (Zhang et al., 2024a)</text>\n  </g>\n  <line x1=\"580\" y1=\"802\" x2=\"600\" y2=\"802\" class=\"connector\"/>\n\n  <!-- V. Efficient Reasoning with Subquadratic Attention -->\n  <g class=\"component\" data-component=\"efficient-reasoning-subquad\">\n  <rect x=\"270\" y=\"850\" width=\"180\" height=\"50\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"869\" text-anchor=\"middle\" class=\"text-main\">V. Efficient Reasoning with</text>\n  <text x=\"360\" y=\"885\" text-anchor=\"middle\" class=\"text-main\">Subquadratic Attention</text>\n  </g>\n  <line x1=\"240\" y1=\"875\" x2=\"270\" y2=\"875\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"subquad-reasoning-papers\">\n    <rect x=\"480\" y=\"850\" width=\"440\" height=\"40\" class=\"subquad-box\" rx=\"3\"/>\n    <text x=\"490\" y=\"865\" class=\"text\">TSF (Paliotta et al., 2025)</text>\n    <text x=\"490\" y=\"878\" class=\"text\">CRQs (Yehudai et al., 2025)</text>\n    <text x=\"650\" y=\"865\" class=\"text\">Cosmos-Reason1 (Azzolini et al., 2025)</text>\n  </g>\n  <line x1=\"450\" y1=\"875\" x2=\"480\" y2=\"875\" class=\"connector\"/>\n\n  <!-- VI. Future Directions -->\n  <g class=\"component\" data-component=\"future-directions\">\n  <rect x=\"270\" y=\"920\" width=\"180\" height=\"30\" class=\"main-box\" rx=\"5\"/>\n  <text x=\"360\" y=\"939\" text-anchor=\"middle\" class=\"text-main\">VI. Future Directions</text>\n  </g>\n  <line x1=\"240\" y1=\"935\" x2=\"270\" y2=\"935\" class=\"connector\"/>\n  \n  <!-- 1. Efficient Multimodality -->\n  <g class=\"component\" data-component=\"multimodal\">\n  <rect x=\"480\" y=\"900\" width=\"120\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"540\" y=\"913\" text-anchor=\"middle\" class=\"text\">Efficient Multimodality</text>\n  <text x=\"540\" y=\"925\" text-anchor=\"middle\" class=\"text\">and Video Reasoning</text>\n  </g>\n  <line x1=\"450\" y1=\"935\" x2=\"470\" y2=\"935\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"935\" x2=\"470\" y2=\"917\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"917\" x2=\"480\" y2=\"917\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"multimodal-papers\">\n    <rect x=\"620\" y=\"900\" width=\"300\" height=\"40\" class=\"future-box\" rx=\"3\"/>\n    <text x=\"630\" y=\"915\" class=\"text\">SCoT (Xiang et al., 2025)</text>\n    <text x=\"630\" y=\"928\" class=\"text\">AL-CoTD (Peng et al., 2025b)</text>\n    <text x=\"770\" y=\"915\" class=\"text\">Heima (Shen et al., 2025a)</text>\n  </g>\n  <line x1=\"600\" y1=\"917\" x2=\"620\" y2=\"917\" class=\"connector\"/>\n  \n  <!-- 2. Efficient Test-time Scaling -->\n  <g class=\"component\" data-component=\"test-time-scaling\">\n  <rect x=\"480\" y=\"950\" width=\"120\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"540\" y=\"963\" text-anchor=\"middle\" class=\"text\">Efficient Test-time</text>\n  </g>\n  <text x=\"540\" y=\"975\" text-anchor=\"middle\" class=\"text\">Scaling &amp; Infinity Thinking</text>\n  <line x1=\"470\" y1=\"935\" x2=\"470\" y2=\"967\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"967\" x2=\"480\" y2=\"967\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"test-time-papers\">\n    <rect x=\"620\" y=\"950\" width=\"300\" height=\"30\" class=\"future-box\" rx=\"3\"/>\n    <text x=\"630\" y=\"965\" class=\"text\">Self-Calibration (Huang et al., 2025a)</text>\n    <text x=\"630\" y=\"975\" class=\"text\">Dynamic self-consistency (Wan et al., 2024)</text>\n  </g>\n  <line x1=\"600\" y1=\"967\" x2=\"620\" y2=\"967\" class=\"connector\"/>\n  \n  <!-- 3. Efficient and Trustworthy -->\n  <g class=\"component\" data-component=\"trustworthy\">\n  <rect x=\"480\" y=\"990\" width=\"120\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"540\" y=\"1003\" text-anchor=\"middle\" class=\"text\">Efficient and</text>\n  <text x=\"540\" y=\"1015\" text-anchor=\"middle\" class=\"text\">Trustworthy Reasoning</text>\n  </g>\n  <line x1=\"470\" y1=\"935\" x2=\"470\" y2=\"1007\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"1007\" x2=\"480\" y2=\"1007\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"trustworthy-papers\">\n    <rect x=\"620\" y=\"990\" width=\"300\" height=\"30\" class=\"future-box\" rx=\"3\"/>\n    <text x=\"630\" y=\"1005\" class=\"text\">Deliberative Alignment (Guan et al., 2024)</text>\n    <text x=\"770\" y=\"1005\" class=\"text\">X-Boundary (Lu et al., 2025b)</text>\n  </g>\n  <line x1=\"600\" y1=\"1007\" x2=\"620\" y2=\"1007\" class=\"connector\"/>\n  \n  <!-- 4. Efficient Reasoning Applications -->\n  <g class=\"component\" data-component=\"applications\">\n  <rect x=\"480\" y=\"1030\" width=\"120\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"540\" y=\"1043\" text-anchor=\"middle\" class=\"text\">Efficient Reasoning</text>\n  <text x=\"540\" y=\"1055\" text-anchor=\"middle\" class=\"text\">Applications</text>\n  </g>\n  <line x1=\"470\" y1=\"935\" x2=\"470\" y2=\"1047\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"1047\" x2=\"480\" y2=\"1047\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"applications-papers\">\n    <rect x=\"620\" y=\"1030\" width=\"300\" height=\"30\" class=\"future-box\" rx=\"3\"/>\n    <text x=\"630\" y=\"1045\" class=\"text\">Chain-of-Retrieval (Wang et al., 2025a)</text>\n    <text x=\"630\" y=\"1055\" class=\"text\">Overthinking in Agent (Cuadron et al., 2025)</text>\n  </g>\n  <line x1=\"600\" y1=\"1047\" x2=\"620\" y2=\"1047\" class=\"connector\"/>\n  \n  <!-- 5. Evaluation and Benchmark -->\n  <g class=\"component\" data-component=\"evaluation\">\n  <rect x=\"480\" y=\"1070\" width=\"120\" height=\"35\" class=\"main-box\" rx=\"3\"/>\n  <text x=\"540\" y=\"1083\" text-anchor=\"middle\" class=\"text\">Evaluation and</text>\n  <text x=\"540\" y=\"1095\" text-anchor=\"middle\" class=\"text\">Benchmark</text>\n  </g>\n  <line x1=\"470\" y1=\"935\" x2=\"470\" y2=\"1087\" class=\"connector\"/>\n  <line x1=\"470\" y1=\"1087\" x2=\"480\" y2=\"1087\" class=\"connector\"/>\n  \n  <g class=\"component\" data-component=\"evaluation-papers\">\n    <rect x=\"620\" y=\"1070\" width=\"300\" height=\"30\" class=\"future-box\" rx=\"3\"/>\n    <text x=\"630\" y=\"1085\" class=\"text\">Overthinking (Chen et al., 2025c)</text>\n    <text x=\"770\" y=\"1085\" class=\"text\">DNA Bench (Hashemi et al., 2025)</text>\n  </g>\n  <line x1=\"600\" y1=\"1087\" x2=\"620\" y2=\"1087\" class=\"connector\"/>\n</svg>",
+  "componentExplanations": {
+    "length-budgeting": {
+      "title": "Length Budgeting",
+      "explanation": "Methods that control the computational budget by limiting the length of reasoning chains. These approaches dynamically adjust how many reasoning steps to perform based on problem difficulty, avoiding overthinking on simple problems while allocating more compute to complex ones."
+    },
+    "system-switch": {
+      "title": "System Switch (System 1 \u2194 System 2)",
+      "explanation": "Techniques that switch between fast, intuitive reasoning (System 1) and slow, deliberative reasoning (System 2). These methods intelligently route queries to appropriate reasoning modes, using lightweight models for simple tasks and invoking heavy reasoning only when necessary."
+    },
+    "model-switch": {
+      "title": "Model Switch",
+      "explanation": "Approaches that dynamically select or switch between different models during inference. This includes using smaller models for initial processing and larger models for refinement, or routing to specialized models based on task requirements."
+    },
+    "parallel-search": {
+      "title": "Parallel Search",
+      "explanation": "Methods that explore multiple reasoning paths simultaneously rather than sequentially. These include best-of-N sampling, tree-based search, and self-calibration techniques that generate and evaluate multiple candidate solutions in parallel."
+    },
+    "chain-compression": {
+      "title": "Reasoning Chain Compression",
+      "explanation": "Supervised fine-tuning methods that learn to compress verbose reasoning chains into more efficient representations. These approaches train models to skip redundant steps, use shortcuts, or internalize reasoning patterns to reduce inference-time computation."
+    },
+    "latent-sft": {
+      "title": "Latent-Space SFT",
+      "explanation": "Fine-tuning approaches that operate in latent space rather than token space. These methods learn compressed representations of reasoning processes, allowing models to perform implicit reasoning without generating explicit chain-of-thought tokens."
+    },
+    "rl-length": {
+      "title": "RL with Length Reward",
+      "explanation": "Reinforcement learning methods that explicitly reward shorter reasoning chains. These approaches balance accuracy with efficiency by incorporating length penalties into the reward function, encouraging models to find concise solutions."
+    },
+    "rl-without-length": {
+      "title": "RL without Length Reward",
+      "explanation": "RL methods focused purely on improving reasoning quality without explicit length constraints. These approaches may still achieve efficiency gains through emergent optimization of reasoning strategies, even without direct length incentives."
+    },
+    "latent-pretrain": {
+      "title": "Latent-space Pretraining",
+      "explanation": "Pretraining methods that learn reasoning in compressed latent representations from the start. Rather than learning token-by-token generation, these approaches train models to manipulate abstract reasoning states efficiently."
+    },
+    "subquad-attention": {
+      "title": "Subquadratic Attention",
+      "explanation": "Architectural innovations that reduce the quadratic complexity of attention mechanisms. These include linear attention variants, state-space models, and hybrid architectures that maintain reasoning capabilities while dramatically reducing computational costs."
+    },
+    "linearization": {
+      "title": "Linearization",
+      "explanation": "Methods that convert transformer architectures to linear-complexity alternatives. These approaches use techniques like diagonal approximations or recurrent formulations to achieve O(n) complexity while preserving reasoning abilities."
+    },
+    "subquad-reasoning": {
+      "title": "Efficient Reasoning with Subquadratic Attention",
+      "explanation": "Specialized reasoning methods designed for subquadratic architectures. These techniques adapt chain-of-thought and other reasoning strategies to work efficiently with linear attention mechanisms and state-space models."
+    },
+    "multimodal": {
+      "title": "Efficient Multimodality and Video Reasoning",
+      "explanation": "Future direction focusing on extending efficient reasoning to multimodal inputs. This includes handling video sequences, cross-modal reasoning, and efficient processing of high-dimensional sensory data alongside text."
+    },
+    "test-time-scaling": {
+      "title": "Efficient Test-time Scaling",
+      "explanation": "Methods for dynamically scaling computation at inference time. These include adaptive computation techniques and 'infinity thinking' approaches that can allocate arbitrary amounts of compute based on problem difficulty and available resources."
+    },
+    "trustworthy": {
+      "title": "Efficient and Trustworthy Reasoning",
+      "explanation": "Approaches that maintain reasoning transparency and reliability while improving efficiency. This includes methods for verifiable reasoning chains, uncertainty quantification, and maintaining interpretability in compressed reasoning."
+    },
+    "applications": {
+      "title": "Efficient Reasoning Applications",
+      "explanation": "Domain-specific applications of efficient reasoning. This includes retrieval-augmented reasoning, agent-based systems, and specialized applications where reasoning efficiency is critical for real-world deployment."
+    },
+    "evaluation": {
+      "title": "Evaluation and Benchmark",
+      "explanation": "Benchmarks and evaluation frameworks specifically designed for efficient reasoning. These measure not just accuracy but also computational efficiency, overthinking detection, and the quality-efficiency tradeoff."
+    },
+    "length-budgeting-papers": {
+      "title": "Length Budgeting Papers",
+      "explanation": "Collection of papers implementing various approaches to control reasoning length through budget allocation strategies."
+    },
+    "system-switch-papers": {
+      "title": "System Switch Papers",
+      "explanation": "Papers exploring dynamic switching between fast and slow reasoning systems based on task complexity."
+    },
+    "model-switch-papers": {
+      "title": "Model Switch Papers",
+      "explanation": "Research on dynamically selecting or switching between different model sizes and architectures during inference."
+    },
+    "parallel-search-papers": {
+      "title": "Parallel Search Papers",
+      "explanation": "Studies on exploring multiple reasoning paths simultaneously for improved efficiency and accuracy."
+    },
+    "chain-compression-papers": {
+      "title": "Chain Compression Papers",
+      "explanation": "Work on compressing verbose reasoning chains through supervised fine-tuning approaches."
+    },
+    "latent-sft-papers": {
+      "title": "Latent-Space SFT Papers",
+      "explanation": "Research on fine-tuning models to reason in compressed latent representations rather than explicit tokens."
+    },
+    "rl-length-papers": {
+      "title": "RL with Length Reward Papers",
+      "explanation": "Studies using reinforcement learning with explicit length penalties to optimize reasoning efficiency."
+    },
+    "rl-without-papers": {
+      "title": "RL without Length Reward Papers",
+      "explanation": "RL approaches focusing on reasoning quality without explicit length constraints."
+    },
+    "latent-pretrain-papers": {
+      "title": "Latent-space Pretraining Papers",
+      "explanation": "Work on pretraining models to manipulate abstract reasoning states from the start."
+    },
+    "subquad-attention-papers": {
+      "title": "Subquadratic Attention Papers",
+      "explanation": "Research on reducing attention complexity while maintaining reasoning capabilities."
+    },
+    "linearization-papers": {
+      "title": "Linearization Papers",
+      "explanation": "Studies on converting transformers to linear-complexity architectures."
+    },
+    "subquad-reasoning-papers": {
+      "title": "Efficient Reasoning with Subquadratic Attention Papers",
+      "explanation": "Work on adapting reasoning strategies for subquadratic architectures."
+    },
+    "multimodal-papers": {
+      "title": "Multimodal Efficiency Papers",
+      "explanation": "Research on extending efficient reasoning to multimodal and video inputs."
+    },
+    "test-time-papers": {
+      "title": "Test-time Scaling Papers",
+      "explanation": "Studies on dynamic computation allocation during inference."
+    },
+    "trustworthy-papers": {
+      "title": "Trustworthy Reasoning Papers",
+      "explanation": "Work on maintaining transparency and reliability in efficient reasoning."
+    },
+    "applications-papers": {
+      "title": "Application Papers",
+      "explanation": "Domain-specific applications of efficient reasoning techniques."
+    },
+    "evaluation-papers": {
+      "title": "Evaluation Papers",
+      "explanation": "Benchmarks and metrics for assessing reasoning efficiency."
+    }
+  },
+  "componentQuizzes": {
+    "efficient-reasoning-inference": {
+      "id": "efficient-reasoning-inference",
+      "title": "I. Efficient Reasoning during Inference",
+      "concepts": [
+        {
+          "id": "inference-overview",
+          "title": "Inference Efficiency Overview",
+          "question": "What are the four main approaches to achieving efficient reasoning during inference in LRMs?",
+          "answer": "Length Budgeting (controlling reasoning chain length), System Switch (alternating between fast/slow reasoning), Model Switch (using different models dynamically), and Parallel Search (exploring multiple paths simultaneously)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "inference-tradeoffs",
+          "title": "Inference Trade-offs",
+          "question": "What is the fundamental trade-off when optimizing reasoning efficiency during inference?",
+          "answer": "Balancing computational cost (tokens, time, resources) with reasoning quality and accuracy - reducing computation too much can harm performance while excessive computation wastes resources",
+          "canvasHeight": 120
+        },
+        {
+          "id": "inference-adaptivity",
+          "title": "Adaptive Inference",
+          "question": "Why is adaptivity important for efficient inference in reasoning models?",
+          "answer": "Different problems require different amounts of reasoning - simple queries can be solved quickly while complex problems need more computation. Adaptive methods allocate resources based on problem difficulty",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "length-budgeting": {
+      "title": "Length Budgeting",
+      "explanation": "Methods that control the computational budget by limiting the length of reasoning chains. These approaches dynamically adjust how many reasoning steps to perform based on problem difficulty, avoiding overthinking on simple problems while allocating more compute to complex ones.",
+      "concepts": [
+        {
+          "id": "budgeting-concept",
+          "title": "Length Budget Concept",
+          "question": "What is the core principle behind length budgeting approaches in efficient reasoning?",
+          "answer": "Dynamically allocating computational resources by controlling the number of reasoning steps based on problem complexity, preventing overthinking on simple tasks while ensuring adequate computation for complex ones",
+          "canvasHeight": 120
+        },
+        {
+          "id": "budgeting-methods",
+          "title": "Budget Estimation Methods",
+          "question": "What are common methods for determining the appropriate length budget for a reasoning task?",
+          "answer": "Zero-shot prompting for budget estimation, difficulty assessment using the model itself, confidence-based allocation, and using planning tokens or sketches to estimate required steps",
+          "canvasHeight": 120
+        },
+        {
+          "id": "budgeting-challenges",
+          "title": "Length Budgeting Challenges",
+          "question": "What are the main challenges in implementing effective length budgeting?",
+          "answer": "Accurately estimating problem difficulty before solving, avoiding premature termination of useful reasoning, handling variable complexity within a single problem, and maintaining quality while reducing length",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "system-switch": {
+      "title": "System Switch (System 1 \u2194 System 2)",
+      "explanation": "Techniques that switch between fast, intuitive reasoning (System 1) and slow, deliberative reasoning (System 2). These methods intelligently route queries to appropriate reasoning modes, using lightweight models for simple tasks and invoking heavy reasoning only when necessary.",
+      "concepts": [
+        {
+          "id": "dual-process-theory",
+          "title": "Dual Process Theory",
+          "question": "What is the distinction between System 1 and System 2 thinking in the context of LRM efficiency?",
+          "answer": "System 1 is fast, automatic, and intuitive reasoning suitable for simple tasks, while System 2 is slow, deliberate, and analytical reasoning needed for complex problems. Efficient LRMs switch between these modes based on task requirements",
+          "canvasHeight": 120
+        },
+        {
+          "id": "switching-criteria",
+          "title": "System Switching Criteria",
+          "question": "What factors determine when to switch from System 1 to System 2 reasoning?",
+          "answer": "Task complexity indicators, uncertainty measures, generation consistency, visual factors (for multimodal tasks), and performance on initial attempts. Controllers assess these factors to decide the appropriate system",
+          "canvasHeight": 120
+        },
+        {
+          "id": "system-integration",
+          "title": "System Integration",
+          "question": "How can System 1 and System 2 be effectively integrated in a single model?",
+          "answer": "Through randomized training strategies that expose models to both modes, autonomous switching based on internal assessments, or using separate pathways that can be activated selectively based on task characteristics",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "model-switch": {
+      "title": "Model Switch",
+      "explanation": "Approaches that dynamically select or switch between different models during inference. This includes using smaller models for initial processing and larger models for refinement, or routing to specialized models based on task requirements.",
+      "concepts": [
+        {
+          "id": "model-routing-principles",
+          "title": "Model Routing Principles",
+          "question": "What are the key principles behind effective model switching for efficient reasoning?",
+          "answer": "Using smaller, faster models for initial predictions or simple tasks, larger models for corrections or complex reasoning, and specialized models for domain-specific tasks. Routing decisions balance performance with computational cost",
+          "canvasHeight": 120
+        },
+        {
+          "id": "speculative-decoding",
+          "title": "Speculative Decoding",
+          "question": "How does speculative decoding improve inference efficiency through model switching?",
+          "answer": "Small draft models generate candidate tokens quickly, which are then verified by larger models. This allows parallel token generation and reduces the number of expensive large model calls while maintaining quality",
+          "canvasHeight": 120
+        },
+        {
+          "id": "routing-functions",
+          "title": "Routing Functions",
+          "question": "What approaches are used to learn effective routing functions for model selection?",
+          "answer": "Reward-guided routing based on training queries, lightweight predictors assessing quality/cost trade-offs, query embedding enhancement with domain knowledge, and meta decision makers that optimize routing policies",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "parallel-search": {
+      "title": "Parallel Search",
+      "explanation": "Methods that explore multiple reasoning paths simultaneously rather than sequentially. These include best-of-N sampling, tree-based search, and self-calibration techniques that generate and evaluate multiple candidate solutions in parallel.",
+      "concepts": [
+        {
+          "id": "parallel-exploration",
+          "title": "Parallel Path Exploration",
+          "question": "What are the advantages of exploring multiple reasoning paths in parallel versus sequential generation?",
+          "answer": "Parallel exploration increases the chance of finding correct solutions, enables early pruning of low-quality paths, allows comparison between alternatives, and can be more computationally efficient than sequential retries",
+          "canvasHeight": 120
+        },
+        {
+          "id": "pruning-strategies",
+          "title": "Early Pruning Strategies",
+          "question": "How do parallel search methods decide when to prune unpromising reasoning paths?",
+          "answer": "Through partial response evaluation, weighted implicit rewards, hidden state consistency checks, confidence estimation, and identifying when samples become sufficiently distinct to make pruning decisions",
+          "canvasHeight": 120
+        },
+        {
+          "id": "search-structures",
+          "title": "Search Structure Design",
+          "question": "What are different structural approaches to organizing parallel search in reasoning?",
+          "answer": "Flat Best-of-N sampling, hierarchical tree search with branching, contextual bandit formulations for strategy selection, and recursive revision approaches that iteratively improve parallel samples",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "efficient-reasoning-sft": {
+      "id": "efficient-reasoning-sft",
+      "title": "II. Efficient Reasoning with SFT",
+      "concepts": [
+        {
+          "id": "sft-efficiency-overview",
+          "title": "SFT for Efficiency Overview",
+          "question": "What are the two main approaches to achieving efficient reasoning through supervised fine-tuning?",
+          "answer": "Reasoning Chain Compression (learning to produce shorter, more concise reasoning chains) and Latent-Space SFT (performing reasoning in compressed latent representations rather than explicit tokens)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "sft-compression-benefits",
+          "title": "Compression Through SFT",
+          "question": "How does supervised fine-tuning enable reasoning compression without sacrificing quality?",
+          "answer": "By learning from examples of both verbose and concise reasoning, models internalize patterns and shortcuts, skip redundant steps, and develop more efficient reasoning strategies while maintaining accuracy",
+          "canvasHeight": 120
+        },
+        {
+          "id": "sft-data-requirements",
+          "title": "SFT Data Requirements",
+          "question": "What types of training data are needed for effective efficiency-oriented supervised fine-tuning?",
+          "answer": "Paired examples of long and short reasoning chains, compressed representations from stronger models, confidence-filtered samples, and data showing the relationship between reasoning length and problem complexity",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "chain-compression": {
+      "title": "Reasoning Chain Compression",
+      "explanation": "Supervised fine-tuning methods that learn to compress verbose reasoning chains into more efficient representations. These approaches train models to skip redundant steps, use shortcuts, or internalize reasoning patterns to reduce inference-time computation.",
+      "concepts": [
+        {
+          "id": "compression-techniques",
+          "title": "Chain Compression Techniques",
+          "question": "What are the main techniques for compressing reasoning chains during fine-tuning?",
+          "answer": "Token importance analysis and selective omission, perplexity-based critical step identification, controlled training with step constraints, and using stronger models as compressors to preserve key information",
+          "canvasHeight": 120
+        },
+        {
+          "id": "compression-preservation",
+          "title": "Information Preservation",
+          "question": "How do chain compression methods ensure critical reasoning information is preserved?",
+          "answer": "By identifying critical steps through metrics like perplexity increase, maintaining logical dependencies between steps, preserving key computational results, and validating compressed chains maintain correctness",
+          "canvasHeight": 120
+        },
+        {
+          "id": "compression-training",
+          "title": "Compression Training Strategies",
+          "question": "What training strategies are effective for teaching models to compress reasoning chains?",
+          "answer": "Self-training with best-of-N sampling, few-shot conditioning for concise paths, distillation from verbose to compressed representations, and controlled environments with explicit step constraints",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "latent-sft": {
+      "title": "Latent-Space SFT",
+      "explanation": "Fine-tuning approaches that operate in latent space rather than token space. These methods learn compressed representations of reasoning processes, allowing models to perform implicit reasoning without generating explicit chain-of-thought tokens.",
+      "concepts": [
+        {
+          "id": "latent-reasoning-concept",
+          "title": "Latent Space Reasoning",
+          "question": "What is the fundamental difference between latent-space reasoning and traditional token-based chain-of-thought?",
+          "answer": "Latent-space reasoning performs computations in continuous hidden representations rather than discrete tokens, allowing more efficient reasoning without generating explicit intermediate steps that consume tokens and time",
+          "canvasHeight": 120
+        },
+        {
+          "id": "latent-representations",
+          "title": "Latent Representation Design",
+          "question": "How are latent representations designed to capture reasoning processes efficiently?",
+          "answer": "Through continuous thought vectors, compressed token representations from VQ-VAE, hidden state recycling, soft thought tokens from assistant models, or alignment between explicit and implicit reasoning activations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "latent-training-methods",
+          "title": "Latent Space Training",
+          "question": "What are the key training approaches for latent-space reasoning models?",
+          "answer": "Distillation from explicit CoT models, alignment of hidden activations, mixing latent and text tokens, feeding hidden states back as inputs, and dynamic compression of intermediate steps",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "efficient-reasoning-rl": {
+      "id": "efficient-reasoning-rl",
+      "title": "III. Efficient Reasoning with RL",
+      "concepts": [
+        {
+          "id": "rl-efficiency-overview",
+          "title": "RL for Efficiency Overview",
+          "question": "How do reinforcement learning approaches differ in optimizing reasoning efficiency?",
+          "answer": "RL methods can either explicitly reward shorter reasoning (with length penalties) or focus on quality alone, allowing efficiency to emerge naturally. Both approaches can lead to more efficient reasoning patterns",
+          "canvasHeight": 120
+        },
+        {
+          "id": "rl-reward-design",
+          "title": "Efficiency Reward Design",
+          "question": "What are the key considerations when designing reward functions for efficient reasoning?",
+          "answer": "Balancing correctness with length penalties, normalizing rewards across problems, avoiding overthinking near context limits, and ensuring correct answers are always preferred over incorrect ones regardless of length",
+          "canvasHeight": 120
+        },
+        {
+          "id": "rl-optimization-challenges",
+          "title": "RL Optimization Challenges",
+          "question": "What unique challenges arise when using RL to optimize reasoning efficiency?",
+          "answer": "Preventing reward hacking by generating trivially short but wrong answers, maintaining exploration of longer paths when needed, handling variable optimal lengths across problems, and avoiding mode collapse",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "rl-length": {
+      "title": "With Length Reward",
+      "explanation": "Reinforcement learning methods that explicitly reward shorter reasoning chains. These approaches balance accuracy with efficiency by incorporating length penalties into the reward function, encouraging models to find concise solutions.",
+      "concepts": [
+        {
+          "id": "length-penalty-design",
+          "title": "Length Penalty Design",
+          "question": "What are effective approaches to designing length penalties in RL reward functions?",
+          "answer": "Normalized per-prompt penalties ensuring correct answers are preferred, target-aware rewards that penalize deviation from optimal length, cosine functions for intuitive guidance, and adaptive penalties based on problem complexity",
+          "canvasHeight": 120
+        },
+        {
+          "id": "length-reward-balance",
+          "title": "Accuracy-Length Balance",
+          "question": "How do length-rewarded RL methods maintain reasoning quality while encouraging brevity?",
+          "answer": "By using normalized rewards that always prefer correct over incorrect answers, difficulty-adaptive thinking that modulates length by complexity, and baseline performance estimation to calibrate appropriate length targets",
+          "canvasHeight": 120
+        },
+        {
+          "id": "overthinking-phenomenon",
+          "title": "Overthinking Phenomenon",
+          "question": "What is the overthinking phenomenon in reasoning models and how do length rewards address it?",
+          "answer": "Overthinking occurs when models generate excessively long reasoning chains that paradoxically reduce accuracy. Length rewards restrain token growth and guide models toward optimal reasoning lengths for each problem",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "rl-without-length": {
+      "title": "Without Length Reward",
+      "explanation": "RL methods focused purely on improving reasoning quality without explicit length constraints. These approaches may still achieve efficiency gains through emergent optimization of reasoning strategies, even without direct length incentives.",
+      "concepts": [
+        {
+          "id": "emergent-efficiency",
+          "title": "Emergent Efficiency",
+          "question": "How can RL methods achieve reasoning efficiency without explicit length rewards?",
+          "answer": "Through utility maximization that naturally balances computation with outcomes, meta-RL formulations that learn efficient strategies, and preference-based optimization using heuristics like first-correct solutions",
+          "canvasHeight": 120
+        },
+        {
+          "id": "quality-focused-rl",
+          "title": "Quality-Focused Optimization",
+          "question": "What are the advantages of focusing purely on reasoning quality in RL without length constraints?",
+          "answer": "Allows models to use as much computation as truly needed, avoids artificial length limitations, enables discovery of naturally efficient strategies, and prevents premature termination of complex reasoning",
+          "canvasHeight": 120
+        },
+        {
+          "id": "indirect-efficiency",
+          "title": "Indirect Efficiency Gains",
+          "question": "What indirect mechanisms lead to efficiency improvements in RL without length rewards?",
+          "answer": "Models learn to avoid redundant steps naturally, develop more direct reasoning paths through practice, internalize efficient patterns from training data, and optimize for clarity which often correlates with brevity",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "efficient-reasoning-pretrain": {
+      "id": "efficient-reasoning-pretrain",
+      "title": "IV. Efficient Reasoning during Pretraining",
+      "concepts": [
+        {
+          "id": "pretrain-efficiency-overview",
+          "title": "Pretraining Efficiency Overview",
+          "question": "What are the main approaches to building efficiency into reasoning models during pretraining?",
+          "answer": "Latent-space pretraining (learning reasoning in compressed representations), subquadratic attention mechanisms (reducing computational complexity), and linearization (converting to linear-complexity architectures)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "pretrain-vs-finetune",
+          "title": "Pretraining vs Fine-tuning",
+          "question": "Why is it advantageous to build reasoning efficiency during pretraining rather than only during fine-tuning?",
+          "answer": "Pretraining establishes fundamental computational patterns, enables more natural and robust efficiency, avoids retrofitting inefficiencies, and creates architectures inherently suited for efficient reasoning",
+          "canvasHeight": 120
+        },
+        {
+          "id": "architectural-efficiency",
+          "title": "Architectural Efficiency",
+          "question": "How do architectural choices during pretraining impact reasoning efficiency?",
+          "answer": "Subquadratic architectures reduce complexity from O(n\u00b2) to O(n), enabling longer contexts and faster inference. Design choices like state-space models and linear attention fundamentally change computational requirements",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "latent-pretrain": {
+      "title": "Latent-space Pretraining",
+      "explanation": "Pretraining methods that learn reasoning in compressed latent representations from the start. Rather than learning token-by-token generation, these approaches train models to manipulate abstract reasoning states efficiently.",
+      "concepts": [
+        {
+          "id": "latent-pretrain-principles",
+          "title": "Latent Pretraining Principles",
+          "question": "What are the core principles behind latent-space pretraining for efficient reasoning?",
+          "answer": "Operating on abstract concepts rather than tokens, using dynamically-sized representations, processing at semantic rather than syntactic level, and learning compressed representations of thought from the beginning",
+          "canvasHeight": 120
+        },
+        {
+          "id": "representation-granularity",
+          "title": "Representation Granularity",
+          "question": "How do different latent pretraining methods choose the granularity of their representations?",
+          "answer": "From byte-level patches (BLT), to concept-level units (LCMs), to hybrid approaches mixing tokens with concept vectors (CoCoMix), balancing compression with information preservation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "latent-pretrain-benefits",
+          "title": "Latent Pretraining Benefits",
+          "question": "What computational and modeling benefits come from latent-space pretraining?",
+          "answer": "Reduced sequence lengths, more efficient use of model capacity, natural handling of multimodal inputs, robustness to input variations, and ability to process information at appropriate abstraction levels",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "subquad-attention": {
+      "title": "Subquadratic Attention",
+      "explanation": "Architectural innovations that reduce the quadratic complexity of attention mechanisms. These include linear attention variants, state-space models, and hybrid architectures that maintain reasoning capabilities while dramatically reducing computational costs.",
+      "concepts": [
+        {
+          "id": "complexity-reduction",
+          "title": "Complexity Reduction Methods",
+          "question": "What are the main approaches to reducing attention complexity from O(n\u00b2) to O(n) or O(n log n)?",
+          "answer": "Linear attention through kernel approximations, state-space models with recurrent formulations, sparse attention patterns, hierarchical processing with compression, and hybrid architectures combining different mechanisms",
+          "canvasHeight": 120
+        },
+        {
+          "id": "subquad-tradeoffs",
+          "title": "Subquadratic Trade-offs",
+          "question": "What are the key trade-offs when moving from quadratic to subquadratic attention?",
+          "answer": "Reduced computational cost vs potential quality loss, limited global attention vs efficient local processing, fixed patterns vs dynamic adaptation, and hardware optimization opportunities vs implementation complexity",
+          "canvasHeight": 120
+        },
+        {
+          "id": "hardware-efficiency",
+          "title": "Hardware Efficiency",
+          "question": "How do subquadratic attention mechanisms achieve better hardware utilization?",
+          "answer": "Through optimized I/O operations, better memory access patterns, reduced communication overhead, exploitation of hardware-specific features, and enabling larger batch sizes or longer sequences",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "linearization": {
+      "title": "Linearization",
+      "explanation": "Methods that convert transformer architectures to linear-complexity alternatives. These approaches use techniques like diagonal approximations or recurrent formulations to achieve O(n) complexity while preserving reasoning abilities.",
+      "concepts": [
+        {
+          "id": "linearization-techniques",
+          "title": "Linearization Techniques",
+          "question": "What are the main techniques for converting transformers to linear complexity?",
+          "answer": "Diagonal weight approximations, recurrent reformulations, linear attention approximations with LoRA enhancement, distillation into state-space architectures, and gated linear recurrent adaptations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "linearization-preservation",
+          "title": "Capability Preservation",
+          "question": "How do linearization methods preserve transformer capabilities while reducing complexity?",
+          "answer": "Through careful weight adaptation, knowledge distillation from original models, architectural modifications that maintain expressiveness, and training strategies that compensate for simplified attention",
+          "canvasHeight": 120
+        },
+        {
+          "id": "linearization-benefits",
+          "title": "Linearization Benefits",
+          "question": "What are the practical benefits of linearizing transformer models?",
+          "answer": "Constant memory usage regardless of sequence length, faster inference especially on long sequences, ability to process streaming data, reduced energy consumption, and enablement of edge deployment",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "subquad-reasoning": {
+      "id": "subquad-reasoning",
+      "title": "V. Efficient Reasoning with Subquadratic Attention",
+      "concepts": [
+        {
+          "id": "subquad-reasoning-overview",
+          "title": "Subquadratic Reasoning Overview",
+          "question": "What unique considerations arise when implementing reasoning strategies with subquadratic architectures?",
+          "answer": "Adapting chain-of-thought for limited global attention, leveraging recurrent states for reasoning memory, exploiting efficiency for multi-path generation, and designing reasoning strategies suited to architectural constraints",
+          "canvasHeight": 120
+        },
+        {
+          "id": "architectural-adaptation",
+          "title": "Reasoning Adaptation",
+          "question": "How must reasoning strategies be adapted for subquadratic architectures compared to standard transformers?",
+          "answer": "Using local attention windows effectively, maintaining reasoning state in recurrent components, structuring reasoning to fit architectural patterns, and potentially trading depth for breadth in exploration",
+          "canvasHeight": 120
+        },
+        {
+          "id": "efficiency-advantages",
+          "title": "Efficiency Advantages",
+          "question": "What reasoning-specific advantages do subquadratic architectures provide?",
+          "answer": "Ability to maintain longer reasoning traces, faster generation of multiple reasoning paths, reduced memory constraints allowing deeper exploration, and potential for real-time reasoning applications",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "future-directions": {
+      "id": "future-directions",
+      "title": "VI. Future Directions",
+      "concepts": [
+        {
+          "id": "future-overview",
+          "title": "Future Directions Overview",
+          "question": "What are the five main future directions for efficient reasoning in LRMs?",
+          "answer": "Efficient multimodality (extending to video/sensory data), test-time scaling (dynamic computation), trustworthy reasoning (maintaining transparency), domain applications (specialized uses), and evaluation frameworks (measuring efficiency)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "emerging-challenges",
+          "title": "Emerging Challenges",
+          "question": "What new challenges emerge as efficient reasoning extends to new domains and applications?",
+          "answer": "Handling high-dimensional multimodal data, maintaining interpretability with compression, ensuring safety with reduced oversight, adapting to real-time constraints, and developing appropriate evaluation metrics",
+          "canvasHeight": 120
+        },
+        {
+          "id": "future-integration",
+          "title": "Future Integration",
+          "question": "How might different efficiency techniques be combined in future LRM systems?",
+          "answer": "Hybrid architectures combining multiple efficiency methods, adaptive systems selecting techniques based on context, end-to-end optimization across all components, and unified frameworks balancing all efficiency dimensions",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "multimodal": {
+      "title": "Efficient Multimodality and Video Reasoning",
+      "explanation": "Future direction focusing on extending efficient reasoning to multimodal inputs. This includes handling video sequences, cross-modal reasoning, and efficient processing of high-dimensional sensory data alongside text.",
+      "concepts": [
+        {
+          "id": "multimodal-challenges",
+          "title": "Multimodal Efficiency Challenges",
+          "question": "What unique efficiency challenges arise when extending reasoning to multimodal inputs?",
+          "answer": "Processing high-dimensional visual/audio data, temporal reasoning over video sequences, cross-modal attention complexity, storage and memory requirements, and maintaining reasoning quality with compressed representations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "multimodal-strategies",
+          "title": "Multimodal Efficiency Strategies",
+          "question": "What strategies can make multimodal reasoning more efficient?",
+          "answer": "Semantic decomposition into atomic steps, adaptive processing based on content complexity, selective attention to relevant modalities, hierarchical representation learning, and reusing computation across frames/modalities",
+          "canvasHeight": 120
+        },
+        {
+          "id": "multimodal-applications",
+          "title": "Multimodal Applications",
+          "question": "What applications particularly benefit from efficient multimodal reasoning?",
+          "answer": "Real-time video understanding, robotics and embodied AI, medical imaging analysis, autonomous vehicle perception, and interactive multimodal assistants requiring fast response times",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "test-time-scaling": {
+      "title": "Efficient Test-time Scaling",
+      "explanation": "Methods for dynamically scaling computation at inference time. These include adaptive computation techniques and 'infinity thinking' approaches that can allocate arbitrary amounts of compute based on problem difficulty and available resources.",
+      "concepts": [
+        {
+          "id": "dynamic-computation",
+          "title": "Dynamic Computation Allocation",
+          "question": "What are the key principles behind efficient test-time computation scaling?",
+          "answer": "Allocating computation based on problem difficulty, using confidence measures to guide resource allocation, supporting 'infinity thinking' for open-ended problems, and adapting to available computational budgets",
+          "canvasHeight": 120
+        },
+        {
+          "id": "scaling-mechanisms",
+          "title": "Scaling Mechanisms",
+          "question": "What mechanisms enable dynamic scaling of reasoning computation at test time?",
+          "answer": "Adaptive sampling strategies, confidence-based early stopping, iterative refinement with convergence detection, elastic model architectures, and resource-aware planning algorithms",
+          "canvasHeight": 120
+        },
+        {
+          "id": "scaling-optimization",
+          "title": "Scaling Optimization",
+          "question": "How can test-time scaling be optimized for different deployment scenarios?",
+          "answer": "By considering latency requirements, available compute resources, solution quality needs, energy constraints, and user-specified time/quality trade-offs to dynamically adjust computation",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "trustworthy": {
+      "title": "Efficient and Trustworthy Reasoning",
+      "explanation": "Approaches that maintain reasoning transparency and reliability while improving efficiency. This includes methods for verifiable reasoning chains, uncertainty quantification, and maintaining interpretability in compressed reasoning.",
+      "concepts": [
+        {
+          "id": "efficiency-transparency-tradeoff",
+          "title": "Efficiency-Transparency Trade-off",
+          "question": "What is the fundamental tension between reasoning efficiency and transparency?",
+          "answer": "Efficiency often requires compression or implicit reasoning that reduces interpretability, while transparency requires explicit steps that increase computation. Balancing these requires careful design of reasoning representations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "trustworthy-techniques",
+          "title": "Trustworthy Efficiency Techniques",
+          "question": "What techniques help maintain trustworthiness while improving reasoning efficiency?",
+          "answer": "Deliberative alignment processes, boundary detection for safe reasoning, confidence calibration, selective verbalization of critical steps, and maintaining audit trails even with compression",
+          "canvasHeight": 120
+        },
+        {
+          "id": "verification-methods",
+          "title": "Efficient Verification",
+          "question": "How can reasoning verification be performed efficiently without sacrificing reliability?",
+          "answer": "Through hierarchical verification focusing on critical steps, probabilistic soundness checks, maintaining checksums of reasoning state, and using efficient proof techniques adapted to compressed representations",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "applications": {
+      "title": "Efficient Reasoning Applications",
+      "explanation": "Domain-specific applications of efficient reasoning. This includes retrieval-augmented reasoning, agent-based systems, and specialized applications where reasoning efficiency is critical for real-world deployment.",
+      "concepts": [
+        {
+          "id": "domain-adaptation",
+          "title": "Domain-Specific Adaptation",
+          "question": "How do efficient reasoning techniques need to be adapted for specific application domains?",
+          "answer": "By considering domain-specific constraints like real-time requirements, resource limitations, accuracy needs, integration with existing systems, and specialized reasoning patterns unique to each domain",
+          "canvasHeight": 120
+        },
+        {
+          "id": "application-efficiency",
+          "title": "Application-Level Efficiency",
+          "question": "What efficiency considerations are unique to practical applications of reasoning systems?",
+          "answer": "End-to-end latency requirements, resource costs in production, scalability to many users, integration overhead with other systems, and balancing efficiency with application-specific quality metrics",
+          "canvasHeight": 120
+        },
+        {
+          "id": "deployment-strategies",
+          "title": "Deployment Strategies",
+          "question": "What strategies enable efficient deployment of reasoning systems in real-world applications?",
+          "answer": "Edge-cloud hybrid architectures, caching and reuse of reasoning components, application-specific model selection, batch processing optimizations, and adaptive quality-of-service mechanisms",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "evaluation": {
+      "title": "Evaluation and Benchmark",
+      "explanation": "Benchmarks and evaluation frameworks specifically designed for efficient reasoning. These measure not just accuracy but also computational efficiency, overthinking detection, and the quality-efficiency tradeoff.",
+      "concepts": [
+        {
+          "id": "efficiency-metrics",
+          "title": "Efficiency Metrics",
+          "question": "What metrics effectively capture the efficiency of reasoning systems beyond simple accuracy?",
+          "answer": "Token efficiency ratios, time-to-solution measures, computational FLOPs per problem, memory usage patterns, overthinking scores, and quality-normalized efficiency metrics that balance performance with resource use",
+          "canvasHeight": 120
+        },
+        {
+          "id": "benchmark-design",
+          "title": "Benchmark Design",
+          "question": "What makes a good benchmark for evaluating efficient reasoning systems?",
+          "answer": "Problems with varying difficulty levels, clear optimal reasoning lengths, measurable overthinking potential, diverse reasoning types, and ability to separate efficiency from quality degradation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "evaluation-challenges",
+          "title": "Evaluation Challenges",
+          "question": "What are the main challenges in evaluating reasoning efficiency fairly?",
+          "answer": "Accounting for hardware differences, normalizing across problem difficulties, measuring both outcome and process efficiency, handling trade-offs between multiple metrics, and ensuring evaluations reflect real-world usage",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "length-budgeting-papers": {
+      "id": "length-budgeting-papers",
+      "title": "Length Budgeting Papers",
+      "concepts": [
+        {
+          "id": "tale-concept",
+          "title": "TALE Budget Estimation",
+          "question": "How does TALE estimate the optimal token budget for model generation?",
+          "answer": "TALE uses zero-shot prompting to estimate an optimal token budget which constrains model generation",
+          "canvasHeight": 100
+        },
+        {
+          "id": "sketch-concept",
+          "title": "Sketch-of-Thought Paradigms",
+          "question": "What are the three adaptive paradigms used by Sketch-of-Thought to reduce verbosity in intermediate reasoning steps?",
+          "answer": "Conceptual Chaining, Chunked Symbolism, and Expert Lexicon",
+          "canvasHeight": 100
+        },
+        {
+          "id": "planning-tokens-concept",
+          "title": "Planning Tokens Hierarchy",
+          "question": "How do planning tokens enhance language model reasoning according to Wang et al. (2023b)?",
+          "answer": "By incorporating planning tokens at the start of each reasoning step in a hierarchical approach",
+          "canvasHeight": 100
+        },
+        {
+          "id": "chain-draft-concept",
+          "title": "Chain-of-Draft Efficiency",
+          "question": "What is the key difference between Chain-of-Draft and traditional CoT?",
+          "answer": "Chain-of-Draft encourages models to generate concise, minimal intermediate reasoning steps rather than token-heavy explanations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "s1-concept",
+          "title": "S1 Budget Forcing",
+          "question": "How does S1 directly control thinking length?",
+          "answer": "Uses a budget-forcing strategy by appending an end-of-thinking token delimiter to force the thinking process to end",
+          "canvasHeight": 100
+        },
+        {
+          "id": "safechain-concept",
+          "title": "SafeChain Decoding",
+          "question": "What are the two decoding strategies proposed by SafeChain to control thinking?",
+          "answer": "ZeroThink (forces model to start response without any thought) and LessThink (forces a short thought process)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "dsc-concept",
+          "title": "DSC Resource Allocation",
+          "question": "How does Difficulty-Adaptive Self-Consistency (DSC) allocate inference resources?",
+          "answer": "Evaluates query difficulty using the LLM itself to dynamically allocate inference resources",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dynasor-concept",
+          "title": "Dynasor Compute Allocation",
+          "question": "What basis does Dynasor use to allocate compute during multi-path reasoning?",
+          "answer": "Allocates compute based on model certainty, assigning more resources to hard queries",
+          "canvasHeight": 100
+        },
+        {
+          "id": "tsp-concept",
+          "title": "Thought Switching Penalty",
+          "question": "What does TSP discourage to improve reasoning efficiency?",
+          "answer": "Discourages premature transitions between thoughts which may cause superficial but lengthy reasoning traces",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "system-switch-papers": {
+      "id": "system-switch-papers",
+      "title": "System Switch Papers",
+      "concepts": [
+        {
+          "id": "dualformer-concept",
+          "title": "Dualformer Integration",
+          "question": "How does Dualformer integrate the dual process through its training strategy?",
+          "answer": "Uses a randomized reasoning trace training strategy that randomly drops certain parts of the reasoning traces",
+          "canvasHeight": 100
+        },
+        {
+          "id": "system1x-concept",
+          "title": "System 1.x Controller",
+          "question": "What role does the controller play in System 1.x when handling maze tasks?",
+          "answer": "Assesses maze difficulty to allow the model to alternate among different systems based on user-defined parameters for smoother cognitive resource allocation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "fast-concept",
+          "title": "FaST Visual Reasoning",
+          "question": "What factors does FaST's switching adapter use to transition between Systems 1 and 2 for visual reasoning?",
+          "answer": "Task complexity factors like visual uncertainty and invisibility",
+          "canvasHeight": 100
+        },
+        {
+          "id": "halusearch-concept",
+          "title": "HaluSearch Learning",
+          "question": "How does HaluSearch learn to switch between System 1 and System 2?",
+          "answer": "Leverages model performance on specific instances to construct supervised labels for both instance-level and step-level switching under MCTS",
+          "canvasHeight": 120
+        },
+        {
+          "id": "dyna-think-concept",
+          "title": "Dyna-Think Autonomy",
+          "question": "What makes Dyna-Think's dynamic thinking mechanism 'training-free'?",
+          "answer": "The model autonomously determines 'Slow' reasoning based on generation consistency and complexity of thought processes",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "model-switch-papers": {
+      "id": "model-switch-papers",
+      "title": "Model Switch Papers",
+      "concepts": [
+        {
+          "id": "bild-concept",
+          "title": "BiLD Dual Model",
+          "question": "How does BiLD balance speed and quality through its policies?",
+          "answer": "Uses a small, fast model for initial predictions and a larger, more accurate model for corrections through fallback and rollback policies",
+          "canvasHeight": 120
+        },
+        {
+          "id": "eagle-concept",
+          "title": "EAGLE Feature-Level",
+          "question": "What key transition does EAGLE make to enhance inference?",
+          "answer": "Transitions speculative sampling from the token level to the feature level",
+          "canvasHeight": 100
+        },
+        {
+          "id": "eagle2-concept",
+          "title": "EAGLE-2 Dynamic Trees",
+          "question": "What innovation does EAGLE-2 introduce for speculative decoding?",
+          "answer": "Context-aware dynamic draft trees that adjust token acceptance rates based on confidence scores",
+          "canvasHeight": 100
+        },
+        {
+          "id": "medusa-concept",
+          "title": "MEDUSA Multi-Token",
+          "question": "How does MEDUSA reduce sequential decoding steps?",
+          "answer": "Incorporates additional decoding heads that predict multiple tokens simultaneously with a tree-based attention mechanism to concurrently generate and verify candidate continuations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "layerskip-concept",
+          "title": "LayerSkip Early Exit",
+          "question": "What two techniques does LayerSkip combine to speed up inference?",
+          "answer": "Layer dropout combined with early exit loss, allowing predictions at shallower layers with self-speculative decoding for verification",
+          "canvasHeight": 120
+        },
+        {
+          "id": "zooter-concept",
+          "title": "Zooter Routing",
+          "question": "How does Zooter's reward-guided routing method determine which LLM to use?",
+          "answer": "Leverages distilled rewards from training queries to train a specialized routing function that directs each query to the LLM with the most pertinent expertise",
+          "canvasHeight": 120
+        },
+        {
+          "id": "routellm-concept",
+          "title": "RouteLLM Balance",
+          "question": "What balance does RouteLLM strike through its dynamic routing?",
+          "answer": "Dynamically routes queries between robust and weaker language models to achieve optimal balance between performance and cost effectiveness",
+          "canvasHeight": 120
+        },
+        {
+          "id": "mixllm-concept",
+          "title": "MixLLM Decision Making",
+          "question": "How does MixLLM enhance its selection of optimal LLM candidates?",
+          "answer": "Enhances query embeddings using tag knowledge, employs lightweight predictors to assess quality and cost per model, and uses a meta decision maker",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "parallel-search-papers": {
+      "id": "parallel-search-papers",
+      "title": "Parallel Search Papers",
+      "concepts": [
+        {
+          "id": "sbon-concept",
+          "title": "SBoN Early Halting",
+          "question": "How does SBoN achieve comparable performance while reducing computational demands?",
+          "answer": "Evaluates partial responses and halts those that are unlikely to yield high-quality completions",
+          "canvasHeight": 100
+        },
+        {
+          "id": "treebon-concept",
+          "title": "TreeBoN Hierarchical",
+          "question": "What combination does TreeBoN use and how does it manage candidates?",
+          "answer": "Combines speculative tree-search with Best-of-N sampling, generating candidates in hierarchical tree structure and pruning low-quality ones early using weighted implicit reward",
+          "canvasHeight": 120
+        },
+        {
+          "id": "stbon-concept",
+          "title": "STBoN Truncation",
+          "question": "How does STBoN identify when to truncate suboptimal candidates?",
+          "answer": "Identifies the earliest estimation time when samples become distinct and employs a buffer window along with hidden state consistency",
+          "canvasHeight": 120
+        },
+        {
+          "id": "self-calibration-concept",
+          "title": "Self-Calibration Distillation",
+          "question": "What does Self-Calibration distill into the model and what benefit does this provide?",
+          "answer": "Distills self-consistency-derived confidence into the model, enabling strategies like early stopping and eliminating the need for external reward models",
+          "canvasHeight": 120
+        },
+        {
+          "id": "metareasoner-concept",
+          "title": "MetaReasoner Formulation",
+          "question": "What formulation does MetaReasoner use for its strategies like restarting or refining?",
+          "answer": "Uses a contextual multi-armed bandit formulation",
+          "canvasHeight": 100
+        },
+        {
+          "id": "tpo-concept",
+          "title": "TPO Recursive Approach",
+          "question": "What does TPO's recursive approach achieve compared to training-aware methods?",
+          "answer": "Revises parallel samples to align model performance at test time, achieving comparable results to training-aware methods",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "chain-compression-papers": {
+      "id": "chain-compression-papers",
+      "title": "Chain Compression Papers",
+      "concepts": [
+        {
+          "id": "tokenskip-concept",
+          "title": "TokenSkip Analysis",
+          "question": "How does TokenSkip achieve controllable compression of CoT sequences?",
+          "answer": "Analyzes token importance in CoT outputs and selectively omits less important tokens",
+          "canvasHeight": 100
+        },
+        {
+          "id": "spirit-ft-concept",
+          "title": "SPIRIT-FT Metric",
+          "question": "What metric does SPIRIT-FT use to identify critical reasoning steps?",
+          "answer": "Uses perplexity as a metric - a step is deemed critical if its removal significantly increases perplexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lm-skip-concept",
+          "title": "LM-Skip Environment",
+          "question": "How does LM-Skip induce step-skipping behavior?",
+          "answer": "Designs a controlled training environment that instructs models to produce reasoning sequences under a step constraint",
+          "canvasHeight": 100
+        },
+        {
+          "id": "distill-system2-concept",
+          "title": "Distill System 2",
+          "question": "When does Yu et al.'s approach fine-tune models to omit intermediate generation steps?",
+          "answer": "For samples that are sufficiently confident",
+          "canvasHeight": 100
+        },
+        {
+          "id": "c3ot-concept",
+          "title": "C3ot Compression",
+          "question": "How does C3ot preserve key information and learn compression?",
+          "answer": "Employs GPT-4 as a compressor to preserve key information, then fine-tunes to learn the relationship between long and short CoTs",
+          "canvasHeight": 120
+        },
+        {
+          "id": "self-training-concept",
+          "title": "Self-Training Distillation",
+          "question": "What two techniques does Munkhbat et al.'s self-training use before applying SFT?",
+          "answer": "Best-of-N sampling and few-shot conditioning to build concise reasoning paths",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "latent-sft-papers": {
+      "id": "latent-sft-papers",
+      "title": "Latent-Space SFT Papers",
+      "concepts": [
+        {
+          "id": "coconut-concept",
+          "title": "Coconut Continuous Thought",
+          "question": "How does Coconut (Chain of Continuous Thought) replace traditional CoT?",
+          "answer": "Uses the model's last hidden state as a continuous representation of reasoning, feeding it back into the model as input for subsequent reasoning steps",
+          "canvasHeight": 120
+        },
+        {
+          "id": "ccot-concept",
+          "title": "CCoT Compression",
+          "question": "How does CCoT reduce computational cost and enhance throughput?",
+          "answer": "Fine-tunes the model to produce compressed representations of reasoning chains instead of full-length sequences, approximating complete chains with fewer tokens",
+          "canvasHeight": 120
+        },
+        {
+          "id": "codi-concept",
+          "title": "CODI Distillation",
+          "question": "What does CODI align between teacher and student models?",
+          "answer": "Aligns hidden activations of specific tokens between a teacher model using explicit CoT and a student model using implicit CoT",
+          "canvasHeight": 120
+        },
+        {
+          "id": "token-assorted-concept",
+          "title": "Token Assorted Mixing",
+          "question": "How does Token Assorted abstract initial reasoning steps?",
+          "answer": "Mixes latent discrete tokens from VQ-VAE with text tokens to abstract the initial reasoning steps while retaining essential information",
+          "canvasHeight": 120
+        },
+        {
+          "id": "softcot-concept",
+          "title": "SoftCoT Assistant",
+          "question": "How does SoftCoT approach continuous-space reasoning differently?",
+          "answer": "Utilizes an assistant model that generates 'soft thought tokens' for the LLM",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lightthinker-concept",
+          "title": "LightThinker Compression",
+          "question": "How does LightThinker enhance reasoning efficiency?",
+          "answer": "Dynamically compresses intermediate steps into concise latent representations",
+          "canvasHeight": 100
+        },
+        {
+          "id": "heima-concept",
+          "title": "Heima Architecture",
+          "question": "How does Heima reduce verbosity in both text and multimodal tasks?",
+          "answer": "The Heima Encoder compresses intermediate steps into a single token, and the Heima Decoder reconstructs the reasoning process from these tokens",
+          "canvasHeight": 120
+        },
+        {
+          "id": "implicit-cot-concept",
+          "title": "Implicit CoT",
+          "question": "What is the key characteristic of Implicit CoT by Deng et al.?",
+          "answer": "Performs reasoning in latent space without generating explicit chain-of-thought tokens",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "rl-length-papers": {
+      "id": "rl-length-papers",
+      "title": "RL with Length Reward Papers",
+      "concepts": [
+        {
+          "id": "o1-pruner-concept",
+          "title": "O1-Pruner Method",
+          "question": "How does O1-Pruner begin its efficient fine-tuning method?",
+          "answer": "Begins by estimating the LLM's baseline performance through presampling from its reference model",
+          "canvasHeight": 100
+        },
+        {
+          "id": "arora-zanette-concept",
+          "title": "Normalized Length Penalty",
+          "question": "How does Arora and Zanette's length penalty ensure correct responses are preferred?",
+          "answer": "Introduces a length penalty normalized in the per-prompt group, ensuring correct responses are always preferred over incorrect ones regardless of token count",
+          "canvasHeight": 120
+        },
+        {
+          "id": "lcpo-concept",
+          "title": "LCPO Target Control",
+          "question": "How does LCPO control length budget through prompts and rewards?",
+          "answer": "Introduces target length instruction in the prompt ('Think for ngold tokens') and designs a target-aware length reward that penalizes length violation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "kimi-concept",
+          "title": "Kimi 1.5 Observation",
+          "question": "What phenomenon does Kimi 1.5 observe and how does it address it?",
+          "answer": "Observes the overthinking phenomenon and introduces a length reward to restrain the rapid growth of token length",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dast-concept",
+          "title": "DAST Adaptive Thinking",
+          "question": "How does DAST empower models to modulate CoT length?",
+          "answer": "Introduces Difficulty-Adaptive Slow-Thinking that allows models to autonomously modulate CoT length based on problem complexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "demystifying-concept",
+          "title": "Demystifying Paradox",
+          "question": "What paradoxical finding did Yeo et al. reveal about extremely long CoT reasoning?",
+          "answer": "Extremely long CoT reasoning approaching context limits paradoxically reduces accuracy; they proposed a cosine reward function for intuitive guidance",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "rl-without-papers": {
+      "id": "rl-without-papers",
+      "title": "RL without Length Reward Papers",
+      "concepts": [
+        {
+          "id": "mrt-concept",
+          "title": "MRT Formulation",
+          "question": "How does MRT (Meta-RL) structure its test-time optimization approach?",
+          "answer": "Formulates test-time optimization as a meta-reinforcement learning problem, dividing generation into episodes with model estimating answers after each episode",
+          "canvasHeight": 120
+        },
+        {
+          "id": "ibpo-concept",
+          "title": "IBPO Framing",
+          "question": "How does IBPO approach budget awareness differently than direct length control?",
+          "answer": "Frames budget awareness as utility maximization rather than directly controlling response length",
+          "canvasHeight": 100
+        },
+        {
+          "id": "overthink-concept",
+          "title": "Overthink Heuristics",
+          "question": "What heuristics does Overthink employ for generating preference data?",
+          "answer": "Uses First-Correct Solutions (FCS) and Greedy Diverse Solutions (GDS) to generate preference data for offline policy optimization using DPO, RPO, and SimPO",
+          "canvasHeight": 120
+        },
+        {
+          "id": "drgrpo-concept",
+          "title": "Dr.GRPO Approach",
+          "question": "What is Dr.GRPO's focus in reasoning without length rewards?",
+          "answer": "Focuses on improving reasoning quality through group relative policy optimization without explicit length constraints",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "latent-pretrain-papers": {
+      "id": "latent-pretrain-papers",
+      "title": "Latent-space Pretraining Papers",
+      "concepts": [
+        {
+          "id": "blt-concept",
+          "title": "BLT Processing",
+          "question": "How does Byte Latent Transformer process input differently than traditional models?",
+          "answer": "Processes raw bytes using dynamically sized patches rather than fixed tokens, reducing computational overhead and improving robustness",
+          "canvasHeight": 120
+        },
+        {
+          "id": "lcms-concept",
+          "title": "LCMs Semantic Level",
+          "question": "What serves as the primary processing units in Large Concept Models?",
+          "answer": "Abstract concepts that often correspond to complete sentences or speech utterances",
+          "canvasHeight": 100
+        },
+        {
+          "id": "cocomix-concept",
+          "title": "CoCoMix Integration",
+          "question": "What two types of predictions does CoCoMix integrate?",
+          "answer": "Integrates discrete token prediction with continuous concept vectors derived from sparse autoencoders (SAEs)",
+          "canvasHeight": 100
+        },
+        {
+          "id": "ltms-concept",
+          "title": "LTMs Guidance",
+          "question": "How do latent thought vectors (LTMs) influence token generation?",
+          "answer": "Probabilistically guide token generation via cross-attention mechanisms",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "subquad-attention-papers": {
+      "id": "subquad-attention-papers",
+      "title": "Subquadratic Attention Papers",
+      "concepts": [
+        {
+          "id": "lightning-concept",
+          "title": "Lightning Attention",
+          "question": "What does Lightning Attention optimize to expedite processing?",
+          "answer": "Optimizes I/O operations to expedite processing",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lasp2-concept",
+          "title": "LASP-2 Refinement",
+          "question": "How does LASP-2 refine the Lightning Attention approach?",
+          "answer": "Further refines by reorganizing both computational and communication workflows",
+          "canvasHeight": 100
+        },
+        {
+          "id": "gla-concept",
+          "title": "GLA Gating",
+          "question": "What scheme does Gated Linear Attention use to enhance sequence modeling?",
+          "answer": "Leverages a data-independent gating scheme to enhance sequence modeling ability and hardware efficiency",
+          "canvasHeight": 100
+        },
+        {
+          "id": "gated-deltanet-concept",
+          "title": "Gated DeltaNet Updates",
+          "question": "What capability do TTT, Titans, and Gated-DeltaNet share?",
+          "answer": "Propose update rules that allow models to adapt dynamically during inference",
+          "canvasHeight": 100
+        },
+        {
+          "id": "mom-concept",
+          "title": "MoM Memory",
+          "question": "How does MoM expand the RNN memory state?",
+          "answer": "Uses 'sparse memory' with multiple memory units managed by a router module",
+          "canvasHeight": 100
+        },
+        {
+          "id": "mamba2-concept",
+          "title": "Mamba-2 Integration",
+          "question": "What does Mamba-2 integrate to enhance hardware efficiency?",
+          "answer": "Integrates a linear attention-like mechanism",
+          "canvasHeight": 100
+        },
+        {
+          "id": "rwkv7-concept",
+          "title": "RWKV-7 Method",
+          "question": "What category of methods does RWKV-7 belong to?",
+          "answer": "Linear RNN-based methods that have demonstrated effectiveness",
+          "canvasHeight": 100
+        },
+        {
+          "id": "nsa-concept",
+          "title": "NSA Strategy",
+          "question": "What hierarchical strategy does NSA adopt?",
+          "answer": "Dynamic hierarchical sparse strategy combining coarse-grained token compression with fine-grained token selection",
+          "canvasHeight": 100
+        },
+        {
+          "id": "moba-concept",
+          "title": "MoBA Routing",
+          "question": "How does MoBA handle context and routing?",
+          "answer": "Divides context into blocks and uses dynamic gating mechanism to route query tokens to the most relevant KV blocks",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "linearization-papers": {
+      "id": "linearization-papers",
+      "title": "Linearization Papers",
+      "concepts": [
+        {
+          "id": "liger-concept",
+          "title": "Liger Modification",
+          "question": "How does Liger modify pre-trained LLMs without extra parameters?",
+          "answer": "Modifies pre-trained LLMs into gated linear recurrent models by adapting key matrix weights",
+          "canvasHeight": 100
+        },
+        {
+          "id": "llamba-concept",
+          "title": "Llamba Distillation",
+          "question": "What does Llamba achieve through MOHAWK with minimal training data?",
+          "answer": "Distills Llama-3.x models into the Mamba architecture, achieving high inference throughput and efficiency",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lolcats-concept",
+          "title": "LoLCATs Enhancement",
+          "question": "How does LoLCATs advance LLM linearization?",
+          "answer": "Replaces softmax attention with trained linear approximations and enhances model quality using LoRA",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "subquad-reasoning-papers": {
+      "id": "subquad-reasoning-papers",
+      "title": "Efficient Reasoning with Subquadratic Attention Papers",
+      "concepts": [
+        {
+          "id": "tsf-concept",
+          "title": "Think Slow Fast",
+          "question": "What does TSF demonstrate about distilling Mamba models from Transformers?",
+          "answer": "Demonstrates that distilling Mamba models from Transformers enables faster multi-path CoT generation under fixed compute budgets",
+          "canvasHeight": 120
+        },
+        {
+          "id": "crqs-concept",
+          "title": "CRQs Expressiveness",
+          "question": "What does CRQs examine regarding different model architectures?",
+          "answer": "Examines the expressiveness of Transformers, RNNs, and CoT-augmented models on Compositional Reasoning Questions",
+          "canvasHeight": 100
+        },
+        {
+          "id": "cosmos-reason1-concept",
+          "title": "Cosmos-Reason1 Architecture",
+          "question": "What hybrid architecture does Cosmos-Reason1 use for efficient Physical AI reasoning?",
+          "answer": "Uses hybrid Mamba-MLP-Transformer backbone architecture",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "multimodal-papers": {
+      "id": "multimodal-papers",
+      "title": "Multimodal Efficiency Papers",
+      "concepts": [
+        {
+          "id": "scot-concept",
+          "title": "SCoT Decomposition",
+          "question": "How does Self-structured Chain of Thought (SCoT) address multimodal reasoning issues?",
+          "answer": "Decomposes reasoning tasks into atomic, semantically meaningful steps",
+          "canvasHeight": 100
+        },
+        {
+          "id": "al-cotd-concept",
+          "title": "AL-CoTD Adaptation",
+          "question": "How does AL-CoTD refine the reasoning process?",
+          "answer": "Dynamically adjusts the length of reasoning chains according to task complexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "heima-multimodal-concept",
+          "title": "Heima Multimodal",
+          "question": "What capability does Heima provide for multimodal tasks?",
+          "answer": "Leverages hidden latent representations to reduce verbosity in both text and multimodal tasks",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "test-time-papers": {
+      "id": "test-time-papers",
+      "title": "Test-time Scaling Papers",
+      "concepts": [
+        {
+          "id": "confidence-methods-concept",
+          "title": "Confidence-Based Methods",
+          "question": "How can inefficient reasoning be mitigated according to Huang et al.?",
+          "answer": "By developing confidence-based methods to address queries of varying difficulty",
+          "canvasHeight": 100
+        },
+        {
+          "id": "adaptive-sampling-concept",
+          "title": "Adaptive Sampling",
+          "question": "What type of strategies do Wan et al. and others propose for test-time scaling?",
+          "answer": "Adaptive sampling strategies for dynamic computation allocation",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "trustworthy-papers": {
+      "id": "trustworthy-papers",
+      "title": "Trustworthy Reasoning Papers",
+      "concepts": [
+        {
+          "id": "deliberative-alignment-concept",
+          "title": "Deliberative Alignment",
+          "question": "What approach does deliberative alignment offer for LRM safety?",
+          "answer": "Offers a distinct approach to enhance LRM safety through deliberative processes",
+          "canvasHeight": 100
+        },
+        {
+          "id": "x-boundary-concept",
+          "title": "X-Boundary",
+          "question": "What is X-Boundary's contribution to LRM safety?",
+          "answer": "Provides a distinct approach to enhance LRM safety alongside deliberative alignment",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "applications-papers": {
+      "id": "applications-papers",
+      "title": "Application Papers",
+      "concepts": [
+        {
+          "id": "chain-retrieval-concept",
+          "title": "Chain-of-Retrieval",
+          "question": "How do O1-like RAG models trained with Wang et al.'s method operate?",
+          "answer": "Perform step-by-step retrieval and reasoning over relevant information before generating the final answer",
+          "canvasHeight": 100
+        },
+        {
+          "id": "agent-overthinking-concept",
+          "title": "Agent Overthinking",
+          "question": "What correlation did Cuadron et al. find in magnetic tasks?",
+          "answer": "Elevated overthinking scores correlate negatively with performance",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "evaluation-papers": {
+      "id": "evaluation-papers",
+      "title": "Evaluation Papers",
+      "concepts": [
+        {
+          "id": "efficiency-metrics-concept",
+          "title": "Efficiency Metrics",
+          "question": "What two perspectives do Chen et al.'s efficiency metrics address?",
+          "answer": "Both outcome and process perspectives",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dna-bench-concept",
+          "title": "DNA Bench",
+          "question": "What vulnerability does DNA Bench expose in LRMs?",
+          "answer": "LRMs' tendency for over-reasoning",
+          "canvasHeight": 100
+        }
+      ]
+    }
+  }
+}

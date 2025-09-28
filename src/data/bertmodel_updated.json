@@ -1,0 +1,1688 @@
+{
+  "id": "bert-architecture-model",
+  "title": "BERT Model Architecture",
+  "subtitle": "Complete Interactive Learning Experience",
+  "description": "Learn about the BERT architecture through interactive diagrams and coding exercises",
+  "svgDiagram": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"3400\" viewBox=\"0 0 800 3400\"><defs><filter id=\"shadow\" x=\"-0.16448728\" y=\"-0.1325\" width=\"1.3910452\" height=\"1.315\"><feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"2\"/><feOffset dx=\"2\" dy=\"2\" result=\"offsetblur\"/><feFlood flood-color=\"#000000\" flood-opacity=\"0.06\"/><feComposite in2=\"offsetblur\" operator=\"in\"/><feMerge><feMergeNode/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter><marker id=\"arrow\" markerWidth=\"10\" markerHeight=\"10\" refX=\"9\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\"><path d=\"M0,0 L0,6 L9,3 z\" fill=\"#666\"/></marker><marker id=\"arrow-red\" markerWidth=\"10\" markerHeight=\"10\" refX=\"9\" refY=\"3\" orient=\"auto\" markerUnits=\"strokeWidth\"><path d=\"M0,0 L0,6 L9,3 z\" fill=\"#e57373\"/></marker></defs><text x=\"400\" y=\"40\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"24\" font-weight=\"bold\">BERT for Masked Language Modeling</text><g class=\"component\" data-component=\"input\"><rect x=\"300\" y=\"80\" width=\"200\" height=\"50\" rx=\"25\" fill=\"#ffd4d4\" stroke=\"#666\" stroke-width=\"1.5\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"110\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"15\" font-weight=\"bold\">Input Tokens</text></g><line x1=\"400\" y1=\"130\" x2=\"400\" y2=\"180\" stroke=\"#666\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"bert-model\"><rect x=\"100\" y=\"180\" width=\"605.40619\" height=\"2749.332\" rx=\"15\" fill=\"#f5f0ff\" stroke=\"#666666\" stroke-width=\"1.5\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"210\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"18\" font-weight=\"bold\">BertForMaskedLM</text><text x=\"400\" y=\"230\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-style=\"italic\">main</text></g><g class=\"component\" data-component=\"bert\"><rect x=\"130\" y=\"260\" width=\"542.87939\" height=\"2075.5254\" rx=\"12\" fill=\"#ede6ff\" stroke=\"#666666\" stroke-width=\"1.2\" stroke-dasharray=\"5, 3\"/><text x=\"400\" y=\"290\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"16\" font-weight=\"bold\">BertModel</text><text x=\"400\" y=\"308\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">bert</text></g><g class=\"component\" data-component=\"embeddings\"><rect x=\"160\" y=\"340\" width=\"480\" height=\"450\" rx=\"10\" fill=\"#e6d9ff\" stroke=\"#666\" stroke-width=\"1.2\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"370\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"15\" font-weight=\"bold\">BertEmbeddings</text><text x=\"400\" y=\"388\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">embeddings</text></g><g class=\"component\" data-component=\"word-embeddings\"><rect x=\"180\" y=\"410\" width=\"140\" height=\"60\" rx=\"8\" fill=\"#d4c5f9\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"250\" y=\"430\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">Embedding</text><text x=\"250\" y=\"445\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">word_embeddings</text><text x=\"250\" y=\"460\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\">30522, 768</text></g><g class=\"component\" data-component=\"token-type-embeddings\"><rect x=\"330\" y=\"410\" width=\"140\" height=\"60\" rx=\"8\" fill=\"#d4c5f9\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"430\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">Embedding</text><text x=\"400\" y=\"445\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">token_type_embeddings</text><text x=\"400\" y=\"460\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\">2, 768</text></g><g class=\"component\" data-component=\"position-embeddings\"><rect x=\"480\" y=\"410\" width=\"140\" height=\"60\" rx=\"8\" fill=\"#d4c5f9\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"550\" y=\"430\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">Embedding</text><text x=\"550\" y=\"445\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">position_embeddings</text><text x=\"550\" y=\"460\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\">512, 768</text></g><g class=\"component\" data-component=\"sum\"><circle cx=\"400\" cy=\"510\" r=\"20\" fill=\"#ffd9b3\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"517\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"16\" font-weight=\"bold\">+</text></g><line x1=\"250\" y1=\"470\" x2=\"385\" y2=\"495\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"400\" y1=\"470\" x2=\"400\" y2=\"490\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"550\" y1=\"470\" x2=\"415\" y2=\"495\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"400\" y1=\"530\" x2=\"400\" y2=\"570\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"embeddings-layernorm\"><rect x=\"300\" y=\"570\" width=\"200\" height=\"60\" rx=\"22\" fill=\"#d4e6b5\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"590\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">LayerNorm</text><text x=\"400\" y=\"605\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">LayerNorm</text><text x=\"400\" y=\"620\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\">[768], eps=1e-12</text></g><line x1=\"400\" y1=\"630\" x2=\"400\" y2=\"670\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"embeddings-dropout\"><rect x=\"300\" y=\"670\" width=\"200\" height=\"60\" rx=\"22\" fill=\"#e6e0f5\" stroke=\"#666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"690\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">Dropout</text><text x=\"400\" y=\"705\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">dropout</text><text x=\"400\" y=\"720\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\">p=0.1</text></g><line x1=\"400\" y1=\"730\" x2=\"400\" y2=\"830\" stroke=\"#666\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"encoder\"><rect x=\"160\" y=\"830\" width=\"478.5603\" height=\"1439.6888\" rx=\"10\" fill=\"#e6d9ff\" stroke=\"#666666\" stroke-width=\"1.2\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"860\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"15\" font-weight=\"bold\">BertEncoder</text><text x=\"400\" y=\"878\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">encoder</text></g><rect x=\"140\" y=\"950\" width=\"32.221336\" height=\"1198.4792\" rx=\"15\" fill=\"#d4c5f9\" stroke=\"#666666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"155\" y=\"1575\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\" transform=\"rotate(-90 155 1575)\">\u00d7 12 layers</text><g class=\"component\" data-component=\"bert-layer\"><rect x=\"190.00255\" y=\"910.00256\" width=\"417.36801\" height=\"1284.0988\" rx=\"9.9998789\" fill=\"#ffe6d5\" stroke=\"#666666\" stroke-width=\"1.20508\" stroke-dasharray=\"5, 3\"/><text x=\"400\" y=\"940\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">BertLayer</text></g><g class=\"component\" data-component=\"attention\"><rect x=\"210\" y=\"970\" width=\"377.78748\" height=\"553.92548\" rx=\"8\" fill=\"#ffd9b3\" stroke=\"#666666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"995\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">BertAttention</text><text x=\"400\" y=\"1010\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">attention</text></g><g class=\"component\" data-component=\"self-attention\"><rect x=\"230\" y=\"1030\" width=\"340\" height=\"220\" rx=\"8\" fill=\"#ffe6cc\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1050\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">BertSdpaSelfAttention</text><text x=\"400\" y=\"1065\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">self</text><text x=\"400\" y=\"1080\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">num_attention_heads=12</text></g><g class=\"component\" data-component=\"query\"><rect x=\"240\" y=\"1100\" width=\"100\" height=\"60\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"290\" y=\"1120\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">Linear</text><text x=\"290\" y=\"1135\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">query</text><text x=\"290\" y=\"1150\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">768\u2192768</text></g><g class=\"component\" data-component=\"key\"><rect x=\"350\" y=\"1100\" width=\"100\" height=\"60\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1120\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">Linear</text><text x=\"400\" y=\"1135\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">key</text><text x=\"400\" y=\"1150\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">768\u2192768</text></g><g class=\"component\" data-component=\"value\"><rect x=\"460\" y=\"1100\" width=\"100\" height=\"60\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"510\" y=\"1120\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">Linear</text><text x=\"510\" y=\"1135\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">value</text><text x=\"510\" y=\"1150\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">768\u2192768</text></g><g class=\"component\" data-component=\"sdpa\"><ellipse cx=\"400\" cy=\"1200\" rx=\"45\" ry=\"18\" fill=\"#ffd9b3\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1205\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-weight=\"bold\">SDPA</text></g><line x1=\"290\" y1=\"1160\" x2=\"360\" y2=\"1185\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"400\" y1=\"1160\" x2=\"400\" y2=\"1182\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"510\" y1=\"1160\" x2=\"440\" y2=\"1185\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><line x1=\"400\" y1=\"1218\" x2=\"400\" y2=\"1270\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"self-output\"><rect x=\"230\" y=\"1270\" width=\"340\" height=\"236.13802\" rx=\"8\" fill=\"#ffe6cc\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"1290\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">BertSelfOutput</text><text x=\"400\" y=\"1305\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">output</text></g><g class=\"component\" data-component=\"attention-dense\"><rect x=\"280\" y=\"1320\" width=\"240\" height=\"45\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1334.1\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">Linear</text><text x=\"400\" y=\"1347.1\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">dense</text><text x=\"400\" y=\"1359.1\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9px\">768\u2192768</text></g><line x1=\"400.36874\" y1=\"1366.475\" x2=\"400.36874\" y2=\"1387.2125\" stroke=\"#666666\" stroke-width=\"1.01827\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"attention-dropout\"><rect x=\"300\" y=\"1386.4751\" width=\"200\" height=\"45\" rx=\"20\" fill=\"#e6e0f5\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"1400.575\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">Dropout</text><text x=\"400\" y=\"1413.575\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">dropout</text><text x=\"400\" y=\"1425.575\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9px\">p=0.1</text></g><line x1=\"399.81671\" y1=\"1434.8883\" x2=\"399.81671\" y2=\"1447.5132\" stroke=\"#666666\" stroke-width=\"0.794509\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"attention-layernorm\"><rect x=\"300\" y=\"1447.5377\" width=\"200\" height=\"45\" rx=\"20\" fill=\"#d4e6b5\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"1467.5377\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">LayerNorm</text><text x=\"400\" y=\"1480.5377\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">LayerNorm</text></g><text x=\"520\" y=\"1460.1626\" font-family=\"Arial, sans-serif\" font-size=\"10px\" fill=\"#e57373\">+ residual</text><line x1=\"400.73752\" y1=\"1496.6376\" x2=\"400.73752\" y2=\"1555.8129\" stroke=\"#666666\" stroke-width=\"1.82445\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"intermediate\"><rect x=\"210\" y=\"1556.5504\" width=\"380\" height=\"220\" rx=\"8\" fill=\"#e0f2f1\" stroke=\"#666666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"1577.8628\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13px\" font-weight=\"bold\">BertIntermediate</text><text x=\"400\" y=\"1592.8628\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">intermediate</text></g><g class=\"component\" data-component=\"intermediate-dense\"><rect x=\"260\" y=\"1616.5504\" width=\"280\" height=\"60\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"1636.5504\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">Linear</text><text x=\"400\" y=\"1651.5504\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">dense</text><text x=\"400\" y=\"1666.5504\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9px\">768\u21923072</text></g><line x1=\"400\" y1=\"1676.5504\" x2=\"400\" y2=\"1706.5504\" stroke=\"#666666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"gelu\"><rect x=\"300\" y=\"1706.5504\" width=\"200\" height=\"50\" rx=\"22\" fill=\"#ffe0b3\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"1726.5504\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">GELUActivation</text><text x=\"400\" y=\"1741.5504\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">intermediate_act_fn</text></g><line x1=\"400\" y1=\"1759.5004\" x2=\"400\" y2=\"1800\" stroke=\"#666666\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"output\"><rect x=\"210\" y=\"1800\" width=\"380\" height=\"345.91428\" rx=\"8\" fill=\"#e0f2f1\" stroke=\"#666666\" stroke-width=\"1\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"1825\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"13\" font-weight=\"bold\">BertOutput</text><text x=\"400\" y=\"1840\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">output</text></g><g class=\"component\" data-component=\"output-dense\"><rect x=\"260\" y=\"1860\" width=\"280\" height=\"60\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1880\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">Linear</text><text x=\"400\" y=\"1895\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">dense</text><text x=\"400\" y=\"1910\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">3072\u2192768</text></g><line x1=\"400\" y1=\"1920\" x2=\"400\" y2=\"1950\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"output-dropout\"><rect x=\"300\" y=\"1950\" width=\"200\" height=\"60\" rx=\"22\" fill=\"#e6e0f5\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"1970\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">Dropout</text><text x=\"400\" y=\"1985\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">dropout</text><text x=\"400\" y=\"2000\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">p=0.1</text></g><line x1=\"400\" y1=\"2010\" x2=\"400\" y2=\"2040\" stroke=\"#666\" stroke-width=\"1.2\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"output-layernorm\"><rect x=\"300\" y=\"2040\" width=\"200\" height=\"60\" rx=\"22\" fill=\"#d4e6b5\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"2060\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">LayerNorm</text><text x=\"400\" y=\"2075\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">LayerNorm</text><text x=\"400\" y=\"2090\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9\">[768], eps=1e-12</text></g><text x=\"513.59943\" y=\"2057.99\" font-family=\"Arial, sans-serif\" font-size=\"10px\" fill=\"#e57373\">+ residual</text><path d=\"m 586.94229,1446.42 h 53.0625 v 626.0759 H 533.8798\" stroke=\"#e57373\" stroke-width=\"2.17077\" stroke-dasharray=\"5, 3\" fill=\"none\" marker-end=\"url(#arrow-red)\"/><path d=\"m 599.99188,1200.0293 h 59.94872 v 273.0801 H 520.06026\" stroke=\"#e57373\" stroke-width=\"2.08939\" stroke-dasharray=\"5, 3\" fill=\"none\" marker-end=\"url(#arrow-red)\"/><line x1=\"400\" y1=\"2276.8875\" x2=\"400\" y2=\"2400\" stroke=\"#666666\" stroke-width=\"2.94221\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"mlm-head\"><rect x=\"130.12629\" y=\"2400.143\" width=\"539.73474\" height=\"506.08841\" rx=\"11.994105\" fill=\"#ede6ff\" stroke=\"#666666\" stroke-width=\"1.46369\" stroke-dasharray=\"5, 3\"/><text x=\"400\" y=\"2430\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"16\" font-weight=\"bold\">BertOnlyMLMHead</text><text x=\"400\" y=\"2448\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11\" font-style=\"italic\">cls</text></g><g class=\"component\" data-component=\"predictions\"><rect x=\"160.29909\" y=\"2470.881\" width=\"479.55676\" height=\"404.88644\" rx=\"13.689594\" fill=\"#e6d9ff\" stroke=\"#666666\" stroke-width=\"1.64284\" filter=\"url(#shadow)\"/><text x=\"400\" y=\"2505\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"14\" font-weight=\"bold\">BertLMPredictionHead</text><text x=\"400\" y=\"2520\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">predictions</text></g><g class=\"component\" data-component=\"transform\"><rect x=\"180.05219\" y=\"2540.0522\" width=\"439.89563\" height=\"243.98735\" rx=\"7.9981022\" fill=\"#f0e6ff\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"2560\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">BertPredictionHeadTransform</text><text x=\"400\" y=\"2575\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">transform</text></g><g class=\"component\" data-component=\"transform-dense\"><g transform=\"translate(0.15729825,-9.011611)\"><rect x=\"280.89642\" y=\"2596.0251\" width=\"240\" height=\"45\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"400\" y=\"2610\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">Linear</text><text x=\"400\" y=\"2623\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">dense</text><text x=\"400\" y=\"2635\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9px\">768\u2192768</text></g></g><line x1=\"400\" y1=\"2635\" x2=\"400\" y2=\"2655\" stroke=\"#666\" stroke-width=\"1\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"transform-gelu\"><rect x=\"300\" y=\"2655\" width=\"200\" height=\"45\" rx=\"20\" fill=\"#ffe0b3\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"2675\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">GELUActivation</text><text x=\"400\" y=\"2688\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">transform_act_fn</text></g><line x1=\"400\" y1=\"2700\" x2=\"400\" y2=\"2720\" stroke=\"#666\" stroke-width=\"1\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"transform-layernorm\"><rect x=\"300\" y=\"2720\" width=\"200\" height=\"45\" rx=\"20\" fill=\"#d4e6b5\" stroke=\"#666\" stroke-width=\"1\"/><text x=\"400\" y=\"2740\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12\" font-weight=\"bold\">LayerNorm</text><text x=\"400\" y=\"2753\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10\" font-style=\"italic\">LayerNorm</text></g><line x1=\"400\" y1=\"2766.6055\" x2=\"400\" y2=\"2800.0432\" stroke=\"#666666\" stroke-width=\"1.89599\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"decoder\"><g transform=\"translate(-9.5235287,-28.210899)\"><rect x=\"256.1123\" y=\"2833.8035\" width=\"300\" height=\"50\" rx=\"8\" fill=\"#cce5ff\" stroke=\"#666666\" stroke-width=\"1\"/><text x=\"406.17151\" y=\"2865.4121\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"10px\" font-style=\"italic\">decoder</text><text x=\"406.17151\" y=\"2850.4121\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"12px\" font-weight=\"bold\">Linear</text><text x=\"406.17151\" y=\"2878.4121\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"9px\">768\u219230522</text></g></g><line x1=\"394.9462\" y1=\"2861.9536\" x2=\"394.9462\" y2=\"2960.0073\" stroke=\"#666666\" stroke-width=\"2.36708\" marker-end=\"url(#arrow)\"/><g class=\"component\" data-component=\"output-logits\"><g transform=\"translate(-8.4996932,27.896302)\"><rect x=\"301.42581\" y=\"2933.0776\" width=\"200\" height=\"50\" rx=\"25\" fill=\"#c8f5c8\" stroke=\"#666666\" stroke-width=\"1.5\" filter=\"url(#shadow)\"/><text x=\"403.7052\" y=\"2954.2361\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"15px\" font-weight=\"bold\">Output Logits</text><text x=\"403.7052\" y=\"2969.2361\" text-anchor=\"middle\" font-family=\"Arial, sans-serif\" font-size=\"11px\">30522 vocab predictions</text></g></g></svg>",
+  "componentExplanations": {
+    "input": {
+      "title": "Input Tokens",
+      "explanation": "The starting point of BERT. Input tokens are numerical indices representing words or subwords from the vocabulary. They're organized in batches of sequences for efficient processing. Each token is mapped to a unique index from the 30,522-word vocabulary."
+    },
+    "bert-model": {
+      "title": "BERT for Masked Language Modeling",
+      "explanation": "The main model class that combines BERT with a language modeling head. It's designed specifically for the masked language modeling (MLM) task, where the model predicts masked tokens in the input. This is how BERT is pre-trained."
+    },
+    "bert": {
+      "title": "BERT Model",
+      "explanation": "The core BERT model that processes input tokens through embeddings and transformer layers. It outputs contextualized representations for each token, which capture the meaning of words based on their surrounding context."
+    },
+    "embeddings": {
+      "title": "BERT Embeddings",
+      "explanation": "Combines three types of embeddings: word embeddings (semantic meaning), position embeddings (position in sequence), and token type embeddings (which sentence a token belongs to). These are summed together to create the input representation."
+    },
+    "word-embeddings": {
+      "title": "Word Embeddings",
+      "explanation": "Maps each token ID to a 768-dimensional vector. With 30,522 tokens in the vocabulary, this creates a large embedding matrix that captures semantic relationships between words. Similar words have similar embeddings."
+    },
+    "token-type-embeddings": {
+      "title": "Token Type Embeddings",
+      "explanation": "Distinguishes between different sentences or segments. BERT can process two sentences at once (for tasks like question answering), and this embedding tells the model which sentence each token belongs to (0 or 1)."
+    },
+    "position-embeddings": {
+      "title": "Position Embeddings",
+      "explanation": "Encodes the position of each token in the sequence (up to 512 positions). This is crucial because transformers don't have inherent notion of order - position embeddings inject this sequential information."
+    },
+    "sum": {
+      "title": "Embedding Sum",
+      "explanation": "The three embedding types are added element-wise to create a single representation for each token. This combined embedding contains word meaning, position, and segment information all in one vector."
+    },
+    "embeddings-layernorm": {
+      "title": "Embeddings Layer Normalization",
+      "explanation": "Normalizes the summed embeddings to have zero mean and unit variance. This stabilization helps with training deep networks and uses a small epsilon (1e-12) for numerical stability."
+    },
+    "embeddings-dropout": {
+      "title": "Embeddings Dropout",
+      "explanation": "Randomly zeros out 10% of the embedding values during training. This regularization technique prevents overfitting by forcing the model to not rely too heavily on any single embedding dimension."
+    },
+    "encoder": {
+      "title": "BERT Encoder",
+      "explanation": "A stack of 12 identical transformer layers that process the embeddings sequentially. Each layer refines the representations, allowing the model to capture increasingly complex patterns and relationships in the text."
+    },
+    "bert-layer": {
+      "title": "BERT Layer",
+      "explanation": "A single transformer layer containing multi-head attention followed by a feed-forward network. Each layer has residual connections and layer normalization. The 12 layers work together to build deep contextual understanding."
+    },
+    "attention": {
+      "title": "BERT Attention Block",
+      "explanation": "The attention mechanism that allows each token to look at all other tokens in the sequence. It consists of self-attention computation followed by a projection and residual connection. This is where BERT learns relationships between words."
+    },
+    "self-attention": {
+      "title": "Scaled Dot-Product Attention",
+      "explanation": "Uses 12 attention heads to compute attention weights between all pairs of tokens. Each head learns different types of relationships (syntactic, semantic, etc.). Uses PyTorch's optimized SDPA implementation for efficiency."
+    },
+    "query": {
+      "title": "Query Projection",
+      "explanation": "Linear transformation that projects each token into query vectors. These queries represent what information each token is looking for from other tokens in the sequence."
+    },
+    "key": {
+      "title": "Key Projection",
+      "explanation": "Linear transformation that projects each token into key vectors. Keys represent what information each token contains that might be relevant to other tokens' queries."
+    },
+    "value": {
+      "title": "Value Projection",
+      "explanation": "Linear transformation that projects each token into value vectors. Values contain the actual information that will be aggregated based on the attention weights computed from queries and keys."
+    },
+    "sdpa": {
+      "title": "Scaled Dot-Product Attention",
+      "explanation": "Computes attention scores by taking dot products between queries and keys, scaling by sqrt(64), applying softmax, then using these weights to aggregate values. This is done efficiently for all 12 heads in parallel."
+    },
+    "self-output": {
+      "title": "Self-Attention Output",
+      "explanation": "Projects the multi-head attention output back to the model dimension and applies dropout and layer normalization with a residual connection. This stabilizes training and preserves information from the input."
+    },
+    "attention-dense": {
+      "title": "Attention Output Projection",
+      "explanation": "Linear layer that combines the outputs from all 12 attention heads back into a single 768-dimensional representation. This allows different heads to specialize while maintaining a consistent dimension."
+    },
+    "attention-dropout": {
+      "title": "Attention Dropout",
+      "explanation": "Applies 10% dropout to the attention output during training. This prevents the model from becoming too dependent on specific attention patterns and improves generalization."
+    },
+    "intermediate": {
+      "title": "Feed-Forward Intermediate",
+      "explanation": "The first part of the feed-forward network that expands the representation from 768 to 3072 dimensions. This expansion allows the model to learn more complex non-linear transformations."
+    },
+    "intermediate-dense": {
+      "title": "Intermediate Linear Layer",
+      "explanation": "Projects from 768 to 3072 dimensions (4x expansion). This creates a bottleneck architecture where the model can learn richer representations in the higher-dimensional space."
+    },
+    "gelu": {
+      "title": "GELU Activation",
+      "explanation": "Gaussian Error Linear Unit activation function: f(x) = x * \u03a6(x) where \u03a6 is the cumulative distribution function of the standard normal distribution. Smoother than ReLU and works well for NLP tasks."
+    },
+    "output": {
+      "title": "Layer Output Block",
+      "explanation": "The output block of each transformer layer. It projects the expanded representation back to 768 dimensions and applies another residual connection, completing the feed-forward network."
+    },
+    "output-dense": {
+      "title": "Output Linear Layer",
+      "explanation": "Projects from the expanded 3072 dimensions back down to 768. This completes the feed-forward network's bottleneck architecture, allowing complex transformations while maintaining dimensional consistency."
+    },
+    "output-dropout": {
+      "title": "Output Dropout",
+      "explanation": "Another 10% dropout applied to the feed-forward output. Multiple dropout layers at different points help with regularization without being too aggressive at any single location."
+    },
+    "output-layernorm": {
+      "title": "Output Layer Normalization",
+      "explanation": "Final layer normalization with residual connection from the attention output. This completes the transformer layer, ensuring stable gradients for deep network training."
+    },
+    "mlm-head": {
+      "title": "Masked Language Model Head",
+      "explanation": "The task-specific head for masked language modeling. It takes the final hidden states and predicts the original tokens for masked positions, which is how BERT learns during pre-training."
+    },
+    "predictions": {
+      "title": "Language Model Predictions",
+      "explanation": "Transforms the BERT output representations into vocabulary predictions. It uses a sophisticated architecture with a transformation layer before the final projection to vocabulary size."
+    },
+    "transform": {
+      "title": "Prediction Head Transform",
+      "explanation": "An intermediate transformation before final vocabulary projection. This adds expressiveness to the prediction head, allowing it to learn a more complex mapping from hidden states to word predictions."
+    },
+    "transform-dense": {
+      "title": "Transform Linear Layer",
+      "explanation": "A linear layer that maintains the 768-dimensional size but transforms the representation specifically for the prediction task. This task-specific transformation improves prediction accuracy."
+    },
+    "transform-gelu": {
+      "title": "Transform GELU Activation",
+      "explanation": "GELU activation in the prediction head. Using the same activation as in the main model maintains consistency and has been shown to work well for the MLM task."
+    },
+    "transform-layernorm": {
+      "title": "Transform Layer Normalization",
+      "explanation": "Final normalization before vocabulary projection. This ensures the inputs to the large vocabulary projection are well-scaled, which is important for stable training with such a large output dimension."
+    },
+    "decoder": {
+      "title": "Vocabulary Decoder",
+      "explanation": "The final linear layer that projects from 768 dimensions to 30,522 vocabulary items. In BERT, this often shares weights with the input embeddings (tied weights), reducing parameters and ensuring consistency."
+    },
+    "output-logits": {
+      "title": "Output Logits",
+      "explanation": "The final output: raw scores (logits) for each vocabulary token at each position. During training, these are compared with the true masked tokens using cross-entropy loss. During inference, they're converted to probabilities with softmax."
+    }
+  },
+  "componentQuizzes": {
+    "input": {
+      "id": "input",
+      "title": "Input Tokens",
+      "equations": [
+        {
+          "id": "input-1",
+          "title": "Token Input Shape",
+          "explanation": "Define the input tensor shape for token indices.",
+          "equation": "X^{(0)} = \\text{input\\_ids} \\in \\mathbb{Z}^{B \\times L}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "input-2",
+          "title": "Vocabulary Constraint",
+          "explanation": "Each token must be a valid index in the vocabulary.",
+          "equation": "X^{(0)}_{i,j} \\in \\{0, 1, ..., V-1\\}, \\quad V = 30522",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "input-init",
+        "title": "Input Processing",
+        "explanation": "Process raw text into token indices using the BERT tokenizer.",
+        "codeAnswer": "# Tokenize input text\nfrom transformers import BertTokenizer\n\ntokenizer = BertTokenizer.from_pretrained('bert-base-uncased')\ntext = \"Hello, how are you?\"\n\n# Convert to tokens\ntokens = tokenizer.tokenize(text)\n# ['hello', ',', 'how', 'are', 'you', '?']\n\n# Convert to indices\ninput_ids = tokenizer.convert_tokens_to_ids(tokens)\n# [7592, 1010, 2129, 2024, 2017, 1029]\n\n# Add special tokens\ninput_ids = tokenizer.encode(text, add_special_tokens=True)\n# [101, 7592, 1010, 2129, 2024, 2017, 1029, 102]",
+        "language": "python"
+      },
+      "forward": {
+        "id": "input-forward",
+        "title": "Batch Processing",
+        "explanation": "Prepare batched inputs with padding and attention masks.",
+        "codeAnswer": "def prepare_batch(texts, tokenizer, max_length=512):\n    # Tokenize and pad\n    encoding = tokenizer(\n        texts,\n        padding=True,\n        truncation=True,\n        max_length=max_length,\n        return_tensors='pt'\n    )\n    \n    input_ids = encoding['input_ids']  # Shape: (B, L)\n    attention_mask = encoding['attention_mask']  # Shape: (B, L)\n    token_type_ids = encoding['token_type_ids']  # Shape: (B, L)\n    \n    return input_ids, attention_mask, token_type_ids",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "embeddings": {
+      "id": "embeddings",
+      "title": "BERT Embeddings",
+      "equations": [
+        {
+          "id": "embed-1",
+          "title": "Embedding Lookup",
+          "explanation": "Convert token indices to dense vectors for each embedding type.",
+          "equation": "E_{\\text{word}} = \\text{Embed}_{\\text{word}}(X^{(0)}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-2",
+          "title": "Embedding Combination",
+          "explanation": "Sum three types of embeddings to create input representation.",
+          "equation": "E^{(0)} = E_{\\text{word}} + E_{\\text{position}} + E_{\\text{token\\_type}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-3",
+          "title": "Normalized Embedding Output",
+          "explanation": "Apply layer normalization and dropout to produce encoder input.",
+          "equation": "H^{(0)} = \\text{Dropout}(\\text{LayerNorm}(E^{(0)})) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-init",
+        "title": "BERT Embeddings Initialization",
+        "explanation": "Initialize the three embedding layers and normalization.",
+        "codeAnswer": "class BertEmbeddings(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # Three embedding layers\n        self.word_embeddings = nn.Embedding(\n            config.vocab_size, config.hidden_size, \n            padding_idx=config.pad_token_id\n        )\n        self.position_embeddings = nn.Embedding(\n            config.max_position_embeddings, config.hidden_size\n        )\n        self.token_type_embeddings = nn.Embedding(\n            config.type_vocab_size, config.hidden_size\n        )\n        \n        # Normalization and dropout\n        self.LayerNorm = nn.LayerNorm(\n            config.hidden_size, eps=config.layer_norm_eps\n        )\n        self.dropout = nn.Dropout(config.hidden_dropout_prob)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-forward",
+        "title": "Embeddings Forward Pass",
+        "explanation": "Combine embeddings and apply normalization.",
+        "codeAnswer": "def forward(self, input_ids, token_type_ids=None, position_ids=None):\n    seq_length = input_ids.size(1)\n    \n    # Get word embeddings\n    inputs_embeds = self.word_embeddings(input_ids)\n    \n    # Get position embeddings\n    if position_ids is None:\n        position_ids = torch.arange(seq_length, device=input_ids.device)\n        position_ids = position_ids.unsqueeze(0).expand_as(input_ids)\n    position_embeddings = self.position_embeddings(position_ids)\n    \n    # Get token type embeddings\n    if token_type_ids is None:\n        token_type_ids = torch.zeros_like(input_ids)\n    token_type_embeddings = self.token_type_embeddings(token_type_ids)\n    \n    # Sum all embeddings\n    embeddings = inputs_embeds + position_embeddings + token_type_embeddings\n    \n    # Apply layer norm and dropout\n    embeddings = self.LayerNorm(embeddings)\n    embeddings = self.dropout(embeddings)\n    \n    return embeddings",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "self-attention": {
+      "id": "self-attention",
+      "title": "Multi-Head Self-Attention",
+      "equations": [
+        {
+          "id": "attn-1",
+          "title": "Query, Key, Value Projections",
+          "explanation": "Project hidden states from layer l into Q, K, V matrices.",
+          "equation": "Q^{(l)} = H^{(l)}W_Q, \\quad K^{(l)} = H^{(l)}W_K, \\quad V^{(l)} = H^{(l)}W_V",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-2",
+          "title": "Scaled Dot-Product Attention",
+          "explanation": "Compute attention scores and weighted values.",
+          "equation": "\\text{Attn}^{(l)} = \\text{softmax}\\left(\\frac{Q^{(l)}K^{(l)T}}{\\sqrt{d_k}}\\right)V^{(l)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-3",
+          "title": "Multi-Head Output Projection",
+          "explanation": "Project concatenated heads and add residual with layer norm.",
+          "equation": "H_{\\text{attn}}^{(l)} = \\text{LayerNorm}(H^{(l)} + \\text{Dropout}(\\text{Attn}^{(l)}W_O))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-init",
+        "title": "Self-Attention Initialization",
+        "explanation": "Initialize query, key, value projections for multi-head attention.",
+        "codeAnswer": "class BertSelfAttention(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        self.num_attention_heads = config.num_attention_heads\n        self.attention_head_size = config.hidden_size // config.num_attention_heads\n        self.all_head_size = self.num_attention_heads * self.attention_head_size\n        \n        # Q, K, V projections\n        self.query = nn.Linear(config.hidden_size, self.all_head_size)\n        self.key = nn.Linear(config.hidden_size, self.all_head_size)\n        self.value = nn.Linear(config.hidden_size, self.all_head_size)\n        \n        self.dropout = nn.Dropout(config.attention_probs_dropout_prob)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-forward",
+        "title": "Self-Attention Forward Pass",
+        "explanation": "Compute multi-head attention using scaled dot-product attention.",
+        "codeAnswer": "def forward(self, hidden_states, attention_mask=None):\n    batch_size = hidden_states.size(0)\n    \n    # Create Q, K, V matrices\n    query_layer = self.query(hidden_states)\n    key_layer = self.key(hidden_states)\n    value_layer = self.value(hidden_states)\n    \n    # Reshape for multi-head attention\n    # (batch, seq_len, hidden) -> (batch, heads, seq_len, head_size)\n    query_layer = query_layer.view(\n        batch_size, -1, self.num_attention_heads, self.attention_head_size\n    ).transpose(1, 2)\n    key_layer = key_layer.view(\n        batch_size, -1, self.num_attention_heads, self.attention_head_size\n    ).transpose(1, 2)\n    value_layer = value_layer.view(\n        batch_size, -1, self.num_attention_heads, self.attention_head_size\n    ).transpose(1, 2)\n    \n    # Scaled dot-product attention\n    attn_output = torch.nn.functional.scaled_dot_product_attention(\n        query_layer, key_layer, value_layer,\n        attn_mask=attention_mask,\n        dropout_p=self.dropout.p if self.training else 0.0\n    )\n    \n    # Reshape back\n    attn_output = attn_output.transpose(1, 2).contiguous()\n    attn_output = attn_output.view(batch_size, -1, self.all_head_size)\n    \n    return attn_output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "bert-layer": {
+      "id": "bert-layer",
+      "title": "BERT Transformer Layer",
+      "equations": [
+        {
+          "id": "layer-1",
+          "title": "Layer Input to Attention",
+          "explanation": "Input to layer l comes from previous layer output.",
+          "equation": "H^{(l)} = H^{(l-1)} \\quad \\text{where} \\quad l \\in \\{1, 2, ..., 12\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "layer-2",
+          "title": "Attention to FFN Flow",
+          "explanation": "Attention output flows to feed-forward network.",
+          "equation": "H_{\\text{FFN}}^{(l)} = \\text{FFN}(H_{\\text{attn}}^{(l)})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "layer-3",
+          "title": "Feed-Forward Network",
+          "explanation": "Expand to 4x dimension, apply GELU, project back with residual.",
+          "equation": "H^{(l+1)} = \\text{LayerNorm}(H_{\\text{attn}}^{(l)} + \\text{Dropout}(W_2 \\cdot \\text{GELU}(H_{\\text{attn}}^{(l)}W_1)))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "layer-init",
+        "title": "BERT Layer Initialization",
+        "explanation": "Initialize attention and feed-forward components.",
+        "codeAnswer": "class BertLayer(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # Attention block\n        self.attention = BertAttention(config)\n        \n        # Feed-forward network\n        self.intermediate = BertIntermediate(config)\n        self.output = BertOutput(config)\n        \n        # For chunked feed-forward\n        self.chunk_size_feed_forward = config.chunk_size_feed_forward\n        self.seq_len_dim = 1",
+        "language": "python"
+      },
+      "forward": {
+        "id": "layer-forward",
+        "title": "BERT Layer Forward Pass",
+        "explanation": "Process through attention and feed-forward with residual connections.",
+        "codeAnswer": "def forward(self, hidden_states, attention_mask=None):\n    # Self-attention with residual\n    attention_output = self.attention(hidden_states, attention_mask)\n    \n    # Feed-forward network with residual\n    # Can be chunked for memory efficiency\n    layer_output = apply_chunking_to_forward(\n        self.feed_forward_chunk,\n        self.chunk_size_feed_forward,\n        self.seq_len_dim,\n        attention_output\n    )\n    \n    return layer_output\n\ndef feed_forward_chunk(self, attention_output):\n    # Intermediate projection + GELU\n    intermediate_output = self.intermediate(attention_output)\n    \n    # Output projection + residual\n    layer_output = self.output(intermediate_output, attention_output)\n    \n    return layer_output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "mlm-head": {
+      "id": "mlm-head",
+      "title": "Masked Language Model Head",
+      "equations": [
+        {
+          "id": "mlm-1",
+          "title": "Final Layer Output",
+          "explanation": "Take the output from the last transformer layer.",
+          "equation": "H^{(12)} \\in \\mathbb{R}^{B \\times L \\times d} \\quad \\text{(final encoder output)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mlm-2",
+          "title": "Prediction Head Transform",
+          "explanation": "Transform hidden states through dense, GELU, and LayerNorm.",
+          "equation": "H_{\\text{pred}} = \\text{LayerNorm}(\\text{GELU}(H^{(12)}W_{\\text{dense}} + b_{\\text{dense}}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mlm-3",
+          "title": "Vocabulary Projection",
+          "explanation": "Project to vocabulary size, often using tied embedding weights.",
+          "equation": "\\text{logits} = H_{\\text{pred}} W_{\\text{embed}}^T + b_{\\text{vocab}} \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "mlm-init",
+        "title": "MLM Head Initialization",
+        "explanation": "Initialize prediction head with transform and decoder.",
+        "codeAnswer": "class BertLMPredictionHead(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # Transform layer\n        self.transform = BertPredictionHeadTransform(config)\n        \n        # Output projection (often shares weights with embeddings)\n        self.decoder = nn.Linear(\n            config.hidden_size, config.vocab_size, bias=False\n        )\n        \n        # Separate bias for output\n        self.bias = nn.Parameter(torch.zeros(config.vocab_size))\n        self.decoder.bias = self.bias",
+        "language": "python"
+      },
+      "forward": {
+        "id": "mlm-forward",
+        "title": "MLM Head Forward Pass",
+        "explanation": "Transform hidden states and project to vocabulary predictions.",
+        "codeAnswer": "def forward(self, sequence_output, labels=None):\n    # Apply prediction head\n    hidden_states = self.transform(sequence_output)\n    prediction_scores = self.decoder(hidden_states)\n    \n    # Calculate loss if labels provided\n    masked_lm_loss = None\n    if labels is not None:\n        loss_fct = nn.CrossEntropyLoss()\n        # Only compute loss for masked tokens (labels != -100)\n        masked_lm_loss = loss_fct(\n            prediction_scores.view(-1, self.config.vocab_size),\n            labels.view(-1)\n        )\n    \n    return prediction_scores, masked_lm_loss",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "gelu": {
+      "id": "gelu",
+      "title": "GELU Activation Function",
+      "equations": [
+        {
+          "id": "gelu-1",
+          "title": "GELU Definition",
+          "explanation": "Gaussian Error Linear Unit activation function.",
+          "equation": "\\text{GELU}(x) = x \\cdot \\Phi(x) = x \\cdot \\frac{1}{2}\\left[1 + \\text{erf}\\left(\\frac{x}{\\sqrt{2}}\\right)\\right]",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gelu-2",
+          "title": "GELU in FFN Context",
+          "explanation": "Applied element-wise after first linear projection in FFN.",
+          "equation": "H_{\\text{intermediate}} = \\text{GELU}(H_{\\text{attn}}^{(l)}W_1 + b_1) \\in \\mathbb{R}^{B \\times L \\times 4d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "gelu-init",
+        "title": "GELU Activation",
+        "explanation": "Initialize GELU activation function.",
+        "codeAnswer": "class GELUActivation(nn.Module):\n    def __init__(self, use_gelu_python=False):\n        super().__init__()\n        if use_gelu_python:\n            self.act = self._gelu_python\n        else:\n            # Use optimized implementation\n            self.act = nn.functional.gelu\n    \n    def _gelu_python(self, input):\n        # Exact GELU computation\n        return input * 0.5 * (1.0 + torch.erf(input / math.sqrt(2.0)))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "gelu-forward",
+        "title": "GELU Forward Pass",
+        "explanation": "Apply GELU activation to input tensor.",
+        "codeAnswer": "def forward(self, input):\n    return self.act(input)\n\n# Usage in intermediate layer\ndef intermediate_forward(self, hidden_states):\n    # Linear transformation\n    hidden_states = self.dense(hidden_states)\n    \n    # GELU activation\n    hidden_states = self.intermediate_act_fn(hidden_states)\n    \n    return hidden_states",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output-layernorm": {
+      "id": "output-layernorm",
+      "title": "Layer Normalization",
+      "equations": [
+        {
+          "id": "ln-1",
+          "title": "Layer Norm with Residual",
+          "explanation": "First add residual connection, then normalize.",
+          "equation": "\\text{LN}(x + \\text{residual}) = \\gamma \\cdot \\frac{(x + \\text{residual}) - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta",
+          "canvasHeight": 150
+        },
+        {
+          "id": "ln-2",
+          "title": "Statistics Computation",
+          "explanation": "Mean and variance computed across hidden dimension d.",
+          "equation": "\\mu = \\frac{1}{d}\\sum_{i=1}^{d} (x + \\text{residual})_i, \\quad \\sigma^2 = \\frac{1}{d}\\sum_{i=1}^{d} ((x + \\text{residual})_i - \\mu)^2",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "ln-init",
+        "title": "LayerNorm Initialization",
+        "explanation": "Initialize layer normalization with learnable parameters.",
+        "codeAnswer": "class LayerNorm(nn.Module):\n    def __init__(self, normalized_shape, eps=1e-12):\n        super().__init__()\n        self.weight = nn.Parameter(torch.ones(normalized_shape))\n        self.bias = nn.Parameter(torch.zeros(normalized_shape))\n        self.eps = eps",
+        "language": "python"
+      },
+      "forward": {
+        "id": "ln-forward",
+        "title": "LayerNorm Forward Pass",
+        "explanation": "Apply layer normalization with residual connection.",
+        "codeAnswer": "def forward(self, hidden_states, input_tensor):\n    # Add residual connection first\n    hidden_states = hidden_states + input_tensor\n    \n    # Compute mean and variance\n    mean = hidden_states.mean(-1, keepdim=True)\n    variance = (hidden_states - mean).pow(2).mean(-1, keepdim=True)\n    \n    # Normalize\n    hidden_states = (hidden_states - mean) / torch.sqrt(variance + self.eps)\n    \n    # Apply learnable parameters\n    hidden_states = self.weight * hidden_states + self.bias\n    \n    return hidden_states",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "bert-model": {
+      "id": "bert-model",
+      "title": "BERT for Masked Language Modeling",
+      "equations": [
+        {
+          "id": "bert-model-1",
+          "title": "Input to BERT Core",
+          "explanation": "Main model takes tokenized input and forwards to BERT core.",
+          "equation": "H^{(\\text{final})} = \\text{BertModel}(X^{(0)}, \\text{attention\\_mask}, \\text{token\\_type\\_ids})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "bert-model-2",
+          "title": "MLM Head Processing",
+          "explanation": "Hidden states flow from BERT to MLM prediction head.",
+          "equation": "\\text{logits} = \\text{BertOnlyMLMHead}(H^{(\\text{final})}) \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "bert-model-3",
+          "title": "Masked Language Modeling Loss",
+          "explanation": "Compute cross-entropy loss only for masked token positions.",
+          "equation": "\\mathcal{L}_{\\text{MLM}} = -\\frac{1}{|M|}\\sum_{i \\in M} \\log P(x_i^{(\\text{true})} | \\text{context})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "bert-model-init",
+        "title": "BertForMaskedLM Initialization",
+        "explanation": "Initialize BERT model with MLM head for pre-training.",
+        "codeAnswer": "class BertForMaskedLM(BertPreTrainedModel):\n    def __init__(self, config):\n        super().__init__(config)\n        \n        # Core BERT model\n        self.bert = BertModel(config, add_pooling_layer=False)\n        \n        # MLM prediction head\n        self.cls = BertOnlyMLMHead(config)\n        \n        # Tie weights between embeddings and decoder\n        self.tie_weights()\n        \n        # Initialize weights\n        self.post_init()",
+        "language": "python"
+      },
+      "forward": {
+        "id": "bert-model-forward",
+        "title": "BertForMaskedLM Forward Pass",
+        "explanation": "Complete forward pass from tokens to MLM predictions.",
+        "codeAnswer": "def forward(self, input_ids, attention_mask=None, token_type_ids=None, labels=None):\n    # Forward through BERT\n    outputs = self.bert(\n        input_ids=input_ids,\n        attention_mask=attention_mask,\n        token_type_ids=token_type_ids\n    )\n    \n    # Get sequence output (last hidden state)\n    sequence_output = outputs.last_hidden_state\n    \n    # Forward through MLM head\n    prediction_scores = self.cls(sequence_output)\n    \n    # Calculate loss if labels provided\n    masked_lm_loss = None\n    if labels is not None:\n        loss_fct = CrossEntropyLoss()\n        masked_lm_loss = loss_fct(\n            prediction_scores.view(-1, self.config.vocab_size),\n            labels.view(-1)\n        )\n    \n    return MaskedLMOutput(\n        loss=masked_lm_loss,\n        logits=prediction_scores,\n        hidden_states=outputs.hidden_states,\n        attentions=outputs.attentions\n    )",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "bert": {
+      "id": "bert",
+      "title": "BERT Model Core",
+      "equations": [
+        {
+          "id": "bert-1",
+          "title": "Embeddings to Encoder",
+          "explanation": "Token inputs converted to embeddings, then processed by encoder stack.",
+          "equation": "H^{(0)} = \\text{BertEmbeddings}(X^{(0)}) \\rightarrow \\text{BertEncoder}(H^{(0)})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "bert-2",
+          "title": "Layer-by-Layer Processing",
+          "explanation": "Each transformer layer processes the previous layer's output.",
+          "equation": "H^{(l)} = \\text{BertLayer}_l(H^{(l-1)}) \\quad \\text{for } l = 1, 2, ..., 12",
+          "canvasHeight": 150
+        },
+        {
+          "id": "bert-3",
+          "title": "Final Hidden States",
+          "explanation": "Output contextualized representations for all sequence positions.",
+          "equation": "H^{(\\text{final})} = H^{(12)} \\in \\mathbb{R}^{B \\times L \\times d} \\quad (d = 768)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "bert-init",
+        "title": "BertModel Initialization",
+        "explanation": "Initialize core BERT components: embeddings and encoder stack.",
+        "codeAnswer": "class BertModel(BertPreTrainedModel):\n    def __init__(self, config, add_pooling_layer=True):\n        super().__init__(config)\n        self.config = config\n        \n        # Embedding layer\n        self.embeddings = BertEmbeddings(config)\n        \n        # Encoder with 12 transformer layers\n        self.encoder = BertEncoder(config)\n        \n        # Optional pooler for [CLS] token\n        self.pooler = BertPooler(config) if add_pooling_layer else None\n        \n        # Initialize weights\n        self.post_init()",
+        "language": "python"
+      },
+      "forward": {
+        "id": "bert-forward",
+        "title": "BertModel Forward Pass",
+        "explanation": "Process inputs through embeddings and encoder layers.",
+        "codeAnswer": "def forward(self, input_ids, attention_mask=None, token_type_ids=None, \n           position_ids=None, head_mask=None, output_attentions=False,\n           output_hidden_states=False, return_dict=True):\n    \n    # Create embeddings\n    embedding_output = self.embeddings(\n        input_ids=input_ids,\n        position_ids=position_ids,\n        token_type_ids=token_type_ids\n    )\n    \n    # Process through encoder layers\n    encoder_outputs = self.encoder(\n        embedding_output,\n        attention_mask=attention_mask,\n        head_mask=head_mask,\n        output_attentions=output_attentions,\n        output_hidden_states=output_hidden_states,\n        return_dict=return_dict\n    )\n    \n    sequence_output = encoder_outputs.last_hidden_state\n    pooled_output = self.pooler(sequence_output) if self.pooler else None\n    \n    return BaseModelOutputWithPoolingAndCrossAttentions(\n        last_hidden_state=sequence_output,\n        pooler_output=pooled_output,\n        hidden_states=encoder_outputs.hidden_states,\n        attentions=encoder_outputs.attentions\n    )",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "word-embeddings": {
+      "id": "word-embeddings",
+      "title": "Word Embeddings",
+      "equations": [
+        {
+          "id": "word-embed-1",
+          "title": "Token ID to Embedding",
+          "explanation": "Map token indices to dense semantic vectors.",
+          "equation": "E_{\\text{word}}[i,j] = W_{\\text{embed}}[X^{(0)}[i,j]] \\in \\mathbb{R}^{d} \\quad \\text{where } W_{\\text{embed}} \\in \\mathbb{R}^{V \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "word-embed-2",
+          "title": "Batch Embedding Lookup",
+          "explanation": "Apply embedding lookup to entire batch simultaneously.",
+          "equation": "E_{\\text{word}} = \\text{Embedding}(X^{(0)}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "word-embed-3",
+          "title": "Flow to Embedding Sum",
+          "explanation": "Word embeddings combine with position and token type embeddings.",
+          "equation": "E_{\\text{word}} \\rightarrow E^{(0)} = E_{\\text{word}} + E_{\\text{position}} + E_{\\text{token\\_type}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "word-embed-init",
+        "title": "Word Embeddings Initialization",
+        "explanation": "Initialize embedding matrix for vocabulary lookup.",
+        "codeAnswer": "# Word embeddings component\nself.word_embeddings = nn.Embedding(\n    num_embeddings=config.vocab_size,     # 30,522 tokens\n    embedding_dim=config.hidden_size,     # 768 dimensions\n    padding_idx=config.pad_token_id       # Padding token index\n)\n\n# Initialize weights with normal distribution\nstd = config.initializer_range  # Usually 0.02\nself.word_embeddings.weight.data.normal_(mean=0.0, std=std)\n\n# Zero out padding token embedding\nif config.pad_token_id is not None:\n    with torch.no_grad():\n        self.word_embeddings.weight[config.pad_token_id].fill_(0)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "word-embed-forward",
+        "title": "Word Embeddings Forward Pass",
+        "explanation": "Look up embeddings for input token IDs.",
+        "codeAnswer": "def word_embeddings_forward(self, input_ids):\n    # input_ids shape: (batch_size, seq_length)\n    # output shape: (batch_size, seq_length, hidden_size)\n    \n    # Simple embedding lookup\n    word_embeddings = self.word_embeddings(input_ids)\n    \n    return word_embeddings\n\n# Usage in BertEmbeddings\ndef forward(self, input_ids, token_type_ids=None, position_ids=None):\n    # Get word embeddings\n    inputs_embeds = self.word_embeddings(input_ids)\n    \n    # Continue with other embedding types...\n    return inputs_embeds",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "token-type-embeddings": {
+      "id": "token-type-embeddings",
+      "title": "Token Type Embeddings",
+      "equations": [
+        {
+          "id": "token-type-1",
+          "title": "Segment Identification",
+          "explanation": "Map segment IDs (0 or 1) to learned embeddings.",
+          "equation": "E_{\\text{token\\_type}}[i,j] = W_{\\text{segment}}[\\text{token\\_type\\_ids}[i,j]] \\in \\mathbb{R}^{d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "token-type-2",
+          "title": "Dual Sentence Processing",
+          "explanation": "Distinguish between sentence A (type 0) and sentence B (type 1).",
+          "equation": "\\text{token\\_type\\_ids}[i,j] \\in \\{0, 1\\} \\quad \\text{where } W_{\\text{segment}} \\in \\mathbb{R}^{2 \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "token-type-3",
+          "title": "Flow to Embedding Sum",
+          "explanation": "Token type embeddings added to word and position embeddings.",
+          "equation": "E_{\\text{token\\_type}} \\rightarrow E^{(0)} = E_{\\text{word}} + E_{\\text{position}} + E_{\\text{token\\_type}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "token-type-init",
+        "title": "Token Type Embeddings Initialization",
+        "explanation": "Initialize embeddings for sentence segmentation.",
+        "codeAnswer": "# Token type embeddings component\nself.token_type_embeddings = nn.Embedding(\n    num_embeddings=config.type_vocab_size,  # Usually 2 (sentence A/B)\n    embedding_dim=config.hidden_size        # 768 dimensions\n)\n\n# Initialize with small random values\nstd = config.initializer_range  # Usually 0.02\nself.token_type_embeddings.weight.data.normal_(mean=0.0, std=std)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "token-type-forward",
+        "title": "Token Type Embeddings Forward Pass",
+        "explanation": "Look up segment embeddings for input.",
+        "codeAnswer": "def token_type_forward(self, input_ids, token_type_ids=None):\n    # If no token_type_ids provided, assume all tokens are type 0\n    if token_type_ids is None:\n        token_type_ids = torch.zeros_like(input_ids, dtype=torch.long)\n    \n    # Look up token type embeddings\n    # token_type_ids shape: (batch_size, seq_length)\n    # output shape: (batch_size, seq_length, hidden_size)\n    token_type_embeddings = self.token_type_embeddings(token_type_ids)\n    \n    return token_type_embeddings\n\n# Example usage for sentence pairs\n# Sentence A: [CLS] How are you? [SEP] \n# Sentence B: I am fine. [SEP]\n# token_type_ids: [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "position-embeddings": {
+      "id": "position-embeddings",
+      "title": "Position Embeddings",
+      "equations": [
+        {
+          "id": "pos-embed-1",
+          "title": "Position Index to Embedding",
+          "explanation": "Map absolute position indices to learned position vectors.",
+          "equation": "E_{\\text{position}}[i,j] = W_{\\text{pos}}[j] \\in \\mathbb{R}^{d} \\quad \\text{where } j \\in \\{0, 1, ..., L-1\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "pos-embed-2",
+          "title": "Sequence Position Encoding",
+          "explanation": "Each position in sequence gets unique learned embedding.",
+          "equation": "W_{\\text{pos}} \\in \\mathbb{R}^{L_{\\text{max}} \\times d} \\quad \\text{where } L_{\\text{max}} = 512",
+          "canvasHeight": 150
+        },
+        {
+          "id": "pos-embed-3",
+          "title": "Flow to Embedding Sum",
+          "explanation": "Position embeddings added to word and token type embeddings.",
+          "equation": "E_{\\text{position}} \\rightarrow E^{(0)} = E_{\\text{word}} + E_{\\text{position}} + E_{\\text{token\\_type}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "pos-embed-init",
+        "title": "Position Embeddings Initialization",
+        "explanation": "Initialize learned position embeddings for sequence positions.",
+        "codeAnswer": "# Position embeddings component\nself.position_embeddings = nn.Embedding(\n    num_embeddings=config.max_position_embeddings,  # 512 positions\n    embedding_dim=config.hidden_size                # 768 dimensions\n)\n\n# Register position_ids buffer for consistent device placement\nself.register_buffer(\n    \"position_ids\",\n    torch.arange(config.max_position_embeddings).expand((1, -1)),\n    persistent=False\n)\n\n# Initialize with small random values\nstd = config.initializer_range\nself.position_embeddings.weight.data.normal_(mean=0.0, std=std)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "pos-embed-forward",
+        "title": "Position Embeddings Forward Pass",
+        "explanation": "Generate position embeddings for sequence length.",
+        "codeAnswer": "def position_forward(self, input_ids, position_ids=None):\n    seq_length = input_ids.size(1)\n    \n    # Generate position IDs if not provided\n    if position_ids is None:\n        position_ids = self.position_ids[:, :seq_length]\n    \n    # Look up position embeddings\n    # position_ids shape: (1, seq_length) or (batch_size, seq_length)\n    # output shape: (batch_size, seq_length, hidden_size)\n    position_embeddings = self.position_embeddings(position_ids)\n    \n    return position_embeddings\n\n# Automatic position generation\n# For input length L: position_ids = [0, 1, 2, ..., L-1]\nposition_ids = torch.arange(seq_length, device=input_ids.device)\nposition_ids = position_ids.unsqueeze(0).expand_as(input_ids)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "sum": {
+      "id": "sum",
+      "title": "Embedding Sum",
+      "equations": [
+        {
+          "id": "sum-1",
+          "title": "Three-Way Addition",
+          "explanation": "Element-wise addition of word, position, and token type embeddings.",
+          "equation": "E^{(0)} = E_{\\text{word}} + E_{\\text{position}} + E_{\\text{token\\_type}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "sum-2",
+          "title": "Broadcasting Behavior",
+          "explanation": "All embeddings have same shape, enabling direct element-wise addition.",
+          "equation": "E_{\\text{word}}, E_{\\text{position}}, E_{\\text{token\\_type}} \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "sum-3",
+          "title": "Flow to Layer Normalization",
+          "explanation": "Combined embeddings flow to layer normalization and dropout.",
+          "equation": "E^{(0)} \\rightarrow H^{(0)} = \\text{Dropout}(\\text{LayerNorm}(E^{(0)}))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "sum-init",
+        "title": "Embedding Sum Operation",
+        "explanation": "No parameters needed - pure element-wise addition.",
+        "codeAnswer": "# No initialization required for addition operation\n# The sum is computed in the forward pass\n\n# Component shapes must match:\n# word_embeddings: (batch_size, seq_length, hidden_size)\n# position_embeddings: (batch_size, seq_length, hidden_size)  \n# token_type_embeddings: (batch_size, seq_length, hidden_size)\n\n# Result shape:\n# combined_embeddings: (batch_size, seq_length, hidden_size)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "sum-forward",
+        "title": "Embedding Sum Forward Pass",
+        "explanation": "Add three embedding types element-wise.",
+        "codeAnswer": "def embedding_sum_forward(self, input_ids, token_type_ids=None, position_ids=None):\n    # Get word embeddings\n    inputs_embeds = self.word_embeddings(input_ids)\n    \n    # Get position embeddings\n    seq_length = input_ids.size(1)\n    if position_ids is None:\n        position_ids = torch.arange(seq_length, device=input_ids.device)\n        position_ids = position_ids.unsqueeze(0).expand_as(input_ids)\n    position_embeddings = self.position_embeddings(position_ids)\n    \n    # Get token type embeddings\n    if token_type_ids is None:\n        token_type_ids = torch.zeros_like(input_ids)\n    token_type_embeddings = self.token_type_embeddings(token_type_ids)\n    \n    # Element-wise addition\n    embeddings = inputs_embeds + position_embeddings + token_type_embeddings\n    \n    return embeddings",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "embeddings-layernorm": {
+      "id": "embeddings-layernorm",
+      "title": "Embeddings Layer Normalization",
+      "equations": [
+        {
+          "id": "embed-ln-1",
+          "title": "Input from Embedding Sum",
+          "explanation": "Normalize the combined embeddings before encoder processing.",
+          "equation": "\\text{LN}(E^{(0)}) = \\gamma \\cdot \\frac{E^{(0)} - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-ln-2",
+          "title": "Statistics Over Hidden Dimension",
+          "explanation": "Compute mean and variance across the hidden dimension (d=768).",
+          "equation": "\\mu = \\frac{1}{d}\\sum_{k=1}^{d} E^{(0)}_{i,j,k}, \\quad \\sigma^2 = \\frac{1}{d}\\sum_{k=1}^{d} (E^{(0)}_{i,j,k} - \\mu)^2",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-ln-3",
+          "title": "Flow to Dropout",
+          "explanation": "Normalized embeddings flow to dropout layer.",
+          "equation": "\\text{LN}(E^{(0)}) \\rightarrow \\text{Dropout}(\\text{LN}(E^{(0)})) = H^{(0)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-ln-init",
+        "title": "Embeddings LayerNorm Initialization",
+        "explanation": "Initialize layer normalization for embedding stabilization.",
+        "codeAnswer": "# Embeddings layer normalization\nself.LayerNorm = nn.LayerNorm(\n    normalized_shape=config.hidden_size,  # 768\n    eps=config.layer_norm_eps             # 1e-12\n)\n\n# Parameters:\n# - weight (gamma): initialized to ones\n# - bias (beta): initialized to zeros\n# PyTorch handles this initialization automatically",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-ln-forward",
+        "title": "Embeddings LayerNorm Forward Pass",
+        "explanation": "Apply layer normalization to combined embeddings.",
+        "codeAnswer": "def embeddings_layernorm_forward(self, embeddings):\n    # embeddings shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply layer normalization\n    # Normalizes across the hidden_size dimension\n    normalized_embeddings = self.LayerNorm(embeddings)\n    \n    return normalized_embeddings\n\n# Full embeddings forward with LayerNorm\ndef embeddings_forward(self, input_ids, token_type_ids=None, position_ids=None):\n    # Combine embeddings\n    embeddings = self.sum_embeddings(input_ids, token_type_ids, position_ids)\n    \n    # Apply layer normalization\n    embeddings = self.LayerNorm(embeddings)\n    \n    # Apply dropout (next step)\n    embeddings = self.dropout(embeddings)\n    \n    return embeddings",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "embeddings-dropout": {
+      "id": "embeddings-dropout",
+      "title": "Embeddings Dropout",
+      "equations": [
+        {
+          "id": "embed-drop-1",
+          "title": "Input from Layer Normalization",
+          "explanation": "Apply dropout to normalized embeddings for regularization.",
+          "equation": "H^{(0)} = \\text{Dropout}(\\text{LN}(E^{(0)}), p=0.1)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-drop-2",
+          "title": "Bernoulli Masking",
+          "explanation": "Randomly zero elements with probability p during training.",
+          "equation": "H^{(0)}_{i,j,k} = \\begin{cases} \\frac{\\text{LN}(E^{(0)})_{i,j,k}}{1-p} & \\text{if } \\text{Bernoulli}(1-p) = 1 \\\\ 0 & \\text{otherwise} \\end{cases}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-drop-3",
+          "title": "Flow to Encoder",
+          "explanation": "Processed embeddings become input to transformer encoder.",
+          "equation": "H^{(0)} \\rightarrow \\text{BertEncoder}(H^{(0)}) = H^{(1)}, H^{(2)}, ..., H^{(12)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-drop-init",
+        "title": "Embeddings Dropout Initialization",
+        "explanation": "Initialize dropout layer for embedding regularization.",
+        "codeAnswer": "# Embeddings dropout layer\nself.dropout = nn.Dropout(\n    p=config.hidden_dropout_prob  # Usually 0.1 (10%)\n)\n\n# Dropout behavior:\n# - Training mode: randomly zeros elements\n# - Evaluation mode: identity function (no dropout)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-drop-forward",
+        "title": "Embeddings Dropout Forward Pass",
+        "explanation": "Apply dropout to stabilized embeddings.",
+        "codeAnswer": "def embeddings_dropout_forward(self, normalized_embeddings):\n    # normalized_embeddings shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply dropout (only during training)\n    if self.training:\n        # Randomly zero 10% of elements, scale remaining by 1/0.9\n        dropped_embeddings = self.dropout(normalized_embeddings)\n    else:\n        # No dropout during inference\n        dropped_embeddings = normalized_embeddings\n    \n    return dropped_embeddings\n\n# Complete embeddings pipeline\ndef complete_embeddings_forward(self, input_ids, token_type_ids=None):\n    # 1. Sum embeddings\n    embeddings = self.sum_embeddings(input_ids, token_type_ids)\n    \n    # 2. Layer normalization  \n    embeddings = self.LayerNorm(embeddings)\n    \n    # 3. Dropout\n    embeddings = self.dropout(embeddings)\n    \n    return embeddings  # This becomes H^(0) for the encoder",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "encoder": {
+      "id": "encoder",
+      "title": "BERT Encoder",
+      "equations": [
+        {
+          "id": "encoder-1",
+          "title": "Input from Embeddings",
+          "explanation": "Take processed embeddings and pass through 12 transformer layers.",
+          "equation": "H^{(0)} \\rightarrow \\text{BertEncoder}(H^{(0)}) \\rightarrow H^{(12)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "encoder-2",
+          "title": "Sequential Layer Processing",
+          "explanation": "Each layer processes the output of the previous layer.",
+          "equation": "H^{(l)} = \\text{BertLayer}_l(H^{(l-1)}) \\quad \\text{for } l = 1, 2, ..., 12",
+          "canvasHeight": 150
+        },
+        {
+          "id": "encoder-3",
+          "title": "Final Output to MLM Head",
+          "explanation": "Final encoder output flows to masked language modeling head.",
+          "equation": "H^{(12)} \\rightarrow \\text{BertOnlyMLMHead}(H^{(12)}) \\rightarrow \\text{logits}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "encoder-init",
+        "title": "BERT Encoder Initialization",
+        "explanation": "Initialize stack of 12 identical transformer layers.",
+        "codeAnswer": "class BertEncoder(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        self.config = config\n        \n        # Create 12 identical transformer layers\n        self.layer = nn.ModuleList([\n            BertLayer(config) for _ in range(config.num_hidden_layers)\n        ])\n        \n        self.gradient_checkpointing = False",
+        "language": "python"
+      },
+      "forward": {
+        "id": "encoder-forward",
+        "title": "BERT Encoder Forward Pass",
+        "explanation": "Process through all 12 transformer layers sequentially.",
+        "codeAnswer": "def forward(self, hidden_states, attention_mask=None, head_mask=None,\n           output_attentions=False, output_hidden_states=False, return_dict=True):\n    \n    all_hidden_states = () if output_hidden_states else None\n    all_self_attentions = () if output_attentions else None\n    \n    # Process through each layer\n    for i, layer_module in enumerate(self.layer):\n        if output_hidden_states:\n            all_hidden_states = all_hidden_states + (hidden_states,)\n        \n        # Get layer head mask if provided\n        layer_head_mask = head_mask[i] if head_mask is not None else None\n        \n        # Forward through layer\n        layer_outputs = layer_module(\n            hidden_states,\n            attention_mask,\n            layer_head_mask,\n            output_attentions\n        )\n        \n        # Update hidden states for next layer\n        hidden_states = layer_outputs[0]\n        \n        if output_attentions:\n            all_self_attentions = all_self_attentions + (layer_outputs[1],)\n    \n    # Add final hidden state\n    if output_hidden_states:\n        all_hidden_states = all_hidden_states + (hidden_states,)\n    \n    return BaseModelOutput(\n        last_hidden_state=hidden_states,\n        hidden_states=all_hidden_states,\n        attentions=all_self_attentions\n    )",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "attention": {
+      "id": "attention",
+      "title": "BERT Attention Block",
+      "equations": [
+        {
+          "id": "attention-1",
+          "title": "Input from Previous Layer",
+          "explanation": "Attention receives hidden states from previous layer or embeddings.",
+          "equation": "H^{(l-1)} \\rightarrow \\text{BertSelfAttention}(H^{(l-1)}) \\rightarrow \\text{Attn}^{(l)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attention-2",
+          "title": "Self-Attention Computation",
+          "explanation": "Multi-head self-attention with scaled dot-product mechanism.",
+          "equation": "\\text{Attn}^{(l)} = \\text{MultiHead}(Q^{(l)}, K^{(l)}, V^{(l)}) \\text{ where } Q, K, V = H^{(l-1)}W_Q, H^{(l-1)}W_K, H^{(l-1)}W_V",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attention-3",
+          "title": "Output with Residual",
+          "explanation": "Attention output flows to residual connection and layer norm.",
+          "equation": "\\text{Attn}^{(l)} \\rightarrow H_{\\text{attn}}^{(l)} = \\text{LayerNorm}(H^{(l-1)} + \\text{Dropout}(\\text{Attn}^{(l)}W_O))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attention-init",
+        "title": "BERT Attention Initialization",
+        "explanation": "Initialize self-attention and output projection components.",
+        "codeAnswer": "class BertAttention(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Multi-head self-attention mechanism\n        self.self = BertSelfAttention(config)\n        \n        # Output projection with residual and layer norm\n        self.output = BertSelfOutput(config)\n        \n        # Pruned attention heads (for model compression)\n        self.pruned_heads = set()",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attention-forward",
+        "title": "BERT Attention Forward Pass",
+        "explanation": "Complete attention computation with residual connection.",
+        "codeAnswer": "def forward(self, hidden_states, attention_mask=None, head_mask=None, \n           output_attentions=False):\n    \n    # Self-attention computation\n    self_outputs = self.self(\n        hidden_states,\n        attention_mask,\n        head_mask,\n        output_attentions\n    )\n    \n    # Apply output projection with residual connection\n    attention_output = self.output(self_outputs[0], hidden_states)\n    \n    # Include attention weights if requested\n    outputs = (attention_output,) + self_outputs[1:]\n    \n    return outputs\n\n# Flow: hidden_states -> self-attention -> output projection -> attention_output\n# The attention_output then flows to the feed-forward network",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "query": {
+      "id": "query",
+      "title": "Query Projection",
+      "equations": [
+        {
+          "id": "query-1",
+          "title": "Hidden States to Query",
+          "explanation": "Project hidden states to query space for attention computation.",
+          "equation": "Q^{(l)} = H^{(l-1)}W_Q \\in \\mathbb{R}^{B \\times L \\times d} \\text{ where } W_Q \\in \\mathbb{R}^{d \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "query-2",
+          "title": "Multi-Head Reshaping",
+          "explanation": "Reshape queries for 12 attention heads with 64 dimensions each.",
+          "equation": "Q^{(l)} \\rightarrow Q_{\\text{heads}}^{(l)} \\in \\mathbb{R}^{B \\times 12 \\times L \\times 64}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "query-3",
+          "title": "Flow to Attention Computation",
+          "explanation": "Queries combine with keys to compute attention scores.",
+          "equation": "Q_{\\text{heads}}^{(l)} \\rightarrow \\text{Attention}(Q_{\\text{heads}}^{(l)}, K_{\\text{heads}}^{(l)}, V_{\\text{heads}}^{(l)})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "query-init",
+        "title": "Query Projection Initialization",
+        "explanation": "Initialize linear layer for query transformation.",
+        "codeAnswer": "# Query projection in BertSelfAttention\nself.query = nn.Linear(\n    in_features=config.hidden_size,    # 768\n    out_features=config.hidden_size,   # 768 (for all heads combined)\n    bias=True\n)\n\n# Calculate head dimensions\nself.num_attention_heads = config.num_attention_heads  # 12\nself.attention_head_size = config.hidden_size // self.num_attention_heads  # 64\nself.all_head_size = self.num_attention_heads * self.attention_head_size  # 768",
+        "language": "python"
+      },
+      "forward": {
+        "id": "query-forward",
+        "title": "Query Projection Forward Pass",
+        "explanation": "Transform hidden states to query vectors for attention.",
+        "codeAnswer": "def query_forward(self, hidden_states):\n    # hidden_states shape: (batch_size, seq_length, hidden_size)\n    \n    # Linear projection to query space\n    query_layer = self.query(hidden_states)\n    # query_layer shape: (batch_size, seq_length, hidden_size)\n    \n    # Reshape for multi-head attention\n    batch_size = hidden_states.size(0)\n    seq_length = hidden_states.size(1)\n    \n    query_layer = query_layer.view(\n        batch_size, seq_length, \n        self.num_attention_heads, \n        self.attention_head_size\n    )\n    # shape: (batch_size, seq_length, 12, 64)\n    \n    # Transpose to get: (batch_size, num_heads, seq_length, head_size)\n    query_layer = query_layer.transpose(1, 2)\n    # final shape: (batch_size, 12, seq_length, 64)\n    \n    return query_layer",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "key": {
+      "id": "key",
+      "title": "Key Projection",
+      "equations": [
+        {
+          "id": "key-1",
+          "title": "Hidden States to Key",
+          "explanation": "Project hidden states to key space for attention computation.",
+          "equation": "K^{(l)} = H^{(l-1)}W_K \\in \\mathbb{R}^{B \\times L \\times d} \\text{ where } W_K \\in \\mathbb{R}^{d \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "key-2",
+          "title": "Multi-Head Reshaping",
+          "explanation": "Reshape keys for 12 attention heads with 64 dimensions each.",
+          "equation": "K^{(l)} \\rightarrow K_{\\text{heads}}^{(l)} \\in \\mathbb{R}^{B \\times 12 \\times L \\times 64}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "key-3",
+          "title": "Flow to Attention Scores",
+          "explanation": "Keys interact with queries to compute attention weights.",
+          "equation": "K_{\\text{heads}}^{(l)} \\rightarrow \\text{scores} = \\frac{Q_{\\text{heads}}^{(l)} \\cdot K_{\\text{heads}}^{(l)T}}{\\sqrt{64}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "key-init",
+        "title": "Key Projection Initialization",
+        "explanation": "Initialize linear layer for key transformation.",
+        "codeAnswer": "# Key projection in BertSelfAttention\nself.key = nn.Linear(\n    in_features=config.hidden_size,    # 768\n    out_features=config.hidden_size,   # 768 (for all heads combined)\n    bias=True\n)\n\n# Shared parameters with query and value\nself.num_attention_heads = config.num_attention_heads  # 12\nself.attention_head_size = config.hidden_size // self.num_attention_heads  # 64",
+        "language": "python"
+      },
+      "forward": {
+        "id": "key-forward",
+        "title": "Key Projection Forward Pass",
+        "explanation": "Transform hidden states to key vectors for attention.",
+        "codeAnswer": "def key_forward(self, hidden_states):\n    # hidden_states shape: (batch_size, seq_length, hidden_size)\n    \n    # Linear projection to key space\n    key_layer = self.key(hidden_states)\n    # key_layer shape: (batch_size, seq_length, hidden_size)\n    \n    # Reshape for multi-head attention\n    batch_size = hidden_states.size(0)\n    seq_length = hidden_states.size(1)\n    \n    key_layer = key_layer.view(\n        batch_size, seq_length,\n        self.num_attention_heads,\n        self.attention_head_size\n    )\n    # shape: (batch_size, seq_length, 12, 64)\n    \n    # Transpose to get: (batch_size, num_heads, seq_length, head_size)\n    key_layer = key_layer.transpose(1, 2)\n    # final shape: (batch_size, 12, seq_length, 64)\n    \n    return key_layer",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "value": {
+      "id": "value",
+      "title": "Value Projection",
+      "equations": [
+        {
+          "id": "value-1",
+          "title": "Hidden States to Value",
+          "explanation": "Project hidden states to value space for attention computation.",
+          "equation": "V^{(l)} = H^{(l-1)}W_V \\in \\mathbb{R}^{B \\times L \\times d} \\text{ where } W_V \\in \\mathbb{R}^{d \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "value-2",
+          "title": "Multi-Head Reshaping",
+          "explanation": "Reshape values for 12 attention heads with 64 dimensions each.",
+          "equation": "V^{(l)} \\rightarrow V_{\\text{heads}}^{(l)} \\in \\mathbb{R}^{B \\times 12 \\times L \\times 64}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "value-3",
+          "title": "Flow to Attention Output",
+          "explanation": "Values weighted by attention scores produce final attention output.",
+          "equation": "V_{\\text{heads}}^{(l)} \\rightarrow \\text{output} = \\text{softmax}(\\text{scores}) \\cdot V_{\\text{heads}}^{(l)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "value-init",
+        "title": "Value Projection Initialization",
+        "explanation": "Initialize linear layer for value transformation.",
+        "codeAnswer": "# Value projection in BertSelfAttention\nself.value = nn.Linear(\n    in_features=config.hidden_size,    # 768\n    out_features=config.hidden_size,   # 768 (for all heads combined)\n    bias=True\n)\n\n# Shared parameters with query and key\nself.num_attention_heads = config.num_attention_heads  # 12\nself.attention_head_size = config.hidden_size // self.num_attention_heads  # 64",
+        "language": "python"
+      },
+      "forward": {
+        "id": "value-forward",
+        "title": "Value Projection Forward Pass",
+        "explanation": "Transform hidden states to value vectors for attention.",
+        "codeAnswer": "def value_forward(self, hidden_states):\n    # hidden_states shape: (batch_size, seq_length, hidden_size)\n    \n    # Linear projection to value space\n    value_layer = self.value(hidden_states)\n    # value_layer shape: (batch_size, seq_length, hidden_size)\n    \n    # Reshape for multi-head attention\n    batch_size = hidden_states.size(0)\n    seq_length = hidden_states.size(1)\n    \n    value_layer = value_layer.view(\n        batch_size, seq_length,\n        self.num_attention_heads,\n        self.attention_head_size\n    )\n    # shape: (batch_size, seq_length, 12, 64)\n    \n    # Transpose to get: (batch_size, num_heads, seq_length, head_size)\n    value_layer = value_layer.transpose(1, 2)\n    # final shape: (batch_size, 12, seq_length, 64)\n    \n    return value_layer",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "sdpa": {
+      "id": "sdpa",
+      "title": "Scaled Dot-Product Attention",
+      "equations": [
+        {
+          "id": "sdpa-1",
+          "title": "Attention Score Computation",
+          "explanation": "Compute attention scores using query-key dot products.",
+          "equation": "\\text{scores} = \\frac{Q_{\\text{heads}}^{(l)} \\cdot K_{\\text{heads}}^{(l)T}}{\\sqrt{d_k}} \\in \\mathbb{R}^{B \\times 12 \\times L \\times L}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "sdpa-2",
+          "title": "Softmax Normalization",
+          "explanation": "Apply softmax to get attention weights that sum to 1.",
+          "equation": "\\text{weights} = \\text{softmax}(\\text{scores} + \\text{mask}) \\in \\mathbb{R}^{B \\times 12 \\times L \\times L}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "sdpa-3",
+          "title": "Weighted Value Aggregation",
+          "explanation": "Multiply attention weights with values to get context vectors.",
+          "equation": "\\text{output} = \\text{weights} \\cdot V_{\\text{heads}}^{(l)} \\in \\mathbb{R}^{B \\times 12 \\times L \\times 64}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "sdpa-init",
+        "title": "SDPA Initialization",
+        "explanation": "No parameters needed - uses PyTorch's optimized implementation.",
+        "codeAnswer": "# SDPA uses PyTorch's optimized implementation\n# No separate initialization required\n\n# Parameters come from query, key, value projections\nself.dropout = nn.Dropout(config.attention_probs_dropout_prob)  # 0.1\n\n# For manual implementation:\n# self.scale = 1.0 / math.sqrt(self.attention_head_size)  # 1/sqrt(64)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "sdpa-forward",
+        "title": "SDPA Forward Pass",
+        "explanation": "Efficient scaled dot-product attention computation.",
+        "codeAnswer": "def sdpa_forward(self, query_layer, key_layer, value_layer, attention_mask=None):\n    # All inputs shape: (batch_size, num_heads, seq_length, head_size)\n    \n    # Use PyTorch's optimized SDPA (recommended)\n    attn_output = torch.nn.functional.scaled_dot_product_attention(\n        query=query_layer,\n        key=key_layer, \n        value=value_layer,\n        attn_mask=attention_mask,\n        dropout_p=self.dropout.p if self.training else 0.0,\n        is_causal=False  # BERT uses bidirectional attention\n    )\n    \n    # Manual implementation (for understanding):\n    # scores = torch.matmul(query_layer, key_layer.transpose(-1, -2))\n    # scores = scores / math.sqrt(self.attention_head_size)\n    # if attention_mask is not None:\n    #     scores = scores + attention_mask\n    # attn_weights = torch.softmax(scores, dim=-1)\n    # attn_weights = self.dropout(attn_weights)\n    # attn_output = torch.matmul(attn_weights, value_layer)\n    \n    return attn_output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "self-output": {
+      "id": "self-output",
+      "title": "Self-Attention Output",
+      "equations": [
+        {
+          "id": "self-output-1",
+          "title": "Multi-Head Concatenation",
+          "explanation": "Reshape and concatenate all attention heads back to original dimension.",
+          "equation": "\\text{concat} = \\text{Reshape}(\\text{SDPA\\_output}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "self-output-2",
+          "title": "Output Projection",
+          "explanation": "Apply linear transformation to concatenated heads.",
+          "equation": "\\text{projected} = \\text{concat} \\cdot W_O + b_O \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "self-output-3",
+          "title": "Residual and Layer Norm",
+          "explanation": "Add residual connection and apply layer normalization.",
+          "equation": "H_{\\text{attn}}^{(l)} = \\text{LayerNorm}(H^{(l-1)} + \\text{Dropout}(\\text{projected}))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "self-output-init",
+        "title": "Self-Attention Output Initialization",
+        "explanation": "Initialize output projection and normalization layers.",
+        "codeAnswer": "class BertSelfOutput(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Output projection layer\n        self.dense = nn.Linear(\n            config.hidden_size,  # 768 \n            config.hidden_size   # 768\n        )\n        \n        # Layer normalization\n        self.LayerNorm = nn.LayerNorm(\n            config.hidden_size, \n            eps=config.layer_norm_eps\n        )\n        \n        # Dropout for regularization\n        self.dropout = nn.Dropout(config.hidden_dropout_prob)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "self-output-forward",
+        "title": "Self-Attention Output Forward Pass",
+        "explanation": "Process attention output with projection, residual, and normalization.",
+        "codeAnswer": "def forward(self, hidden_states, input_tensor):\n    # hidden_states: attention output after head concatenation\n    # input_tensor: original input to attention (for residual)\n    \n    # Apply output projection\n    hidden_states = self.dense(hidden_states)\n    \n    # Apply dropout\n    hidden_states = self.dropout(hidden_states)\n    \n    # Add residual connection and layer norm\n    hidden_states = self.LayerNorm(hidden_states + input_tensor)\n    \n    return hidden_states\n\n# Complete attention flow:\n# input -> Q,K,V -> SDPA -> concat -> dense -> dropout -> residual+LN -> output\n# This output then flows to the feed-forward network",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "attention-dense": {
+      "id": "attention-dense",
+      "title": "Attention Output Projection",
+      "equations": [
+        {
+          "id": "attn-dense-1",
+          "title": "Multi-Head Concatenation Input",
+          "explanation": "Receives concatenated output from all attention heads.",
+          "equation": "\\text{concat} = [\\text{head}_1; \\text{head}_2; ...; \\text{head}_{12}] \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-dense-2",
+          "title": "Linear Transformation",
+          "explanation": "Project concatenated heads through learned linear transformation.",
+          "equation": "\\text{output} = \\text{concat} \\cdot W_O + b_O \\text{ where } W_O \\in \\mathbb{R}^{d \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-dense-3",
+          "title": "Flow to Dropout",
+          "explanation": "Projected output flows to dropout before residual connection.",
+          "equation": "\\text{output} \\rightarrow \\text{Dropout}(\\text{output}) \\rightarrow \\text{residual connection}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-dense-init",
+        "title": "Attention Dense Layer Initialization",
+        "explanation": "Initialize output projection for multi-head attention.",
+        "codeAnswer": "# In BertSelfOutput class\nself.dense = nn.Linear(\n    in_features=config.hidden_size,    # 768 (concatenated heads)\n    out_features=config.hidden_size,   # 768 (same dimension)\n    bias=True\n)\n\n# This projects the concatenated attention heads back to the model dimension\n# Input: 12 heads \u00d7 64 dim/head = 768 total dimensions\n# Output: 768 dimensions (same as model hidden size)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-dense-forward",
+        "title": "Attention Dense Forward Pass",
+        "explanation": "Project concatenated attention heads to model dimension.",
+        "codeAnswer": "def attention_dense_forward(self, attention_output):\n    # attention_output: concatenated multi-head attention output\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Linear projection\n    projected_output = self.dense(attention_output)\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    return projected_output\n\n# Complete flow in BertSelfOutput:\ndef self_output_forward(self, hidden_states, input_tensor):\n    # 1. Dense projection\n    hidden_states = self.dense(hidden_states)\n    \n    # 2. Dropout\n    hidden_states = self.dropout(hidden_states)\n    \n    # 3. Residual connection + LayerNorm\n    hidden_states = self.LayerNorm(hidden_states + input_tensor)\n    \n    return hidden_states",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "attention-dropout": {
+      "id": "attention-dropout",
+      "title": "Attention Dropout",
+      "equations": [
+        {
+          "id": "attn-dropout-1",
+          "title": "Input from Dense Projection",
+          "explanation": "Apply dropout to attention projection output.",
+          "equation": "\\text{dropped} = \\text{Dropout}(\\text{dense\\_output}, p=0.1)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-dropout-2",
+          "title": "Bernoulli Masking",
+          "explanation": "Randomly zero elements during training for regularization.",
+          "equation": "\\text{dropped}_{i,j,k} = \\begin{cases} \\frac{\\text{dense\\_output}_{i,j,k}}{0.9} & \\text{if Bernoulli}(0.9) \\\\ 0 & \\text{otherwise} \\end{cases}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-dropout-3",
+          "title": "Flow to Residual Connection",
+          "explanation": "Dropout output added to residual and normalized.",
+          "equation": "\\text{dropped} \\rightarrow \\text{LayerNorm}(\\text{input\\_tensor} + \\text{dropped})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-dropout-init",
+        "title": "Attention Dropout Initialization",
+        "explanation": "Initialize dropout layer for attention regularization.",
+        "codeAnswer": "# In BertSelfOutput class\nself.dropout = nn.Dropout(\n    p=config.hidden_dropout_prob  # Usually 0.1 (10%)\n)\n\n# Applied after the dense projection and before residual connection",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-dropout-forward",
+        "title": "Attention Dropout Forward Pass",
+        "explanation": "Apply dropout to attention projection output.",
+        "codeAnswer": "def attention_dropout_forward(self, projected_attention):\n    # projected_attention: output from attention dense layer\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply dropout (only during training)\n    if self.training:\n        dropped_output = self.dropout(projected_attention)\n    else:\n        # No dropout during inference\n        dropped_output = projected_attention\n    \n    return dropped_output\n\n# Usage in attention output processing:\ndef attention_output_process(self, hidden_states, input_tensor):\n    # 1. Dense projection\n    hidden_states = self.dense(hidden_states)\n    \n    # 2. Dropout\n    hidden_states = self.dropout(hidden_states)\n    \n    # 3. Residual + LayerNorm (next step)\n    return hidden_states",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "attention-layernorm": {
+      "id": "attention-layernorm",
+      "title": "Attention Layer Normalization",
+      "equations": [
+        {
+          "id": "attn-ln-1",
+          "title": "Residual Connection First",
+          "explanation": "Add attention output to original input before normalization.",
+          "equation": "\\text{sum} = \\text{input\\_tensor} + \\text{Dropout}(\\text{attention\\_dense\\_output})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-ln-2",
+          "title": "Layer Normalization",
+          "explanation": "Normalize across hidden dimension with learned parameters.",
+          "equation": "H_{\\text{attn}}^{(l)} = \\gamma \\cdot \\frac{\\text{sum} - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-ln-3",
+          "title": "Flow to Feed-Forward",
+          "explanation": "Normalized attention output flows to feed-forward network.",
+          "equation": "H_{\\text{attn}}^{(l)} \\rightarrow \\text{BertIntermediate}(H_{\\text{attn}}^{(l)}) \\rightarrow \\text{FFN output}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-ln-init",
+        "title": "Attention LayerNorm Initialization",
+        "explanation": "Initialize layer normalization for attention output.",
+        "codeAnswer": "# In BertSelfOutput class\nself.LayerNorm = nn.LayerNorm(\n    normalized_shape=config.hidden_size,  # 768\n    eps=config.layer_norm_eps             # 1e-12\n)\n\n# Learnable parameters:\n# - weight (gamma): initialized to ones\n# - bias (beta): initialized to zeros",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-ln-forward",
+        "title": "Attention LayerNorm Forward Pass",
+        "explanation": "Apply layer normalization with residual connection.",
+        "codeAnswer": "def attention_layernorm_forward(self, hidden_states, input_tensor):\n    # hidden_states: output from attention + dropout\n    # input_tensor: original input to attention block (for residual)\n    \n    # Add residual connection\n    residual_sum = hidden_states + input_tensor\n    \n    # Apply layer normalization\n    normalized_output = self.LayerNorm(residual_sum)\n    \n    return normalized_output\n\n# Complete attention block flow:\ndef complete_attention_flow(self, input_hidden_states):\n    # 1. Multi-head self-attention\n    attention_output = self.self_attention(input_hidden_states)\n    \n    # 2. Dense projection\n    projected = self.dense(attention_output)\n    \n    # 3. Dropout\n    dropped = self.dropout(projected)\n    \n    # 4. Residual + LayerNorm\n    output = self.LayerNorm(dropped + input_hidden_states)\n    \n    return output  # Flows to feed-forward network",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "intermediate": {
+      "id": "intermediate",
+      "title": "Feed-Forward Intermediate",
+      "equations": [
+        {
+          "id": "intermediate-1",
+          "title": "Input from Attention",
+          "explanation": "Receives normalized attention output as input.",
+          "equation": "H_{\\text{attn}}^{(l)} \\rightarrow \\text{BertIntermediate}(H_{\\text{attn}}^{(l)}) \\rightarrow H_{\\text{intermediate}}^{(l)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "intermediate-2",
+          "title": "Dimension Expansion",
+          "explanation": "Expand from 768 to 3072 dimensions (4x expansion).",
+          "equation": "H_{\\text{intermediate}}^{(l)} = \\text{GELU}(H_{\\text{attn}}^{(l)} W_1 + b_1) \\in \\mathbb{R}^{B \\times L \\times 3072}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "intermediate-3",
+          "title": "Flow to Output Layer",
+          "explanation": "Expanded representation flows to output projection.",
+          "equation": "H_{\\text{intermediate}}^{(l)} \\rightarrow \\text{BertOutput}(H_{\\text{intermediate}}^{(l)}) \\rightarrow H^{(l)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "intermediate-init",
+        "title": "Intermediate Layer Initialization",
+        "explanation": "Initialize feed-forward expansion layer with GELU activation.",
+        "codeAnswer": "class BertIntermediate(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Dense layer: 768 -> 3072 (4x expansion)\n        self.dense = nn.Linear(\n            config.hidden_size,          # 768\n            config.intermediate_size     # 3072\n        )\n        \n        # GELU activation function\n        if isinstance(config.hidden_act, str):\n            self.intermediate_act_fn = ACT2FN[config.hidden_act]\n        else:\n            self.intermediate_act_fn = config.hidden_act",
+        "language": "python"
+      },
+      "forward": {
+        "id": "intermediate-forward",
+        "title": "Intermediate Layer Forward Pass",
+        "explanation": "Expand dimension and apply GELU activation.",
+        "codeAnswer": "def forward(self, hidden_states):\n    # hidden_states: attention output\n    # shape: (batch_size, seq_length, 768)\n    \n    # Linear expansion: 768 -> 3072\n    hidden_states = self.dense(hidden_states)\n    # shape: (batch_size, seq_length, 3072)\n    \n    # Apply GELU activation\n    hidden_states = self.intermediate_act_fn(hidden_states)\n    # shape: (batch_size, seq_length, 3072)\n    \n    return hidden_states\n\n# This expanded representation allows the model to learn\n# more complex transformations in the higher-dimensional space\n# before projecting back to the original 768 dimensions",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "intermediate-dense": {
+      "id": "intermediate-dense",
+      "title": "Intermediate Dense Layer",
+      "equations": [
+        {
+          "id": "inter-dense-1",
+          "title": "Input from Attention",
+          "explanation": "Receives attention output and expands dimensionality.",
+          "equation": "\\text{expanded} = H_{\\text{attn}}^{(l)} W_1 + b_1 \\text{ where } W_1 \\in \\mathbb{R}^{768 \\times 3072}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "inter-dense-2",
+          "title": "Dimension Expansion Factor",
+          "explanation": "Standard 4x expansion from hidden size to intermediate size.",
+          "equation": "\\text{intermediate\\_size} = 4 \\times \\text{hidden\\_size} = 4 \\times 768 = 3072",
+          "canvasHeight": 150
+        },
+        {
+          "id": "inter-dense-3",
+          "title": "Flow to GELU Activation",
+          "explanation": "Expanded linear output flows to GELU activation function.",
+          "equation": "\\text{expanded} \\rightarrow \\text{GELU}(\\text{expanded}) \\rightarrow H_{\\text{intermediate}}^{(l)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "inter-dense-init",
+        "title": "Intermediate Dense Initialization",
+        "explanation": "Initialize expansion layer for feed-forward network.",
+        "codeAnswer": "# In BertIntermediate class\nself.dense = nn.Linear(\n    in_features=config.hidden_size,        # 768\n    out_features=config.intermediate_size,  # 3072 (4x expansion)\n    bias=True\n)\n\n# Weight initialization follows standard transformer practice\n# Usually initialized with small random values (std=0.02)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "inter-dense-forward",
+        "title": "Intermediate Dense Forward Pass",
+        "explanation": "Expand attention output to intermediate dimension.",
+        "codeAnswer": "def intermediate_dense_forward(self, hidden_states):\n    # hidden_states: output from attention layer\n    # shape: (batch_size, seq_length, 768)\n    \n    # Linear transformation: 768 -> 3072\n    expanded_states = self.dense(hidden_states)\n    # shape: (batch_size, seq_length, 3072)\n    \n    return expanded_states\n\n# This expansion provides more parameters and representational\n# capacity for learning complex non-linear transformations\n# The 4x expansion is a standard choice in transformer architectures",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output": {
+      "id": "output",
+      "title": "Feed-Forward Output Block",
+      "equations": [
+        {
+          "id": "ffn-output-1",
+          "title": "Input from Intermediate",
+          "explanation": "Receives GELU-activated intermediate representation.",
+          "equation": "H_{\\text{intermediate}}^{(l)} \\rightarrow \\text{BertOutput}(H_{\\text{intermediate}}^{(l)}) \\rightarrow H^{(l)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "ffn-output-2",
+          "title": "Dimension Reduction",
+          "explanation": "Project back from 3072 to 768 dimensions.",
+          "equation": "\\text{projected} = H_{\\text{intermediate}}^{(l)} W_2 + b_2 \\text{ where } W_2 \\in \\mathbb{R}^{3072 \\times 768}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "ffn-output-3",
+          "title": "Final Layer Output",
+          "explanation": "Add residual connection and normalize to produce final layer output.",
+          "equation": "H^{(l)} = \\text{LayerNorm}(H_{\\text{attn}}^{(l)} + \\text{Dropout}(\\text{projected}))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "ffn-output-init",
+        "title": "Feed-Forward Output Initialization",
+        "explanation": "Initialize projection and normalization for FFN output.",
+        "codeAnswer": "class BertOutput(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Projection layer: 3072 -> 768\n        self.dense = nn.Linear(\n            config.intermediate_size,  # 3072\n            config.hidden_size        # 768\n        )\n        \n        # Layer normalization\n        self.LayerNorm = nn.LayerNorm(\n            config.hidden_size,\n            eps=config.layer_norm_eps\n        )\n        \n        # Dropout for regularization\n        self.dropout = nn.Dropout(config.hidden_dropout_prob)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "ffn-output-forward",
+        "title": "Feed-Forward Output Forward Pass",
+        "explanation": "Complete feed-forward processing with residual connection.",
+        "codeAnswer": "def forward(self, hidden_states, input_tensor):\n    # hidden_states: output from intermediate layer (GELU activated)\n    # input_tensor: attention output (for residual connection)\n    \n    # Project back to model dimension: 3072 -> 768\n    hidden_states = self.dense(hidden_states)\n    \n    # Apply dropout\n    hidden_states = self.dropout(hidden_states)\n    \n    # Add residual connection and layer norm\n    hidden_states = self.LayerNorm(hidden_states + input_tensor)\n    \n    return hidden_states\n\n# Complete transformer layer flow:\n# input -> attention -> FFN intermediate -> FFN output -> next layer\n# The output becomes input to the next transformer layer",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "output-dense": {
+      "id": "output-dense",
+      "title": "Output Dense Layer",
+      "equations": [
+        {
+          "id": "output-dense-1",
+          "title": "Input from GELU",
+          "explanation": "Receives GELU-activated intermediate representation.",
+          "equation": "\\text{projected} = H_{\\text{intermediate}}^{(l)} W_2 + b_2 \\text{ where } W_2 \\in \\mathbb{R}^{3072 \\times 768}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "output-dense-2",
+          "title": "Dimension Reduction",
+          "explanation": "Contract from expanded back to original model dimension.",
+          "equation": "\\text{projected} \\in \\mathbb{R}^{B \\times L \\times 768} \\text{ (back to hidden\\_size)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "output-dense-3",
+          "title": "Flow to Dropout",
+          "explanation": "Projected output flows to dropout before residual connection.",
+          "equation": "\\text{projected} \\rightarrow \\text{Dropout}(\\text{projected}) \\rightarrow \\text{residual}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-dense-init",
+        "title": "Output Dense Initialization",
+        "explanation": "Initialize projection layer for dimension reduction.",
+        "codeAnswer": "# In BertOutput class\nself.dense = nn.Linear(\n    in_features=config.intermediate_size,  # 3072\n    out_features=config.hidden_size,       # 768\n    bias=True\n)\n\n# This completes the bottleneck architecture:\n# 768 -> 3072 (expand) -> 768 (contract)\n# Allows complex transformations in high-dimensional space",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-dense-forward",
+        "title": "Output Dense Forward Pass",
+        "explanation": "Project expanded representation back to model dimension.",
+        "codeAnswer": "def output_dense_forward(self, intermediate_output):\n    # intermediate_output: GELU-activated expansion\n    # shape: (batch_size, seq_length, 3072)\n    \n    # Linear projection: 3072 -> 768\n    projected_output = self.dense(intermediate_output)\n    # shape: (batch_size, seq_length, 768)\n    \n    return projected_output\n\n# This projection brings the representation back to the model's\n# hidden dimension, allowing it to be added to the residual\n# connection from the attention layer",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output-dropout": {
+      "id": "output-dropout",
+      "title": "Output Dropout",
+      "equations": [
+        {
+          "id": "output-drop-1",
+          "title": "Input from Dense Projection",
+          "explanation": "Apply dropout to feed-forward output projection.",
+          "equation": "\\text{dropped} = \\text{Dropout}(\\text{dense\\_output}, p=0.1)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "output-drop-2",
+          "title": "Regularization Pattern",
+          "explanation": "Randomly zero elements for generalization improvement.",
+          "equation": "\\text{dropped}_{i,j,k} = \\begin{cases} \\frac{\\text{dense\\_output}_{i,j,k}}{0.9} & \\text{if Bernoulli}(0.9) \\\\ 0 & \\text{otherwise} \\end{cases}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "output-drop-3",
+          "title": "Flow to Final Layer Norm",
+          "explanation": "Dropout output added to attention residual and normalized.",
+          "equation": "\\text{dropped} \\rightarrow \\text{LayerNorm}(\\text{attention\\_output} + \\text{dropped})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-drop-init",
+        "title": "Output Dropout Initialization",
+        "explanation": "Initialize dropout layer for feed-forward regularization.",
+        "codeAnswer": "# In BertOutput class\nself.dropout = nn.Dropout(\n    p=config.hidden_dropout_prob  # Usually 0.1 (10%)\n)\n\n# Applied after the dense projection in feed-forward network\n# Provides regularization before the final residual connection",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-drop-forward",
+        "title": "Output Dropout Forward Pass",
+        "explanation": "Apply dropout to feed-forward projection output.",
+        "codeAnswer": "def output_dropout_forward(self, projected_output):\n    # projected_output: dense layer output (3072 -> 768)\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply dropout (only during training)\n    if self.training:\n        dropped_output = self.dropout(projected_output)\n    else:\n        # No dropout during inference\n        dropped_output = projected_output\n    \n    return dropped_output\n\n# Usage in complete FFN output:\ndef complete_ffn_output(self, hidden_states, input_tensor):\n    # 1. Dense projection (3072 -> 768)\n    hidden_states = self.dense(hidden_states)\n    \n    # 2. Dropout\n    hidden_states = self.dropout(hidden_states)\n    \n    # 3. Residual + LayerNorm (next step)\n    return hidden_states",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "predictions": {
+      "id": "predictions",
+      "title": "Language Model Predictions",
+      "equations": [
+        {
+          "id": "pred-1",
+          "title": "Input from Final Encoder",
+          "explanation": "Receives final hidden states from BERT encoder stack.",
+          "equation": "H^{(12)} \\rightarrow \\text{BertLMPredictionHead}(H^{(12)}) \\rightarrow \\text{logits}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "pred-2",
+          "title": "Transform Processing",
+          "explanation": "Apply transformation before vocabulary projection.",
+          "equation": "H_{\\text{pred}} = \\text{BertPredictionHeadTransform}(H^{(12)}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "pred-3",
+          "title": "Vocabulary Projection",
+          "explanation": "Project to vocabulary size for token predictions.",
+          "equation": "\\text{logits} = \\text{decoder}(H_{\\text{pred}}) \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "pred-init",
+        "title": "Prediction Head Initialization",
+        "explanation": "Initialize transformation and decoder for MLM predictions.",
+        "codeAnswer": "class BertLMPredictionHead(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Transform layer before vocabulary projection\n        self.transform = BertPredictionHeadTransform(config)\n        \n        # Decoder to vocabulary size\n        self.decoder = nn.Linear(\n            config.hidden_size,\n            config.vocab_size,\n            bias=False\n        )\n        \n        # Separate bias parameter\n        self.bias = nn.Parameter(torch.zeros(config.vocab_size))\n        self.decoder.bias = self.bias",
+        "language": "python"
+      },
+      "forward": {
+        "id": "pred-forward",
+        "title": "Prediction Head Forward Pass",
+        "explanation": "Transform hidden states and project to vocabulary predictions.",
+        "codeAnswer": "def forward(self, sequence_output):\n    # sequence_output: final encoder hidden states\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply transform (dense + GELU + LayerNorm)\n    hidden_states = self.transform(sequence_output)\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Project to vocabulary size\n    prediction_scores = self.decoder(hidden_states)\n    # shape: (batch_size, seq_length, vocab_size)\n    \n    return prediction_scores\n\n# The prediction scores are logits that can be converted to\n# probabilities with softmax for masked token prediction",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "transform": {
+      "id": "transform",
+      "title": "Prediction Head Transform",
+      "equations": [
+        {
+          "id": "transform-1",
+          "title": "Input from Encoder",
+          "explanation": "Transform final encoder hidden states for prediction task.",
+          "equation": "H^{(12)} \\rightarrow \\text{BertPredictionHeadTransform}(H^{(12)}) \\rightarrow H_{\\text{pred}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "transform-2",
+          "title": "Three-Stage Processing",
+          "explanation": "Apply dense transformation, GELU activation, and layer normalization.",
+          "equation": "H_{\\text{pred}} = \\text{LayerNorm}(\\text{GELU}(H^{(12)} W_{\\text{pred}} + b_{\\text{pred}}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "transform-3",
+          "title": "Flow to Decoder",
+          "explanation": "Transformed states flow to vocabulary projection layer.",
+          "equation": "H_{\\text{pred}} \\rightarrow \\text{decoder}(H_{\\text{pred}}) \\rightarrow \\text{vocab\\_logits}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "transform-init",
+        "title": "Prediction Transform Initialization",
+        "explanation": "Initialize transform components for prediction head.",
+        "codeAnswer": "class BertPredictionHeadTransform(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Dense layer (maintains hidden_size)\n        self.dense = nn.Linear(\n            config.hidden_size,\n            config.hidden_size\n        )\n        \n        # Activation function (GELU)\n        if isinstance(config.hidden_act, str):\n            self.transform_act_fn = ACT2FN[config.hidden_act]\n        else:\n            self.transform_act_fn = config.hidden_act\n        \n        # Layer normalization\n        self.LayerNorm = nn.LayerNorm(\n            config.hidden_size,\n            eps=config.layer_norm_eps\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "transform-forward",
+        "title": "Prediction Transform Forward Pass",
+        "explanation": "Apply task-specific transformation to encoder output.",
+        "codeAnswer": "def forward(self, hidden_states):\n    # hidden_states: final encoder output\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # 1. Dense transformation\n    hidden_states = self.dense(hidden_states)\n    \n    # 2. GELU activation\n    hidden_states = self.transform_act_fn(hidden_states)\n    \n    # 3. Layer normalization\n    hidden_states = self.LayerNorm(hidden_states)\n    \n    return hidden_states\n\n# This transform allows the model to learn a task-specific\n# representation before projecting to the vocabulary space\n# Improves prediction accuracy for masked language modeling",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "transform-dense": {
+      "id": "transform-dense",
+      "title": "Transform Dense Layer",
+      "equations": [
+        {
+          "id": "trans-dense-1",
+          "title": "Input from Final Encoder",
+          "explanation": "Apply task-specific linear transformation to encoder output.",
+          "equation": "\\text{transformed} = H^{(12)} W_{\\text{pred}} + b_{\\text{pred}} \\text{ where } W_{\\text{pred}} \\in \\mathbb{R}^{d \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-dense-2",
+          "title": "Dimension Preservation",
+          "explanation": "Maintains hidden dimension while learning task-specific features.",
+          "equation": "\\text{transformed} \\in \\mathbb{R}^{B \\times L \\times 768} \\text{ (same as input)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-dense-3",
+          "title": "Flow to GELU Activation",
+          "explanation": "Dense output flows to GELU activation function.",
+          "equation": "\\text{transformed} \\rightarrow \\text{GELU}(\\text{transformed}) \\rightarrow \\text{activated}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "trans-dense-init",
+        "title": "Transform Dense Initialization",
+        "explanation": "Initialize task-specific dense layer for prediction head.",
+        "codeAnswer": "# In BertPredictionHeadTransform class\nself.dense = nn.Linear(\n    in_features=config.hidden_size,   # 768\n    out_features=config.hidden_size,  # 768 (same dimension)\n    bias=True\n)\n\n# This layer learns a task-specific transformation of the\n# encoder representations before vocabulary projection",
+        "language": "python"
+      },
+      "forward": {
+        "id": "trans-dense-forward",
+        "title": "Transform Dense Forward Pass",
+        "explanation": "Apply task-specific linear transformation.",
+        "codeAnswer": "def transform_dense_forward(self, hidden_states):\n    # hidden_states: final encoder output\n    # shape: (batch_size, seq_length, 768)\n    \n    # Task-specific linear transformation\n    transformed_states = self.dense(hidden_states)\n    # shape: (batch_size, seq_length, 768)\n    \n    return transformed_states\n\n# This transformation allows the prediction head to learn\n# features that are specifically useful for the MLM task,\n# different from the general representations learned by BERT",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "transform-gelu": {
+      "id": "transform-gelu",
+      "title": "Transform GELU Activation",
+      "equations": [
+        {
+          "id": "trans-gelu-1",
+          "title": "Input from Transform Dense",
+          "explanation": "Apply GELU activation to task-specific dense output.",
+          "equation": "\\text{activated} = \\text{GELU}(\\text{transformed}) = \\text{transformed} \\cdot \\Phi(\\text{transformed})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-gelu-2",
+          "title": "Non-Linear Transformation",
+          "explanation": "Introduce non-linearity for prediction task specialization.",
+          "equation": "\\text{GELU}(x) = x \\cdot \\frac{1}{2}\\left[1 + \\text{erf}\\left(\\frac{x}{\\sqrt{2}}\\right)\\right]",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-gelu-3",
+          "title": "Flow to Layer Normalization",
+          "explanation": "Activated output flows to final layer normalization.",
+          "equation": "\\text{activated} \\rightarrow \\text{LayerNorm}(\\text{activated}) \\rightarrow H_{\\text{pred}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "trans-gelu-init",
+        "title": "Transform GELU Initialization",
+        "explanation": "Initialize GELU activation for prediction transform.",
+        "codeAnswer": "# In BertPredictionHeadTransform class\nif isinstance(config.hidden_act, str):\n    self.transform_act_fn = ACT2FN[config.hidden_act]  # Usually 'gelu'\nelse:\n    self.transform_act_fn = config.hidden_act\n\n# ACT2FN mapping:\n# 'gelu' -> GELUActivation()\n# Provides smooth, differentiable activation for prediction task",
+        "language": "python"
+      },
+      "forward": {
+        "id": "trans-gelu-forward",
+        "title": "Transform GELU Forward Pass",
+        "explanation": "Apply GELU activation to transform dense output.",
+        "codeAnswer": "def transform_gelu_forward(self, transformed_states):\n    # transformed_states: output from transform dense layer\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply GELU activation element-wise\n    activated_states = self.transform_act_fn(transformed_states)\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    return activated_states\n\n# GELU provides smooth activation that works well for NLP tasks\n# Better gradient flow compared to ReLU for transformer models\n# Helps the prediction head learn task-specific non-linear patterns",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "transform-layernorm": {
+      "id": "transform-layernorm",
+      "title": "Transform Layer Normalization",
+      "equations": [
+        {
+          "id": "trans-ln-1",
+          "title": "Input from GELU Activation",
+          "explanation": "Normalize GELU-activated transform output.",
+          "equation": "H_{\\text{pred}} = \\text{LayerNorm}(\\text{GELU\\_output}) = \\gamma \\cdot \\frac{\\text{GELU\\_output} - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-ln-2",
+          "title": "Final Transform Output",
+          "explanation": "Produces stable representation for vocabulary projection.",
+          "equation": "H_{\\text{pred}} \\in \\mathbb{R}^{B \\times L \\times d} \\text{ (well-normalized)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "trans-ln-3",
+          "title": "Flow to Decoder",
+          "explanation": "Normalized output flows to vocabulary projection layer.",
+          "equation": "H_{\\text{pred}} \\rightarrow \\text{Linear}(H_{\\text{pred}}) \\rightarrow \\text{vocab\\_logits}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "trans-ln-init",
+        "title": "Transform LayerNorm Initialization",
+        "explanation": "Initialize layer normalization for prediction transform.",
+        "codeAnswer": "# In BertPredictionHeadTransform class\nself.LayerNorm = nn.LayerNorm(\n    normalized_shape=config.hidden_size,  # 768\n    eps=config.layer_norm_eps             # 1e-12\n)\n\n# This ensures the inputs to the large vocabulary projection\n# are well-scaled, which is important for stable training",
+        "language": "python"
+      },
+      "forward": {
+        "id": "trans-ln-forward",
+        "title": "Transform LayerNorm Forward Pass",
+        "explanation": "Apply final normalization before vocabulary projection.",
+        "codeAnswer": "def transform_layernorm_forward(self, activated_states):\n    # activated_states: GELU-activated transform output\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Apply layer normalization\n    normalized_states = self.LayerNorm(activated_states)\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    return normalized_states\n\n# Complete transform pipeline:\ndef complete_transform(self, hidden_states):\n    # 1. Dense transformation\n    hidden_states = self.dense(hidden_states)\n    \n    # 2. GELU activation\n    hidden_states = self.transform_act_fn(hidden_states)\n    \n    # 3. Layer normalization\n    hidden_states = self.LayerNorm(hidden_states)\n    \n    return hidden_states  # Ready for vocabulary projection",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "decoder": {
+      "id": "decoder",
+      "title": "Vocabulary Decoder",
+      "equations": [
+        {
+          "id": "decoder-1",
+          "title": "Input from Transform",
+          "explanation": "Project normalized prediction features to vocabulary space.",
+          "equation": "\\text{logits} = H_{\\text{pred}} W_{\\text{vocab}} + b_{\\text{vocab}} \\text{ where } W_{\\text{vocab}} \\in \\mathbb{R}^{d \\times V}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "decoder-2",
+          "title": "Vocabulary Projection",
+          "explanation": "Map hidden dimension to full vocabulary size for all positions.",
+          "equation": "\\text{logits} \\in \\mathbb{R}^{B \\times L \\times 30522} \\text{ (vocab\\_size)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "decoder-3",
+          "title": "Flow to Output Logits",
+          "explanation": "Raw logits flow to output for loss computation or inference.",
+          "equation": "\\text{logits} \\rightarrow \\text{MLM\\_loss} = \\text{CrossEntropy}(\\text{logits}, \\text{labels})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "decoder-init",
+        "title": "Vocabulary Decoder Initialization",
+        "explanation": "Initialize large projection layer to vocabulary size.",
+        "codeAnswer": "# In BertLMPredictionHead class\nself.decoder = nn.Linear(\n    in_features=config.hidden_size,  # 768\n    out_features=config.vocab_size,  # 30,522\n    bias=False  # Bias handled separately\n)\n\n# Separate bias parameter for vocabulary\nself.bias = nn.Parameter(torch.zeros(config.vocab_size))\nself.decoder.bias = self.bias\n\n# Often shares weights with input embeddings (tied weights):\n# self.decoder.weight = self.bert.embeddings.word_embeddings.weight",
+        "language": "python"
+      },
+      "forward": {
+        "id": "decoder-forward",
+        "title": "Vocabulary Decoder Forward Pass",
+        "explanation": "Project to vocabulary predictions for masked positions.",
+        "codeAnswer": "def decoder_forward(self, hidden_states):\n    # hidden_states: transformed prediction features\n    # shape: (batch_size, seq_length, hidden_size)\n    \n    # Project to vocabulary size\n    prediction_scores = self.decoder(hidden_states)\n    # shape: (batch_size, seq_length, vocab_size)\n    \n    return prediction_scores\n\n# During training, only masked positions contribute to loss:\ndef compute_mlm_loss(self, prediction_scores, labels):\n    # labels: -100 for non-masked, token_id for masked positions\n    loss_fct = CrossEntropyLoss()  # Ignores -100 labels\n    \n    masked_lm_loss = loss_fct(\n        prediction_scores.view(-1, self.config.vocab_size),\n        labels.view(-1)\n    )\n    \n    return masked_lm_loss",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "output-logits": {
+      "id": "output-logits",
+      "title": "Output Logits",
+      "equations": [
+        {
+          "id": "logits-1",
+          "title": "Input from Decoder",
+          "explanation": "Final vocabulary predictions from decoder projection.",
+          "equation": "\\text{logits} = \\text{Decoder}(H_{\\text{pred}}) \\in \\mathbb{R}^{B \\times L \\times 30522}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "logits-2",
+          "title": "Probability Distribution",
+          "explanation": "Convert logits to token probabilities for each position.",
+          "equation": "P(\\text{token}_i | \\text{context}) = \\text{softmax}(\\text{logits}_{i}) \\in \\mathbb{R}^{30522}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "logits-3",
+          "title": "Training Loss",
+          "explanation": "Compute masked language modeling loss for training.",
+          "equation": "\\mathcal{L}_{\\text{MLM}} = -\\sum_{i \\in \\text{masked}} \\log P(\\text{true\\_token}_i | \\text{context})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "logits-init",
+        "title": "Output Logits Setup",
+        "explanation": "Final output tensor containing raw vocabulary scores.",
+        "codeAnswer": "# Output logits are the final result tensor\n# No initialization needed - this is the model output\n\n# During inference, convert to probabilities:\nfrom torch.nn.functional import softmax\n\ndef get_predictions(logits, masked_positions):\n    # logits: (batch_size, seq_length, vocab_size)\n    # masked_positions: indices of [MASK] tokens\n    \n    # Extract logits for masked positions only\n    masked_logits = logits[masked_positions]\n    \n    # Convert to probabilities\n    probs = softmax(masked_logits, dim=-1)\n    \n    # Get top-k predictions\n    top_k_probs, top_k_indices = torch.topk(probs, k=5)\n    \n    return top_k_indices, top_k_probs",
+        "language": "python"
+      },
+      "forward": {
+        "id": "logits-forward",
+        "title": "Output Logits Processing",
+        "explanation": "Process final logits for training or inference.",
+        "codeAnswer": "def process_output_logits(logits, labels=None, return_dict=True):\n    # logits: (batch_size, seq_length, vocab_size)\n    \n    if labels is not None:\n        # Training mode: compute MLM loss\n        loss_fct = CrossEntropyLoss()  # Ignores label=-100\n        masked_lm_loss = loss_fct(\n            logits.view(-1, logits.size(-1)),\n            labels.view(-1)\n        )\n        \n        if return_dict:\n            return MaskedLMOutput(\n                loss=masked_lm_loss,\n                logits=logits\n            )\n        else:\n            return (masked_lm_loss, logits)\n    else:\n        # Inference mode: return logits for prediction\n        if return_dict:\n            return MaskedLMOutput(logits=logits)\n        else:\n            return (logits,)",
+        "language": "python"
+      },
+      "type": "custom"
+    }
+  }
+}

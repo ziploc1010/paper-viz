@@ -1,0 +1,156 @@
+{
+  "hypergraph_example": {
+    "nodes": ["v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8"],
+    "hyperedges": [
+      {
+        "id": "e1",
+        "nodes": ["v1", "v2", "v3"],
+        "label": "Research Team A",
+        "weight": 0.9
+      },
+      {
+        "id": "e2",
+        "nodes": ["v2", "v4", "v5"],
+        "label": "Project Group B",
+        "weight": 0.8
+      },
+      {
+        "id": "e3",
+        "nodes": ["v3", "v5", "v6", "v7"],
+        "label": "Committee C",
+        "weight": 0.7
+      },
+      {
+        "id": "e4",
+        "nodes": ["v6", "v7", "v8"],
+        "label": "Department D",
+        "weight": 0.85
+      },
+      {
+        "id": "e5",
+        "nodes": ["v1", "v4", "v8"],
+        "label": "Task Force E",
+        "weight": 0.75
+      }
+    ],
+    "node_features": {
+      "v1": [0.2, 0.8, 0.5, 0.1],
+      "v2": [0.6, 0.3, 0.9, 0.4],
+      "v3": [0.1, 0.7, 0.2, 0.8],
+      "v4": [0.9, 0.1, 0.6, 0.3],
+      "v5": [0.3, 0.5, 0.8, 0.7],
+      "v6": [0.7, 0.4, 0.1, 0.9],
+      "v7": [0.4, 0.9, 0.3, 0.5],
+      "v8": [0.8, 0.2, 0.7, 0.6]
+    },
+    "node_labels": {
+      "v1": 0,
+      "v2": 1,
+      "v3": 0,
+      "v4": 1,
+      "v5": 2,
+      "v6": 2,
+      "v7": 0,
+      "v8": 1
+    }
+  },
+  "incidence_matrix": [
+    [1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 0],
+    [1, 0, 1, 0, 0],
+    [0, 1, 0, 0, 1],
+    [0, 1, 1, 0, 0],
+    [0, 0, 1, 1, 0],
+    [0, 0, 1, 1, 0],
+    [0, 0, 0, 1, 1]
+  ],
+  "application_examples": {
+    "social_networks": {
+      "description": "Modeling group interactions in social media",
+      "nodes": "Users",
+      "hyperedges": "Group conversations, events, shared interests",
+      "example": "WhatsApp groups, Facebook events, Reddit communities"
+    },
+    "recommendation_systems": {
+      "description": "Capturing multi-item purchase patterns",
+      "nodes": "Items/Products",
+      "hyperedges": "Shopping baskets, user sessions",
+      "example": "Amazon bundles, Netflix viewing sessions"
+    },
+    "bioinformatics": {
+      "description": "Protein interaction networks",
+      "nodes": "Proteins",
+      "hyperedges": "Protein complexes, pathways",
+      "example": "Metabolic pathways, signaling cascades"
+    },
+    "computer_vision": {
+      "description": "Image segmentation and object relationships",
+      "nodes": "Pixels or superpixels",
+      "hyperedges": "Objects, semantic regions",
+      "example": "Scene understanding, semantic segmentation"
+    },
+    "knowledge_graphs": {
+      "description": "Multi-ary relations in knowledge bases",
+      "nodes": "Entities",
+      "hyperedges": "N-ary relations",
+      "example": "Movie (actor, director, year, genre)"
+    }
+  },
+  "comparison_metrics": {
+    "hgnn_vs_gnn": {
+      "expressiveness": {
+        "hgnn": "Directly models higher-order interactions",
+        "gnn": "Requires clique expansion, loses hyperedge identity"
+      },
+      "complexity": {
+        "hgnn": "O(|V||E| + |E|d²) where d is avg hyperedge degree",
+        "gnn_expanded": "O(|V|²) for clique-expanded graph"
+      },
+      "memory": {
+        "hgnn": "Sparse incidence matrix: O(Σ|e|)",
+        "gnn_expanded": "Dense adjacency: O(|V|²)"
+      },
+      "information_preservation": {
+        "hgnn": "Preserves hyperedge structure and weights",
+        "gnn": "Loses hyperedge membership information"
+      }
+    }
+  },
+  "implementation_notes": {
+    "sparse_operations": "Use sparse matrix operations for large hypergraphs",
+    "normalization": "Degree normalization crucial for stability",
+    "aggregation_functions": ["mean", "max", "sum", "attention"],
+    "common_issues": [
+      "Over-smoothing with deep models",
+      "Handling hyperedges of varying sizes",
+      "Memory constraints for large hypergraphs",
+      "Choosing appropriate edge weights"
+    ]
+  },
+  "benchmark_datasets": {
+    "cora_cocitation": {
+      "nodes": 2708,
+      "hyperedges": 1072,
+      "avg_hyperedge_size": 4.3,
+      "task": "Node classification"
+    },
+    "pubmed_cocitation": {
+      "nodes": 19717,
+      "hyperedges": 7963,
+      "avg_hyperedge_size": 4.9,
+      "task": "Node classification"
+    },
+    "movielens": {
+      "nodes": 9746,
+      "hyperedges": 1682,
+      "avg_hyperedge_size": 5.8,
+      "task": "Link prediction"
+    },
+    "walmart": {
+      "nodes": 88860,
+      "hyperedges": 65979,
+      "avg_hyperedge_size": 6.5,
+      "task": "Hyperedge prediction"
+    }
+  }
+}

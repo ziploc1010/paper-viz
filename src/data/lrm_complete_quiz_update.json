@@ -1,0 +1,680 @@
+{
+  "componentQuizzes": {
+    "length-budgeting-papers": {
+      "id": "length-budgeting-papers",
+      "title": "Length Budgeting Papers",
+      "concepts": [
+        {
+          "id": "tale-concept",
+          "title": "TALE Budget Estimation",
+          "question": "How does TALE estimate the optimal token budget for model generation?",
+          "answer": "TALE uses zero-shot prompting to estimate an optimal token budget which constrains model generation",
+          "canvasHeight": 100
+        },
+        {
+          "id": "sketch-concept",
+          "title": "Sketch-of-Thought Paradigms",
+          "question": "What are the three adaptive paradigms used by Sketch-of-Thought to reduce verbosity in intermediate reasoning steps?",
+          "answer": "Conceptual Chaining, Chunked Symbolism, and Expert Lexicon",
+          "canvasHeight": 100
+        },
+        {
+          "id": "planning-tokens-concept",
+          "title": "Planning Tokens Hierarchy",
+          "question": "How do planning tokens enhance language model reasoning according to Wang et al. (2023b)?",
+          "answer": "By incorporating planning tokens at the start of each reasoning step in a hierarchical approach",
+          "canvasHeight": 100
+        },
+        {
+          "id": "chain-draft-concept",
+          "title": "Chain-of-Draft Efficiency",
+          "question": "What is the key difference between Chain-of-Draft and traditional CoT?",
+          "answer": "Chain-of-Draft encourages models to generate concise, minimal intermediate reasoning steps rather than token-heavy explanations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "s1-concept",
+          "title": "S1 Budget Forcing",
+          "question": "How does S1 directly control thinking length?",
+          "answer": "Uses a budget-forcing strategy by appending an end-of-thinking token delimiter to force the thinking process to end",
+          "canvasHeight": 100
+        },
+        {
+          "id": "safechain-concept",
+          "title": "SafeChain Decoding",
+          "question": "What are the two decoding strategies proposed by SafeChain to control thinking?",
+          "answer": "ZeroThink (forces model to start response without any thought) and LessThink (forces a short thought process)",
+          "canvasHeight": 120
+        },
+        {
+          "id": "dsc-concept",
+          "title": "DSC Resource Allocation",
+          "question": "How does Difficulty-Adaptive Self-Consistency (DSC) allocate inference resources?",
+          "answer": "Evaluates query difficulty using the LLM itself to dynamically allocate inference resources",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dynasor-concept",
+          "title": "Dynasor Compute Allocation",
+          "question": "What basis does Dynasor use to allocate compute during multi-path reasoning?",
+          "answer": "Allocates compute based on model certainty, assigning more resources to hard queries",
+          "canvasHeight": 100
+        },
+        {
+          "id": "tsp-concept",
+          "title": "Thought Switching Penalty",
+          "question": "What does TSP discourage to improve reasoning efficiency?",
+          "answer": "Discourages premature transitions between thoughts which may cause superficial but lengthy reasoning traces",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "system-switch-papers": {
+      "id": "system-switch-papers",
+      "title": "System Switch Papers",
+      "concepts": [
+        {
+          "id": "dualformer-concept",
+          "title": "Dualformer Integration",
+          "question": "How does Dualformer integrate the dual process through its training strategy?",
+          "answer": "Uses a randomized reasoning trace training strategy that randomly drops certain parts of the reasoning traces",
+          "canvasHeight": 100
+        },
+        {
+          "id": "system1x-concept",
+          "title": "System 1.x Controller",
+          "question": "What role does the controller play in System 1.x when handling maze tasks?",
+          "answer": "Assesses maze difficulty to allow the model to alternate among different systems based on user-defined parameters for smoother cognitive resource allocation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "fast-concept",
+          "title": "FaST Visual Reasoning",
+          "question": "What factors does FaST's switching adapter use to transition between Systems 1 and 2 for visual reasoning?",
+          "answer": "Task complexity factors like visual uncertainty and invisibility",
+          "canvasHeight": 100
+        },
+        {
+          "id": "halusearch-concept",
+          "title": "HaluSearch Learning",
+          "question": "How does HaluSearch learn to switch between System 1 and System 2?",
+          "answer": "Leverages model performance on specific instances to construct supervised labels for both instance-level and step-level switching under MCTS",
+          "canvasHeight": 120
+        },
+        {
+          "id": "dyna-think-concept",
+          "title": "Dyna-Think Autonomy",
+          "question": "What makes Dyna-Think's dynamic thinking mechanism 'training-free'?",
+          "answer": "The model autonomously determines 'Slow' reasoning based on generation consistency and complexity of thought processes",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "model-switch-papers": {
+      "id": "model-switch-papers",
+      "title": "Model Switch Papers",
+      "concepts": [
+        {
+          "id": "bild-concept",
+          "title": "BiLD Dual Model",
+          "question": "How does BiLD balance speed and quality through its policies?",
+          "answer": "Uses a small, fast model for initial predictions and a larger, more accurate model for corrections through fallback and rollback policies",
+          "canvasHeight": 120
+        },
+        {
+          "id": "eagle-concept",
+          "title": "EAGLE Feature-Level",
+          "question": "What key transition does EAGLE make to enhance inference?",
+          "answer": "Transitions speculative sampling from the token level to the feature level",
+          "canvasHeight": 100
+        },
+        {
+          "id": "eagle2-concept",
+          "title": "EAGLE-2 Dynamic Trees",
+          "question": "What innovation does EAGLE-2 introduce for speculative decoding?",
+          "answer": "Context-aware dynamic draft trees that adjust token acceptance rates based on confidence scores",
+          "canvasHeight": 100
+        },
+        {
+          "id": "medusa-concept",
+          "title": "MEDUSA Multi-Token",
+          "question": "How does MEDUSA reduce sequential decoding steps?",
+          "answer": "Incorporates additional decoding heads that predict multiple tokens simultaneously with a tree-based attention mechanism to concurrently generate and verify candidate continuations",
+          "canvasHeight": 120
+        },
+        {
+          "id": "layerskip-concept",
+          "title": "LayerSkip Early Exit",
+          "question": "What two techniques does LayerSkip combine to speed up inference?",
+          "answer": "Layer dropout combined with early exit loss, allowing predictions at shallower layers with self-speculative decoding for verification",
+          "canvasHeight": 120
+        },
+        {
+          "id": "zooter-concept",
+          "title": "Zooter Routing",
+          "question": "How does Zooter's reward-guided routing method determine which LLM to use?",
+          "answer": "Leverages distilled rewards from training queries to train a specialized routing function that directs each query to the LLM with the most pertinent expertise",
+          "canvasHeight": 120
+        },
+        {
+          "id": "routellm-concept",
+          "title": "RouteLLM Balance",
+          "question": "What balance does RouteLLM strike through its dynamic routing?",
+          "answer": "Dynamically routes queries between robust and weaker language models to achieve optimal balance between performance and cost effectiveness",
+          "canvasHeight": 120
+        },
+        {
+          "id": "mixllm-concept",
+          "title": "MixLLM Decision Making",
+          "question": "How does MixLLM enhance its selection of optimal LLM candidates?",
+          "answer": "Enhances query embeddings using tag knowledge, employs lightweight predictors to assess quality and cost per model, and uses a meta decision maker",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "parallel-search-papers": {
+      "id": "parallel-search-papers",
+      "title": "Parallel Search Papers",
+      "concepts": [
+        {
+          "id": "sbon-concept",
+          "title": "SBoN Early Halting",
+          "question": "How does SBoN achieve comparable performance while reducing computational demands?",
+          "answer": "Evaluates partial responses and halts those that are unlikely to yield high-quality completions",
+          "canvasHeight": 100
+        },
+        {
+          "id": "treebon-concept",
+          "title": "TreeBoN Hierarchical",
+          "question": "What combination does TreeBoN use and how does it manage candidates?",
+          "answer": "Combines speculative tree-search with Best-of-N sampling, generating candidates in hierarchical tree structure and pruning low-quality ones early using weighted implicit reward",
+          "canvasHeight": 120
+        },
+        {
+          "id": "stbon-concept",
+          "title": "STBoN Truncation",
+          "question": "How does STBoN identify when to truncate suboptimal candidates?",
+          "answer": "Identifies the earliest estimation time when samples become distinct and employs a buffer window along with hidden state consistency",
+          "canvasHeight": 120
+        },
+        {
+          "id": "self-calibration-concept",
+          "title": "Self-Calibration Distillation",
+          "question": "What does Self-Calibration distill into the model and what benefit does this provide?",
+          "answer": "Distills self-consistency-derived confidence into the model, enabling strategies like early stopping and eliminating the need for external reward models",
+          "canvasHeight": 120
+        },
+        {
+          "id": "metareasoner-concept",
+          "title": "MetaReasoner Formulation",
+          "question": "What formulation does MetaReasoner use for its strategies like restarting or refining?",
+          "answer": "Uses a contextual multi-armed bandit formulation",
+          "canvasHeight": 100
+        },
+        {
+          "id": "tpo-concept",
+          "title": "TPO Recursive Approach",
+          "question": "What does TPO's recursive approach achieve compared to training-aware methods?",
+          "answer": "Revises parallel samples to align model performance at test time, achieving comparable results to training-aware methods",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "chain-compression-papers": {
+      "id": "chain-compression-papers",
+      "title": "Chain Compression Papers",
+      "concepts": [
+        {
+          "id": "tokenskip-concept",
+          "title": "TokenSkip Analysis",
+          "question": "How does TokenSkip achieve controllable compression of CoT sequences?",
+          "answer": "Analyzes token importance in CoT outputs and selectively omits less important tokens",
+          "canvasHeight": 100
+        },
+        {
+          "id": "spirit-ft-concept",
+          "title": "SPIRIT-FT Metric",
+          "question": "What metric does SPIRIT-FT use to identify critical reasoning steps?",
+          "answer": "Uses perplexity as a metric - a step is deemed critical if its removal significantly increases perplexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lm-skip-concept",
+          "title": "LM-Skip Environment",
+          "question": "How does LM-Skip induce step-skipping behavior?",
+          "answer": "Designs a controlled training environment that instructs models to produce reasoning sequences under a step constraint",
+          "canvasHeight": 100
+        },
+        {
+          "id": "distill-system2-concept",
+          "title": "Distill System 2",
+          "question": "When does Yu et al.'s approach fine-tune models to omit intermediate generation steps?",
+          "answer": "For samples that are sufficiently confident",
+          "canvasHeight": 100
+        },
+        {
+          "id": "c3ot-concept",
+          "title": "C3ot Compression",
+          "question": "How does C3ot preserve key information and learn compression?",
+          "answer": "Employs GPT-4 as a compressor to preserve key information, then fine-tunes to learn the relationship between long and short CoTs",
+          "canvasHeight": 120
+        },
+        {
+          "id": "self-training-concept",
+          "title": "Self-Training Distillation",
+          "question": "What two techniques does Munkhbat et al.'s self-training use before applying SFT?",
+          "answer": "Best-of-N sampling and few-shot conditioning to build concise reasoning paths",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "latent-sft-papers": {
+      "id": "latent-sft-papers",
+      "title": "Latent-Space SFT Papers",
+      "concepts": [
+        {
+          "id": "coconut-concept",
+          "title": "Coconut Continuous Thought",
+          "question": "How does Coconut (Chain of Continuous Thought) replace traditional CoT?",
+          "answer": "Uses the model's last hidden state as a continuous representation of reasoning, feeding it back into the model as input for subsequent reasoning steps",
+          "canvasHeight": 120
+        },
+        {
+          "id": "ccot-concept",
+          "title": "CCoT Compression",
+          "question": "How does CCoT reduce computational cost and enhance throughput?",
+          "answer": "Fine-tunes the model to produce compressed representations of reasoning chains instead of full-length sequences, approximating complete chains with fewer tokens",
+          "canvasHeight": 120
+        },
+        {
+          "id": "codi-concept",
+          "title": "CODI Distillation",
+          "question": "What does CODI align between teacher and student models?",
+          "answer": "Aligns hidden activations of specific tokens between a teacher model using explicit CoT and a student model using implicit CoT",
+          "canvasHeight": 120
+        },
+        {
+          "id": "token-assorted-concept",
+          "title": "Token Assorted Mixing",
+          "question": "How does Token Assorted abstract initial reasoning steps?",
+          "answer": "Mixes latent discrete tokens from VQ-VAE with text tokens to abstract the initial reasoning steps while retaining essential information",
+          "canvasHeight": 120
+        },
+        {
+          "id": "softcot-concept",
+          "title": "SoftCoT Assistant",
+          "question": "How does SoftCoT approach continuous-space reasoning differently?",
+          "answer": "Utilizes an assistant model that generates 'soft thought tokens' for the LLM",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lightthinker-concept",
+          "title": "LightThinker Compression",
+          "question": "How does LightThinker enhance reasoning efficiency?",
+          "answer": "Dynamically compresses intermediate steps into concise latent representations",
+          "canvasHeight": 100
+        },
+        {
+          "id": "heima-concept",
+          "title": "Heima Architecture",
+          "question": "How does Heima reduce verbosity in both text and multimodal tasks?",
+          "answer": "The Heima Encoder compresses intermediate steps into a single token, and the Heima Decoder reconstructs the reasoning process from these tokens",
+          "canvasHeight": 120
+        },
+        {
+          "id": "implicit-cot-concept",
+          "title": "Implicit CoT",
+          "question": "What is the key characteristic of Implicit CoT by Deng et al.?",
+          "answer": "Performs reasoning in latent space without generating explicit chain-of-thought tokens",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "rl-length-papers": {
+      "id": "rl-length-papers",
+      "title": "RL with Length Reward Papers",
+      "concepts": [
+        {
+          "id": "o1-pruner-concept",
+          "title": "O1-Pruner Method",
+          "question": "How does O1-Pruner begin its efficient fine-tuning method?",
+          "answer": "Begins by estimating the LLM's baseline performance through presampling from its reference model",
+          "canvasHeight": 100
+        },
+        {
+          "id": "arora-zanette-concept",
+          "title": "Normalized Length Penalty",
+          "question": "How does Arora and Zanette's length penalty ensure correct responses are preferred?",
+          "answer": "Introduces a length penalty normalized in the per-prompt group, ensuring correct responses are always preferred over incorrect ones regardless of token count",
+          "canvasHeight": 120
+        },
+        {
+          "id": "lcpo-concept",
+          "title": "LCPO Target Control",
+          "question": "How does LCPO control length budget through prompts and rewards?",
+          "answer": "Introduces target length instruction in the prompt ('Think for ngold tokens') and designs a target-aware length reward that penalizes length violation",
+          "canvasHeight": 120
+        },
+        {
+          "id": "kimi-concept",
+          "title": "Kimi 1.5 Observation",
+          "question": "What phenomenon does Kimi 1.5 observe and how does it address it?",
+          "answer": "Observes the overthinking phenomenon and introduces a length reward to restrain the rapid growth of token length",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dast-concept",
+          "title": "DAST Adaptive Thinking",
+          "question": "How does DAST empower models to modulate CoT length?",
+          "answer": "Introduces Difficulty-Adaptive Slow-Thinking that allows models to autonomously modulate CoT length based on problem complexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "demystifying-concept",
+          "title": "Demystifying Paradox",
+          "question": "What paradoxical finding did Yeo et al. reveal about extremely long CoT reasoning?",
+          "answer": "Extremely long CoT reasoning approaching context limits paradoxically reduces accuracy; they proposed a cosine reward function for intuitive guidance",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "rl-without-papers": {
+      "id": "rl-without-papers",
+      "title": "RL without Length Reward Papers",
+      "concepts": [
+        {
+          "id": "mrt-concept",
+          "title": "MRT Formulation",
+          "question": "How does MRT (Meta-RL) structure its test-time optimization approach?",
+          "answer": "Formulates test-time optimization as a meta-reinforcement learning problem, dividing generation into episodes with model estimating answers after each episode",
+          "canvasHeight": 120
+        },
+        {
+          "id": "ibpo-concept",
+          "title": "IBPO Framing",
+          "question": "How does IBPO approach budget awareness differently than direct length control?",
+          "answer": "Frames budget awareness as utility maximization rather than directly controlling response length",
+          "canvasHeight": 100
+        },
+        {
+          "id": "overthink-concept",
+          "title": "Overthink Heuristics",
+          "question": "What heuristics does Overthink employ for generating preference data?",
+          "answer": "Uses First-Correct Solutions (FCS) and Greedy Diverse Solutions (GDS) to generate preference data for offline policy optimization using DPO, RPO, and SimPO",
+          "canvasHeight": 120
+        },
+        {
+          "id": "drgrpo-concept",
+          "title": "Dr.GRPO Approach",
+          "question": "What is Dr.GRPO's focus in reasoning without length rewards?",
+          "answer": "Focuses on improving reasoning quality through group relative policy optimization without explicit length constraints",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "latent-pretrain-papers": {
+      "id": "latent-pretrain-papers",
+      "title": "Latent-space Pretraining Papers",
+      "concepts": [
+        {
+          "id": "blt-concept",
+          "title": "BLT Processing",
+          "question": "How does Byte Latent Transformer process input differently than traditional models?",
+          "answer": "Processes raw bytes using dynamically sized patches rather than fixed tokens, reducing computational overhead and improving robustness",
+          "canvasHeight": 120
+        },
+        {
+          "id": "lcms-concept",
+          "title": "LCMs Semantic Level",
+          "question": "What serves as the primary processing units in Large Concept Models?",
+          "answer": "Abstract concepts that often correspond to complete sentences or speech utterances",
+          "canvasHeight": 100
+        },
+        {
+          "id": "cocomix-concept",
+          "title": "CoCoMix Integration",
+          "question": "What two types of predictions does CoCoMix integrate?",
+          "answer": "Integrates discrete token prediction with continuous concept vectors derived from sparse autoencoders (SAEs)",
+          "canvasHeight": 100
+        },
+        {
+          "id": "ltms-concept",
+          "title": "LTMs Guidance",
+          "question": "How do latent thought vectors (LTMs) influence token generation?",
+          "answer": "Probabilistically guide token generation via cross-attention mechanisms",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "subquad-attention-papers": {
+      "id": "subquad-attention-papers",
+      "title": "Subquadratic Attention Papers",
+      "concepts": [
+        {
+          "id": "lightning-concept",
+          "title": "Lightning Attention",
+          "question": "What does Lightning Attention optimize to expedite processing?",
+          "answer": "Optimizes I/O operations to expedite processing",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lasp2-concept",
+          "title": "LASP-2 Refinement",
+          "question": "How does LASP-2 refine the Lightning Attention approach?",
+          "answer": "Further refines by reorganizing both computational and communication workflows",
+          "canvasHeight": 100
+        },
+        {
+          "id": "gla-concept",
+          "title": "GLA Gating",
+          "question": "What scheme does Gated Linear Attention use to enhance sequence modeling?",
+          "answer": "Leverages a data-independent gating scheme to enhance sequence modeling ability and hardware efficiency",
+          "canvasHeight": 100
+        },
+        {
+          "id": "gated-deltanet-concept",
+          "title": "Gated DeltaNet Updates",
+          "question": "What capability do TTT, Titans, and Gated-DeltaNet share?",
+          "answer": "Propose update rules that allow models to adapt dynamically during inference",
+          "canvasHeight": 100
+        },
+        {
+          "id": "mom-concept",
+          "title": "MoM Memory",
+          "question": "How does MoM expand the RNN memory state?",
+          "answer": "Uses 'sparse memory' with multiple memory units managed by a router module",
+          "canvasHeight": 100
+        },
+        {
+          "id": "mamba2-concept",
+          "title": "Mamba-2 Integration",
+          "question": "What does Mamba-2 integrate to enhance hardware efficiency?",
+          "answer": "Integrates a linear attention-like mechanism",
+          "canvasHeight": 100
+        },
+        {
+          "id": "rwkv7-concept",
+          "title": "RWKV-7 Method",
+          "question": "What category of methods does RWKV-7 belong to?",
+          "answer": "Linear RNN-based methods that have demonstrated effectiveness",
+          "canvasHeight": 100
+        },
+        {
+          "id": "nsa-concept",
+          "title": "NSA Strategy",
+          "question": "What hierarchical strategy does NSA adopt?",
+          "answer": "Dynamic hierarchical sparse strategy combining coarse-grained token compression with fine-grained token selection",
+          "canvasHeight": 100
+        },
+        {
+          "id": "moba-concept",
+          "title": "MoBA Routing",
+          "question": "How does MoBA handle context and routing?",
+          "answer": "Divides context into blocks and uses dynamic gating mechanism to route query tokens to the most relevant KV blocks",
+          "canvasHeight": 120
+        }
+      ]
+    },
+    "linearization-papers": {
+      "id": "linearization-papers",
+      "title": "Linearization Papers",
+      "concepts": [
+        {
+          "id": "liger-concept",
+          "title": "Liger Modification",
+          "question": "How does Liger modify pre-trained LLMs without extra parameters?",
+          "answer": "Modifies pre-trained LLMs into gated linear recurrent models by adapting key matrix weights",
+          "canvasHeight": 100
+        },
+        {
+          "id": "llamba-concept",
+          "title": "Llamba Distillation",
+          "question": "What does Llamba achieve through MOHAWK with minimal training data?",
+          "answer": "Distills Llama-3.x models into the Mamba architecture, achieving high inference throughput and efficiency",
+          "canvasHeight": 100
+        },
+        {
+          "id": "lolcats-concept",
+          "title": "LoLCATs Enhancement",
+          "question": "How does LoLCATs advance LLM linearization?",
+          "answer": "Replaces softmax attention with trained linear approximations and enhances model quality using LoRA",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "subquad-reasoning-papers": {
+      "id": "subquad-reasoning-papers",
+      "title": "Efficient Reasoning with Subquadratic Attention Papers",
+      "concepts": [
+        {
+          "id": "tsf-concept",
+          "title": "Think Slow Fast",
+          "question": "What does TSF demonstrate about distilling Mamba models from Transformers?",
+          "answer": "Demonstrates that distilling Mamba models from Transformers enables faster multi-path CoT generation under fixed compute budgets",
+          "canvasHeight": 120
+        },
+        {
+          "id": "crqs-concept",
+          "title": "CRQs Expressiveness",
+          "question": "What does CRQs examine regarding different model architectures?",
+          "answer": "Examines the expressiveness of Transformers, RNNs, and CoT-augmented models on Compositional Reasoning Questions",
+          "canvasHeight": 100
+        },
+        {
+          "id": "cosmos-reason1-concept",
+          "title": "Cosmos-Reason1 Architecture",
+          "question": "What hybrid architecture does Cosmos-Reason1 use for efficient Physical AI reasoning?",
+          "answer": "Uses hybrid Mamba-MLP-Transformer backbone architecture",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "multimodal-papers": {
+      "id": "multimodal-papers",
+      "title": "Multimodal Efficiency Papers",
+      "concepts": [
+        {
+          "id": "scot-concept",
+          "title": "SCoT Decomposition",
+          "question": "How does Self-structured Chain of Thought (SCoT) address multimodal reasoning issues?",
+          "answer": "Decomposes reasoning tasks into atomic, semantically meaningful steps",
+          "canvasHeight": 100
+        },
+        {
+          "id": "al-cotd-concept",
+          "title": "AL-CoTD Adaptation",
+          "question": "How does AL-CoTD refine the reasoning process?",
+          "answer": "Dynamically adjusts the length of reasoning chains according to task complexity",
+          "canvasHeight": 100
+        },
+        {
+          "id": "heima-multimodal-concept",
+          "title": "Heima Multimodal",
+          "question": "What capability does Heima provide for multimodal tasks?",
+          "answer": "Leverages hidden latent representations to reduce verbosity in both text and multimodal tasks",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "test-time-papers": {
+      "id": "test-time-papers",
+      "title": "Test-time Scaling Papers",
+      "concepts": [
+        {
+          "id": "confidence-methods-concept",
+          "title": "Confidence-Based Methods",
+          "question": "How can inefficient reasoning be mitigated according to Huang et al.?",
+          "answer": "By developing confidence-based methods to address queries of varying difficulty",
+          "canvasHeight": 100
+        },
+        {
+          "id": "adaptive-sampling-concept",
+          "title": "Adaptive Sampling",
+          "question": "What type of strategies do Wan et al. and others propose for test-time scaling?",
+          "answer": "Adaptive sampling strategies for dynamic computation allocation",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "trustworthy-papers": {
+      "id": "trustworthy-papers",
+      "title": "Trustworthy Reasoning Papers",
+      "concepts": [
+        {
+          "id": "deliberative-alignment-concept",
+          "title": "Deliberative Alignment",
+          "question": "What approach does deliberative alignment offer for LRM safety?",
+          "answer": "Offers a distinct approach to enhance LRM safety through deliberative processes",
+          "canvasHeight": 100
+        },
+        {
+          "id": "x-boundary-concept",
+          "title": "X-Boundary",
+          "question": "What is X-Boundary's contribution to LRM safety?",
+          "answer": "Provides a distinct approach to enhance LRM safety alongside deliberative alignment",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "applications-papers": {
+      "id": "applications-papers",
+      "title": "Application Papers",
+      "concepts": [
+        {
+          "id": "chain-retrieval-concept",
+          "title": "Chain-of-Retrieval",
+          "question": "How do O1-like RAG models trained with Wang et al.'s method operate?",
+          "answer": "Perform step-by-step retrieval and reasoning over relevant information before generating the final answer",
+          "canvasHeight": 100
+        },
+        {
+          "id": "agent-overthinking-concept",
+          "title": "Agent Overthinking",
+          "question": "What correlation did Cuadron et al. find in magnetic tasks?",
+          "answer": "Elevated overthinking scores correlate negatively with performance",
+          "canvasHeight": 100
+        }
+      ]
+    },
+    "evaluation-papers": {
+      "id": "evaluation-papers",
+      "title": "Evaluation Papers",
+      "concepts": [
+        {
+          "id": "efficiency-metrics-concept",
+          "title": "Efficiency Metrics",
+          "question": "What two perspectives do Chen et al.'s efficiency metrics address?",
+          "answer": "Both outcome and process perspectives",
+          "canvasHeight": 100
+        },
+        {
+          "id": "dna-bench-concept",
+          "title": "DNA Bench",
+          "question": "What vulnerability does DNA Bench expose in LRMs?",
+          "answer": "LRMs' tendency for over-reasoning",
+          "canvasHeight": 100
+        }
+      ]
+    }
+  }
+}
