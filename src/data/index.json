@@ -1,0 +1,216 @@
+{
+  "version": "1.0.0",
+  "description": "Paper Visualization Data Manifest",
+  "lastUpdated": "2025-10-03",
+  "categories": {
+    "derivations": {
+      "description": "Mathematical derivations with interactive canvas for practice",
+      "directory": "derivations/",
+      "items": [
+        {
+          "id": "diffusion-models",
+          "title": "Diffusion Models Derivation",
+          "file": "diffusion.json",
+          "path": "derivations/diffusion.json",
+          "type": "derivation",
+          "topics": ["diffusion", "generative-models", "probabilistic-models"]
+        },
+        {
+          "id": "schrodinger-equation",
+          "title": "Schrödinger Equation",
+          "file": "schrodinger.json",
+          "path": "derivations/schrodinger.json",
+          "type": "derivation",
+          "topics": ["quantum-mechanics", "wave-functions", "differential-equations"]
+        }
+      ]
+    },
+    "comparisons": {
+      "description": "Side-by-side equation and code comparisons for research papers",
+      "directory": "comparisons/",
+      "items": [
+        {
+          "id": "dhcn",
+          "title": "DHCN: Dual Channel Hypergraph Convolutional Networks",
+          "file": "dhcn.json",
+          "path": "comparisons/dhcn.json",
+          "type": "comparison",
+          "authors": "Xia et al.",
+          "year": 2021,
+          "venue": "AAAI",
+          "topics": ["hypergraph", "session-based-recommendation", "self-supervised-learning"]
+        },
+        {
+          "id": "hgnn",
+          "title": "HGNN: Hypergraph Neural Networks",
+          "file": "hgnn.json",
+          "path": "comparisons/hgnn.json",
+          "type": "comparison",
+          "topics": ["hypergraph", "graph-neural-networks", "spectral-methods"]
+        },
+        {
+          "id": "lightgcn",
+          "title": "LightGCN: Simplified Graph Convolution for Recommendation",
+          "file": "lightgcn.json",
+          "path": "comparisons/lightgcn.json",
+          "type": "comparison",
+          "topics": ["graph-convolution", "recommendation", "collaborative-filtering"]
+        },
+        {
+          "id": "srgnn",
+          "title": "SR-GNN: Session-based Recommendation with Graph Neural Networks",
+          "file": "srgnn.json",
+          "path": "comparisons/srgnn.json",
+          "type": "comparison",
+          "authors": "Wu et al.",
+          "year": 2019,
+          "venue": "AAAI",
+          "topics": ["session-based-recommendation", "graph-neural-networks", "gated-gnn"]
+        },
+        {
+          "id": "deeprl",
+          "title": "Deep RL: PPO (Proximal Policy Optimization)",
+          "file": "deeprl.json",
+          "path": "comparisons/deeprl.json",
+          "type": "comparison",
+          "topics": ["reinforcement-learning", "ppo", "policy-gradient"]
+        },
+        {
+          "id": "gchgnn",
+          "title": "GCHGNN: Graph Convolution Hypergraph Neural Network",
+          "file": "gchgnn.json",
+          "path": "comparisons/gchgnn.json",
+          "type": "comparison",
+          "topics": ["hypergraph", "graph-convolution"]
+        },
+        {
+          "id": "llmhg",
+          "title": "LLM-HG: LLM-Enhanced Hypergraph Learning",
+          "file": "llmhg.json",
+          "path": "comparisons/llmhg.json",
+          "type": "comparison",
+          "topics": ["llm", "hypergraph", "multi-view-learning"]
+        },
+        {
+          "id": "share",
+          "title": "SHARE: Session-based Hypergraph Attention Recommendation",
+          "file": "share.json",
+          "path": "comparisons/share.json",
+          "type": "comparison",
+          "topics": ["session-based-recommendation", "hypergraph", "attention"]
+        },
+        {
+          "id": "math",
+          "title": "Mathematical Techniques: RoPE, RMSNorm, SwiGLU",
+          "file": "math.json",
+          "path": "comparisons/math.json",
+          "type": "comparison",
+          "topics": ["positional-encoding", "normalization", "activation-functions"]
+        }
+      ]
+    },
+    "models": {
+      "description": "Interactive architecture diagrams with equations and code",
+      "directory": "models/",
+      "items": [
+        {
+          "id": "bert",
+          "title": "BERT Model Architecture",
+          "directory": "models/bert/",
+          "files": {
+            "model": "model.json",
+            "diagram": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["transformer", "nlp", "pre-training"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
+        },
+        {
+          "id": "llmhg",
+          "title": "LLM-HG: Hypergraph Model",
+          "directory": "models/llmhg/",
+          "files": {
+            "model": "model_alt.json",
+            "diagram": "diagram_alt.svg",
+            "modelOriginal": "model.json",
+            "diagramOriginal": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["llm", "hypergraph", "graph-neural-networks"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
+        },
+        {
+          "id": "lrm",
+          "title": "LRM Complete Model",
+          "directory": "models/lrm/",
+          "files": {
+            "model": "model.json",
+            "diagram": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["recommendation", "machine-learning"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
+        }
+      ]
+    }
+  },
+  "dataStructure": {
+    "derivation": {
+      "description": "Format for mathematical derivations",
+      "requiredFields": ["title", "subtitle", "description", "sections"],
+      "sectionFields": ["title", "steps"],
+      "stepFields": ["id", "title", "explanation", "equation", "canvasHeight"]
+    },
+    "comparison": {
+      "description": "Format for equation-code comparisons",
+      "requiredFields": ["id", "title", "description", "sections"],
+      "sectionFields": ["id", "title", "leftContent", "code"]
+    },
+    "model": {
+      "description": "Format for interactive model architectures",
+      "requiredFields": ["svgDiagram", "componentQuizzes", "componentExplanations"],
+      "optionalFields": ["metadata"]
+    }
+  },
+  "usage": {
+    "externalApps": {
+      "description": "How external applications can consume this data",
+      "examples": [
+        {
+          "useCase": "Display derivations",
+          "steps": [
+            "1. Read index.json to discover available derivations",
+            "2. Load the specific JSON file from derivations/ directory",
+            "3. Parse the JSON structure following the 'derivation' dataStructure",
+            "4. Render equations using a LaTeX renderer (e.g., KaTeX, MathJax)"
+          ]
+        },
+        {
+          "useCase": "Display model architectures",
+          "steps": [
+            "1. Read index.json to find models",
+            "2. Load model.json for component data",
+            "3. Optionally load diagram.svg if available",
+            "4. Render interactive components or static diagrams"
+          ]
+        }
+      ]
+    }
+  },
+  "interface": {
+    "endpoints": {
+      "manifest": "/src/data/index.json",
+      "derivations": "/src/data/derivations/{filename}",
+      "comparisons": "/src/data/comparisons/{filename}",
+      "models": "/src/data/models/{model-id}/{filename}"
+    },
+    "fileNaming": {
+      "derivations": "{topic}.json",
+      "comparisons": "{paper-abbreviation}.json",
+      "models": "model.json, diagram.svg (optional)"
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { BlockMath, InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import bertQuizData from '../data/bertmodel_updated.json';
+import bertQuizData from '../data/models/bert/model.json';
 
 // Lazy load heavy components
 const Editor = React.lazy(() => import('react-simple-code-editor'));
@@ -117,8 +117,17 @@ export default function BertModel() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Use the imported JSON data directly
-        setQuizData(bertQuizData);
+        // Import SVG as a URL
+        const svgUrl = (await import('../data/models/bert/diagram.svg')).default;
+        // Fetch the SVG content from the URL
+        const response = await fetch(svgUrl);
+        const svgContent = await response.text();
+
+        // Combine JSON data with SVG
+        setQuizData({
+          ...bertQuizData,
+          svgDiagram: svgContent
+        });
         setLoading(false);
       } catch (err) {
         console.error('Error loading data:', err);

@@ -19,6 +19,7 @@ const MathDerivation = ({ derivationId }) => {
     // Map derivation IDs to their JSON files
     const derivationFiles = {
       'diffusion-models': 'diffusion.json',
+      'schrodinger-equation': 'schrodinger.json',
       // Add more derivations here as they're created
       // 'fourier-transform': 'fourier.json',
       // 'navier-stokes': 'navier-stokes.json',
@@ -31,8 +32,8 @@ const MathDerivation = ({ derivationId }) => {
       return;
     }
 
-    // Load derivation data
-    import(`../data/${fileName}`)
+    // Load derivation data from derivations/ directory
+    import(`../data/derivations/${fileName}`)
       .then(module => {
         setDerivationData(module.default);
         setLoading(false);
@@ -165,14 +166,25 @@ const StepCard = ({ step, isFlipped, onToggle, canvasRef, onClear }) => {
   const localCanvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
+  // Parse equation array or string
+  const equations = Array.isArray(step.equation) ? step.equation : [step.equation];
+
+  // Calculate height based on number of equations
+  // Use provided canvasHeight or auto-calculate with better scaling:
+  // - Single equation: 80px (small, centered)
+  // - Multiple equations: 40px base + 50px per equation (very tight fit)
+  const calculatedHeight = step.canvasHeight || (
+    equations.length === 1 ? 80 : 40 + equations.length * 50
+  );
+
   useEffect(() => {
     const canvas = localCanvasRef.current;
     if (canvas && canvasContainerRef.current) {
       // Set canvas size to match container
       const rect = canvasContainerRef.current.getBoundingClientRect();
       canvas.width = rect.width;
-      canvas.height = step.canvasHeight;
-      
+      canvas.height = calculatedHeight;
+
       // Set up drawing context
       const ctx = canvas.getContext('2d');
       ctx.lineCap = 'round';
@@ -183,7 +195,7 @@ const StepCard = ({ step, isFlipped, onToggle, canvasRef, onClear }) => {
       // Pass ref up to parent
       canvasRef(canvas);
     }
-  }, [step.canvasHeight, canvasRef]);
+  }, [calculatedHeight, canvasRef]);
 
   const startDrawing = (e) => {
     setIsDrawing(true);
@@ -216,27 +228,24 @@ const StepCard = ({ step, isFlipped, onToggle, canvasRef, onClear }) => {
     setIsDrawing(false);
   };
 
-  // Parse equation array or string
-  const equations = Array.isArray(step.equation) ? step.equation : [step.equation];
-
   return (
     <div className="mb-8">
       {/* Step Title */}
       <h4 className="text-lg font-semibold mb-2">
         {renderExplanation(step.title)}
       </h4>
-      
+
       {/* Explanation */}
       <p className="text-gray-600 mb-4">
         {renderExplanation(step.explanation)}
       </p>
-      
+
       {/* Card Container */}
-      <div className="relative" style={{ minHeight: `${step.canvasHeight}px` }}>
+      <div className="relative" style={{ minHeight: `${calculatedHeight}px` }}>
         {/* Canvas */}
         <div className={`absolute inset-0 transition-opacity duration-300 ${
           isFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`} style={{ height: `${step.canvasHeight}px` }}>
+        }`} style={{ height: `${calculatedHeight}px` }}>
           <div ref={canvasContainerRef} className="w-full h-full bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
             <canvas
               ref={localCanvasRef}
@@ -255,9 +264,9 @@ const StepCard = ({ step, isFlipped, onToggle, canvasRef, onClear }) => {
         {/* Answer */}
         <div className={`absolute inset-0 transition-opacity duration-300 ${
           isFlipped ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`} style={{ height: `${step.canvasHeight}px` }}>
-          <div className="w-full h-full bg-blue-50 rounded-lg shadow-md border-2 border-blue-300 p-4 overflow-hidden">
-            <div className="w-full h-full flex flex-col justify-center">
+        }`} style={{ height: `${calculatedHeight}px` }}>
+          <div className="w-full h-full bg-blue-50 rounded-lg shadow-md border-2 border-blue-300 p-2 flex items-center justify-center overflow-y-auto overflow-x-auto">
+            <div className="w-full flex flex-col items-center">
               {equations.map((eq, index) => (
                 <div key={index} className={`${index > 0 ? 'mt-2' : ''}`}>
                   <BlockMath math={eq} />

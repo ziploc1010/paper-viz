@@ -3,7 +3,7 @@ import { BlockMath, InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import lrmQuizData from '../data/lrm_complete.json';
+import lrmQuizData from '../data/models/lrm/model.json';
 
 // Lazy load heavy components
 const Editor = React.lazy(() => import('react-simple-code-editor'));
@@ -114,12 +114,21 @@ export default function LRMComplete() {
     setDrawingData(prev => ({ ...prev, [canvasId]: data }));
   };
 
-  // Load the BERT model data
+  // Load the LRM model data
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Use the imported JSON data directly
-        setQuizData(lrmQuizData);
+        // Import SVG as a URL
+        const svgUrl = (await import('../data/models/lrm/diagram.svg')).default;
+        // Fetch the SVG content from the URL
+        const response = await fetch(svgUrl);
+        const svgContent = await response.text();
+
+        // Combine JSON data with SVG
+        setQuizData({
+          ...lrmQuizData,
+          svgDiagram: svgContent
+        });
         setLoading(false);
       } catch (err) {
         console.error('Error loading data:', err);

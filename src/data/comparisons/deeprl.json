@@ -1,0 +1,55 @@
+{
+  "id": "deeprl-comparison",
+  "title": "PPO (Proximal Policy Optimization) Breakdown",
+  "description": "Deep Reinforcement Learning implementation showing the four main components of PPO: Policy Network (Actor), Value Network (Critic), Generalized Advantage Estimation, and PPO Loss Computation",
+  "sections": [
+    {
+      "id": "actor",
+      "title": "Policy Network (Actor)",
+      "description": "The actor network outputs action probabilities given a state",
+      "leftContent": {
+        "description": "The actor network outputs action probabilities given a state",
+        "equation": "\\pi_\\theta(a|s) = P(a|s; \\theta)"
+      },
+      "code": "class MLPGaussianActor(nn.Module):\n    def __init__(self, state_shape, action_shape, net_arch, activation_fn=nn.ReLU):\n        super().__init__()\n        layers = []\n        prev_size = state_shape[0]\n        \n        for size in net_arch:\n            layers.append(nn.Linear(prev_size, size))\n            layers.append(activation_fn())\n            prev_size = size\n            \n        self.shared_net = nn.Sequential(*layers)\n        self.action_net = nn.Linear(prev_size, action_shape[0])\n        \n    def forward(self, state):\n        features = self.shared_net(state)\n        action_logits = self.action_net(features)\n        return th.distributions.Categorical(logits=action_logits)",
+      "leftId": "actor-equation",
+      "rightId": "actor-code"
+    },
+    {
+      "id": "critic",
+      "title": "Value Network (Critic)",
+      "description": "The critic estimates the value function for a given state",
+      "leftContent": {
+        "description": "The critic estimates the value function for a given state",
+        "equation": "V_\\theta(s_t) \\approx \\mathbb{E}[R_t]"
+      },
+      "code": "class MLPCritic(nn.Module):\n    def __init__(self, input_shape, output_shape, net_arch, activation_fn=nn.ReLU):\n        super().__init__()\n        layers = []\n        prev_size = input_shape[0]\n        \n        for size in net_arch:\n            layers.append(nn.Linear(prev_size, size))\n            layers.append(activation_fn())\n            prev_size = size\n            \n        layers.append(nn.Linear(prev_size, output_shape[0]))\n        self.net = nn.Sequential(*layers)",
+      "leftId": "critic-equation",
+      "rightId": "critic-code"
+    },
+    {
+      "id": "gae",
+      "title": "Generalized Advantage Estimation",
+      "description": "GAE computes advantage estimates for more stable training",
+      "leftContent": {
+        "description": "GAE computes advantage estimates for more stable training",
+        "equation": "A_t = \\delta_t + (\\gamma \\lambda)\\delta_{t+1} + ... + (\\gamma \\lambda)^{T-t+1}\\delta_{T-1}"
+      },
+      "code": "def __call__(self, rewards, values, dones, next_value):\n    advantages = th.zeros_like(rewards)\n    last_gae = 0\n    \n    for t in reversed(range(len(rewards))):\n        if t == len(rewards) - 1:\n            next_nonterminal = 1.0 - dones[-1]\n            next_val = next_value\n        else:\n            next_nonterminal = 1.0 - dones[t + 1]\n            next_val = values[t + 1]\n            \n        delta = rewards[t] + self.gamma * next_val * next_nonterminal - values[t]\n        advantages[t] = last_gae = delta + self.gamma * self.lambda_ * next_nonterminal * last_gae",
+      "leftId": "gae-equation",
+      "rightId": "gae-code"
+    },
+    {
+      "id": "ppo-loss",
+      "title": "PPO Loss Computation",
+      "description": "The clipped objective function that defines PPO's policy update",
+      "leftContent": {
+        "description": "The clipped objective function that defines PPO's policy update",
+        "equation": "L^{CLIP}(\\theta) = \\mathbb{E}_t[\\min(r_t(\\theta)A_t, \\text{clip}(r_t(\\theta), 1-\\epsilon, 1+\\epsilon)A_t)]"
+      },
+      "code": "# Calculate policy loss\nratio = th.exp(log_probs - batch_old_log_probs)\nsurr1 = batch_advantages * ratio\nsurr2 = batch_advantages * th.clamp(\n    ratio, \n    1.0 - self.epsilon, \n    1.0 + self.epsilon\n)\npolicy_loss = -th.min(surr1, surr2).mean()\n\n# Calculate value loss\nvalue_loss = ((batch_returns - values) ** 2).mean()\n\n# Calculate total loss\nloss = policy_loss + 0.5 * value_loss - 0.01 * entropy",
+      "leftId": "ppo-loss-equation",
+      "rightId": "ppo-loss-code"
+    }
+  ]
+}

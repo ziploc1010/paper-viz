@@ -1,0 +1,48 @@
+{
+  "id": "dhcn",
+  "title": "DHCN: Dual Channel Hypergraph Convolutional Networks",
+  "subtitle": "Self-Supervised Hypergraph Convolutional Networks for Session-based Recommendation",
+  "authors": "Xia et al. (AAAI 2021)",
+  "description": "Enhanced version with explicit dependencies and clarified connections between equations.",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "1. Hypergraph Convolution Foundation",
+      "leftTitle": "Mathematical Formulation",
+      "leftContent": {
+        "description": "Spectral hypergraph convolution propagates embeddings through hyperedges:",
+        "equation": "\\mathbf{x}_{i}^{(l+1)}=\\sum_{j=1}^{N} \\sum_{\\epsilon=1}^{M} H_{i \\epsilon} H_{j \\epsilon} W_{\\epsilon \\epsilon} \\mathbf{x}_{j}^{(l)}",
+        "variables": [
+          {"symbol": "\\mathbf{x}_i^{(l)}", "description": "node i embedding at layer l"},
+          {"symbol": "H_{i\\epsilon}", "description": "incidence matrix entry (1 if node i in hyperedge \\epsilon)"},
+          {"symbol": "W_{\\epsilon\\epsilon}", "description": "weight of hyperedge \\epsilon (set to 1 in DHCN)"},
+          {"symbol": "N", "description": "number of nodes (items)"},
+          {"symbol": "M", "description": "number of hyperedges (sessions)"}
+        ],
+        "note": "Foundation: This is the core operation that all subsequent computations build upon."
+      },
+      "code": "# Equation 1: Hypergraph Convolution\ndef hypergraph_convolution(x_j, H, W):\n    \"\"\"\n    x_i^{l+1} = Σ_j Σ_ε H_{iε} H_{jε} W_{εε} x_j^{l}\n    \n    Aggregate features from nodes to hyperedges, then back to nodes\n    \"\"\"\n    # H: incidence matrix [n_nodes, n_edges]\n    # W: hyperedge weights (diagonal matrix)\n    # x_j: node features at layer l\n    \n    x_next = torch.zeros_like(x_j)\n    n_nodes, n_edges = H.shape\n    \n    # For each target node i\n    for i in range(n_nodes):\n        # For each source node j\n        for j in range(n_nodes):\n            # Sum over all hyperedges\n            for e in range(n_edges):\n                if H[i, e] == 1 and H[j, e] == 1:\n                    # Both nodes in same hyperedge\n                    x_next[i] += W[e, e] * x_j[j]\n    \n    return x_next"
+    },
+    {
+      "id": "section-2",
+      "title": "2. Matrix Form Implementation",
+      "leftTitle": "Mathematical Formulation",
+      "leftContent": {
+        "description": "Efficient matrix form of hypergraph convolution:",
+        "equation": "\\mathbf{X}_{h}^{(l+1)}=\\mathbf{D}^{-1} \\mathbf{H} \\mathbf{W} \\mathbf{B}^{-1} \\mathbf{H}^{\\mathrm{T}} \\mathbf{X}_{h}^{(l)}",
+        "variables": [
+          {"symbol": "\\mathbf{X}_h^{(l)} \\in \\mathbb{R}^{N \\times d}", "description": "node feature matrix at layer l"},
+          {"symbol": "\\mathbf{D} \\in \\mathbb{R}^{N \\times N}", "description": "diagonal node degree matrix"},
+          {"symbol": "\\mathbf{H} \\in \\mathbb{R}^{N \\times M}", "description": "incidence matrix"},
+          {"symbol": "\\mathbf{W} \\in \\mathbb{R}^{M \\times M}", "description": "diagonal edge weight matrix (identity in DHCN)"},
+          {"symbol": "\\mathbf{B} \\in \\mathbb{R}^{M \\times M}", "description": "diagonal edge degree matrix"}
+        ],
+        "note": "Dependency: Uses \\mathbf{X}_h^{(l)} from previous layer (or initial embeddings)."
+      },
+      "code": "# Equation 2: Matrix Form with Row Normalization\nclass HypergraphConvLayer(nn.Module):\n    \"\"\"\n    X_h^{l+1} = D^{-1} H W B^{-1} H^T X_h^{l}\n    \n    Where:\n    - D: node degree matrix\n    - H: incidence matrix  \n    - W: edge weight matrix (identity in DHCN)\n    - B: edge degree matrix\n    \"\"\"\n    def __init__(self):\n        super().__init__()\n        \n    def forward(self, X, H):\n        # All hyperedges have weight 1\n        W = torch.eye(H.size(1))\n        \n        # Compute degree matrices\n        D = torch.diag(torch.sum(H, dim=1))  # Node degrees\n        B = torch.diag(torch.sum(H, dim=0))  # Edge degrees\n        \n        # Normalize\n        D_inv = torch.diag(1.0 / (torch.diag(D) + 1e-8))\n        B_inv = torch.diag(1.0 / (torch.diag(B) + 1e-8))\n        \n        # Two-stage refinement: node -> edge -> node\n        # Step 1: H^T @ X - aggregate from nodes to hyperedges\n        X_edge = H.t() @ X\n        \n        # Step 2: Apply edge normalization\n        X_edge = B_inv @ X_edge\n        \n        # Step 3: H @ X_edge - propagate from edges back to nodes\n        X_next = H @ X_edge\n        \n        # Step 4: Apply node normalization\n        X_next = D_inv @ X_next\n        \n        return X_next",
+      "showEditor": true,
+      "editorKey": "matrixFormCode",
+      "editorPlaceholder": "Try implementing the matrix form of hypergraph convolution..."
+    }
+  ]
+}

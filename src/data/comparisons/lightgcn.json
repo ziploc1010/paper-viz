@@ -1,0 +1,112 @@
+{
+  "id": "lightgcn",
+  "title": "LightGCN vs GAT Comparison",
+  "description": "Comparison between LightGCN and Graph Attention Networks for recommendation systems",
+  "sections": [
+    {
+      "id": "lightgcn-architecture",
+      "title": "LightGCN Architecture",
+      "leftTitle": "LightGCN Architecture",
+      "leftContent": {
+        "description": "LightGCN simplifies traditional GCNs by focusing on embedding propagation without feature transformations. The node embeddings are computed using:",
+        "equations": [
+          {
+            "math": "H^{(k)} = A H^{(k-1)}",
+            "description": ""
+          },
+          {
+            "title": "Aggregated embeddings are averaged across layers:",
+            "math": "H = \\frac{1}{K} \\sum_{k=1}^{K} H^{(k)}",
+            "description": ""
+          }
+        ]
+      },
+      "code": "class LightGCN(torch.nn.Module):\n    def __init__(self, num_nodes, embedding_dim=64, num_layers=3):\n        super().__init__()\n        self.num_nodes = num_nodes\n        self.num_layers = num_layers\n        self.embedding = torch.nn.Embedding(num_nodes, embedding_dim)\n        self.conv = LGConv()\n        self.reset_parameters()\n\n    def reset_parameters(self):\n        torch.nn.init.xavier_uniform_(self.embedding.weight)\n\n    def forward(self, edge_index):\n        x = self.embedding.weight\n        layer_embeddings = [x]\n        for _ in range(self.num_layers):\n            x = self.conv(x, edge_index)\n            layer_embeddings.append(x)\n        return torch.stack(layer_embeddings, dim=0).mean(dim=0)\n\n    def decode(self, z, src, dst):\n        return (z[src] * z[dst]).sum(dim=-1)",
+      "leftId": "lightGCNEq1",
+      "rightId": "lightGCNCode",
+      "editorKey": "lightGCNCode",
+      "editorPlaceholder": "Type the LightGCN code here...",
+      "canvasId": "lightGCNCode"
+    },
+    {
+      "id": "multi-head-architecture",
+      "title": "Multi-head Architecture",
+      "leftTitle": "Multi-head Architecture",
+      "rightTitle": "GAT Recommendation Implementation",
+      "leftContent": {
+        "description": "Each GAT layer transforms input features through multiple attention heads:",
+        "equations": [
+          {
+            "math": "\\mathbf{h}_i^{(l+1)} = \\sigma \\left( \\frac{1}{K} \\sum_{k=1}^{K} \\sum_{j \\in \\mathcal{N}(i)} \\alpha_{ij}^k \\mathbf{W}^k \\mathbf{h}_j^{(l)} \\right)",
+            "description": ""
+          }
+        ],
+        "variables": [
+          {
+            "symbol": "K",
+            "description": "Number of attention heads"
+          },
+          {
+            "symbol": "\\alpha_{ij}^k",
+            "description": "Attention coefficients from head k"
+          },
+          {
+            "symbol": "\\mathbf{W}^k",
+            "description": "Weight matrix for head k"
+          }
+        ],
+        "additionalInfo": {
+          "title": "Layer composition:",
+          "items": [
+            "Input size: d_{in}",
+            "Hidden layer size: d_{in} \\times \\text{heads}",
+            "Output size: d_{out} (after concatenating or averaging heads)"
+          ]
+        }
+      },
+      "code": "class GATRecommender(torch.nn.Module):\n    def __init__(self, num_nodes, hidden_channels=64, num_layers=2, heads=8):\n        super().__init__()\n        self.embedding = torch.nn.Embedding(num_nodes, hidden_channels)\n        \n        # Multiple GAT layers\n        self.convs = torch.nn.ModuleList()\n        \n        # First layer: hidden_channels → hidden_channels * heads\n        self.convs.append(GATConv(hidden_channels, hidden_channels, heads))\n        \n        # Middle layers maintain dimension: hidden_channels * heads\n        for _ in range(num_layers - 2):\n            self.convs.append(GATConv(hidden_channels * heads, \n                                    hidden_channels * heads, \n                                    heads))\n        \n        # Last layer: hidden_channels * heads → hidden_channels\n        self.convs.append(GATConv(hidden_channels * heads, \n                                hidden_channels, \n                                heads=1))\n\n    def forward(self, edge_index):\n        x = self.embedding.weight\n        \n        # Apply GAT layers with residual connections\n        for i, conv in enumerate(self.convs):\n            x_residual = x\n            x = conv(x, edge_index)  # Apply attention\n            if i != len(self.convs) - 1:\n                x = F.elu(x)         # Non-linearity\n            \n            # Residual connection if dimensions match\n            if x_residual.size(-1) == x.size(-1):\n                x = x + x_residual\n        \n        return x",
+      "leftId": "gatMultiHeadEq",
+      "rightId": "gatRecommenderCode",
+      "editorKey": "gatRecommenderCode",
+      "editorPlaceholder": "Type the GAT Recommender code here...",
+      "canvasId": "gatRecommenderCode"
+    },
+    {
+      "id": "attention-mechanism",
+      "title": "Attention Mechanism",
+      "leftTitle": "Attention Mechanism",
+      "rightTitle": "GAT Attention Mechanism Implementation",
+      "leftContent": {
+        "description": "The attention mechanism follows four key steps:",
+        "steps": [
+          {
+            "title": "1. Linear Transformation",
+            "math": "\\mathbf{h}_i' = W\\mathbf{h}_i",
+            "description": ""
+          },
+          {
+            "title": "2. Attention Scores",
+            "math": "e_{ij} = \\text{LeakyReLU}(\\mathbf{a}^T[W\\mathbf{h}_i || W\\mathbf{h}_j])",
+            "description": ""
+          },
+          {
+            "title": "3. Normalization",
+            "math": "\\alpha_{ij} = \\text{softmax}_j(e_{ij})",
+            "description": ""
+          },
+          {
+            "title": "4. Feature Aggregation",
+            "math": "\\mathbf{h}_i^{new} = \\sum_{j \\in \\mathcal{N}(i)} \\alpha_{ij}W\\mathbf{h}_j",
+            "description": ""
+          }
+        ]
+      },
+      "code": "class GATConv(torch.nn.Module):\n    def __init__(self, in_channels, out_channels, heads=1):\n        super().__init__()\n        self.heads = heads\n        # Linear transformation (Equation 1)\n        self.lin = torch.nn.Linear(in_channels, heads * out_channels)\n        # Attention mechanism (Equation 2)\n        self.att = torch.nn.Parameter(torch.Tensor(1, heads, 2 * out_channels))\n\n    def forward(self, x, edge_index):\n        # 1. Linear transformation\n        x = self.lin(x).view(-1, self.heads, self.out_channels)\n\n        # 2. Compute attention scores\n        x_i = x[edge_index[0]]  # Source nodes\n        x_j = x[edge_index[1]]  # Target nodes\n        alpha = torch.cat([x_i, x_j], dim=-1)  # Concatenate\n        alpha = (alpha * self.att).sum(dim=-1)  # Attention scores\n        \n        # 3. Apply LeakyReLU and normalize\n        alpha = F.leaky_relu(alpha)\n        alpha = softmax(alpha, edge_index[0])  # Normalize\n        \n        # 4. Weighted aggregation\n        out = x_j * alpha.view(-1, self.heads, 1)\n        out = scatter_add(out, edge_index[0], dim=0)\n\n        return out.view(-1, self.heads * self.out_channels)",
+      "leftId": "gatLinearTransformEq",
+      "rightId": "gatConvCode",
+      "editorKey": "gatConvCode",
+      "editorPlaceholder": "Type the GAT Conv code here...",
+      "canvasId": "gatConvCode"
+    }
+  ]
+}

@@ -1,0 +1,524 @@
+{
+  "id": "hgnn",
+  "title": "Hypergraph Neural Networks (HGNN) - Complete Implementation",
+  "subtitle": "Hypergraph Neural Networks",
+  "authors": "Feng et al. (AAAI 2019)",
+  "description": "This implementation follows the paper 'Hypergraph Neural Networks' (Feng et al., AAAI 2019). Each code section is directly tied to its corresponding mathematical equation from the paper.",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "1. Basic Definitions and Notation",
+      "leftTitle": "Mathematical Formulation",
+      "leftContent": {
+        "description": "A hypergraph is defined as:",
+        "equation": "\\mathcal{G} = (\\mathcal{V}, \\mathcal{E}, \\mathbf{W})",
+        "variables": [
+          {"symbol": "\\mathcal{V} = \\{v_1, v_2, ..., v_n\\}", "description": "set of n vertices (items)"},
+          {"symbol": "\\mathcal{E} = \\{e_1, e_2, ..., e_m\\}", "description": "set of m hyperedges (sessions)"},
+          {"symbol": "\\mathbf{W} \\in \\mathbb{R}^{m \\times m}", "description": "diagonal weight matrix"},
+          {"symbol": "e \\subseteq \\mathcal{V}", "description": "each hyperedge e is a subset of vertices"},
+          {"symbol": "n = |\\mathcal{V}|", "description": "total number of vertices"},
+          {"symbol": "m = |\\mathcal{E}|", "description": "total number of hyperedges"}
+        ],
+        "subSections": [
+          {
+            "description": "The incidence matrix encodes vertex-hyperedge relationships:",
+            "equation": "h(v,e) = \\begin{cases} 1, & \\text{if } v \\in e \\\\ 0, & \\text{if } v \\notin e \\end{cases}",
+            "variables": [
+              {"symbol": "h(v,e) \\in \\{0,1\\}", "description": "incidence function"},
+              {"symbol": "v \\in \\mathcal{V}", "description": "a vertex in the hypergraph"},
+              {"symbol": "e \\in \\mathcal{E}", "description": "a hyperedge in the hypergraph"},
+              {"symbol": "\\mathbf{H} \\in \\{0,1\\}^{n \\times m}", "description": "full incidence matrix with entries \\mathbf{H}_{ve} = h(v,e)"}
+            ]
+          },
+          {
+            "title": "Edge weight matrix:",
+            "equation": "\\mathbf{W} = \\text{diag}(\\omega(e_1), \\omega(e_2), ..., \\omega(e_m))",
+            "variables": [
+              {"symbol": "\\mathbf{W} \\in \\mathbb{R}^{m \\times m}", "description": "diagonal weight matrix"},
+              {"symbol": "\\omega(e_i) \\in \\mathbb{R}^+", "description": "positive weight for hyperedge e_i"},
+              {"symbol": "\\text{diag}(\\cdot)", "description": "diagonal matrix construction"}
+            ]
+          }
+        ]
+      },
+      "code": "# Equation 1: Incidence Matrix and Edge Weights\ndef create_incidence_matrix(num_nodes, num_edges):\n    \"\"\"\n    h(v,e) = {1 if v ∈ e, 0 if v ∉ e}\n    \"\"\"\n    H = torch.zeros(num_nodes, num_edges)\n    return H\n\ndef add_hyperedge(H, edge_idx, node_indices, weight=1.0):\n    \"\"\"Add hyperedge e containing vertices v with optional weight\"\"\"\n    H[node_indices, edge_idx] = 1\n    return H\n\ndef create_weight_matrix(edge_weights):\n    \"\"\"Create diagonal weight matrix W from edge weights\"\"\"\n    W = torch.diag(edge_weights)\n    return W"
+    },
+    {
+      "id": "section-2",
+      "title": "2. Vertex and Edge Degrees",
+      "leftTitle": "Mathematical Formulas",
+      "leftContent": {
+        "subSections": [
+          {
+            "title": "Vertex degree:",
+            "equation": "d(v) = \\sum_{e \\in \\mathcal{E}} \\omega(e) h(v,e)",
+            "variables": [
+              {"symbol": "d(v) \\in \\mathbb{R}^+", "description": "degree of vertex v"},
+              {"symbol": "\\omega(e)", "description": "weight of hyperedge e"},
+              {"symbol": "h(v,e)", "description": "incidence function (1 if v ∈ e, 0 otherwise)"},
+              {"symbol": "\\mathcal{E}", "description": "set of all hyperedges"}
+            ]
+          },
+          {
+            "title": "Edge degree:",
+            "equation": "\\delta(e) = \\sum_{v \\in \\mathcal{V}} h(v,e)",
+            "variables": [
+              {"symbol": "\\delta(e) \\in \\mathbb{N}", "description": "degree of hyperedge e (number of vertices it contains)"},
+              {"symbol": "\\mathcal{V}", "description": "set of all vertices"},
+              {"symbol": "h(v,e)", "description": "incidence function"}
+            ]
+          },
+          {
+            "title": "Degree matrices:",
+            "subEquations": [
+              {
+                "title": "Vertex degree matrix:",
+                "equation": "\\mathbf{D}_v = \\text{diag}(d(v_1), d(v_2), ..., d(v_n))"
+              },
+              {
+                "title": "Edge degree matrix:",
+                "equation": "\\mathbf{D}_e = \\text{diag}(\\delta(e_1), \\delta(e_2), ..., \\delta(e_m))"
+              }
+            ],
+            "variables": [
+              {"symbol": "\\mathbf{D}_v \\in \\mathbb{R}^{n \\times n}", "description": "diagonal vertex degree matrix"},
+              {"symbol": "\\mathbf{D}_e \\in \\mathbb{R}^{m \\times m}", "description": "diagonal edge degree matrix"}
+            ]
+          }
+        ]
+      },
+      "code": "# Vertex and Edge Degree Formulas\ndef compute_degrees(H, W=None):\n    \"\"\"\n    Vertex degree: d(v) = Σ_e∈E ω(e)h(v,e)\n    Edge degree: δ(e) = Σ_v∈V h(v,e)\n    \"\"\"\n    if W is None:\n        W = torch.ones(H.size(1))\n    \n    # Vertex degrees: sum over hyperedges (weighted)\n    D_v = torch.sum(H * W.unsqueeze(0), dim=1)\n    \n    # Edge degrees: sum over vertices\n    D_e = torch.sum(H, dim=0)\n    \n    return D_v, D_e"
+    },
+    {
+      "id": "section-3",
+      "title": "3. Hypergraph Laplacian",
+      "leftTitle": "Mathematical Formulation",
+      "leftContent": {
+        "description": "The normalized hypergraph operator:",
+        "equation": "\\Theta = \\mathbf{D}_v^{-1/2} \\mathbf{H} \\mathbf{W} \\mathbf{D}_e^{-1} \\mathbf{H}^{\\top} \\mathbf{D}_v^{-1/2}",
+        "variables": [
+          {"symbol": "\\Theta \\in \\mathbb{R}^{n \\times n}", "description": "normalized hypergraph operator"},
+          {"symbol": "\\mathbf{D}_v^{-1/2} \\in \\mathbb{R}^{n \\times n}", "description": "inverse square root of vertex degree matrix"},
+          {"symbol": "\\mathbf{H} \\in \\{0,1\\}^{n \\times m}", "description": "incidence matrix"},
+          {"symbol": "\\mathbf{W} \\in \\mathbb{R}^{m \\times m}", "description": "edge weight matrix"},
+          {"symbol": "\\mathbf{D}_e^{-1} \\in \\mathbb{R}^{m \\times m}", "description": "inverse of edge degree matrix"},
+          {"symbol": "\\mathbf{H}^{\\top} \\in \\{0,1\\}^{m \\times n}", "description": "transpose of incidence matrix"}
+        ],
+        "subSections": [
+          {
+            "title": "The hypergraph Laplacian:",
+            "equation": "\\Delta = \\mathbf{I} - \\Theta",
+            "variables": [
+              {"symbol": "\\Delta \\in \\mathbb{R}^{n \\times n}", "description": "hypergraph Laplacian matrix"},
+              {"symbol": "\\mathbf{I} \\in \\mathbb{R}^{n \\times n}", "description": "identity matrix"},
+              {"symbol": "\\Theta", "description": "normalized hypergraph operator from above"}
+            ]
+          }
+        ]
+      },
+      "code": "# Hypergraph Laplacian Construction\ndef compute_laplacian(H, W=None):\n    \"\"\"\n    Θ = D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2)\n    Δ = I - Θ\n    \"\"\"\n    D_v, D_e = compute_degrees(H, W)\n    \n    # Compute D_v^(-1/2)\n    D_v_sqrt_inv = torch.diag(1.0 / torch.sqrt(D_v + 1e-8))\n    \n    # Compute D_e^(-1)\n    D_e_inv = torch.diag(1.0 / (D_e + 1e-8))\n    \n    # Weight matrix\n    if W is None:\n        W = torch.eye(H.size(1))\n    else:\n        W = torch.diag(W)\n    \n    # Θ = D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2)\n    Theta = D_v_sqrt_inv @ H @ W @ D_e_inv @ H.t() @ D_v_sqrt_inv\n    \n    # Laplacian: Δ = I - Θ\n    Delta = torch.eye(H.size(0)) - Theta\n    \n    return Delta, Theta"
+    },
+    {
+      "id": "section-4",
+      "title": "4. Regularization Framework (Equations 2-4)",
+      "leftTitle": "Mathematical Formulation",
+      "leftContent": {
+        "subSections": [
+          {
+            "title": "Optimization objective (Eq. 2):",
+            "equation": "\\arg\\min_f \\{\\mathcal{R}_{emp}(f) + \\Omega(f)\\}",
+            "variables": [
+              {"symbol": "f: \\mathcal{V} \\rightarrow \\mathbb{R}^d", "description": "function mapping vertices to d-dimensional features"},
+              {"symbol": "\\mathcal{R}_{emp}(f)", "description": "empirical risk (e.g., classification loss)"},
+              {"symbol": "\\Omega(f)", "description": "regularization term encouraging smoothness"}
+            ]
+          },
+          {
+            "title": "Regularization term (Eq. 3):",
+            "equation": "\\Omega(f) = \\frac{1}{2} \\sum_{e \\in \\mathcal{E}} \\sum_{\\{u,v\\} \\subseteq e} \\frac{\\omega(e)h(u,e)h(v,e)}{\\delta(e)} \\left(\\frac{f(u)}{\\sqrt{d(u)}} - \\frac{f(v)}{\\sqrt{d(v)}}\\right)^2",
+            "variables": [
+              {"symbol": "\\{u,v\\} \\subseteq e", "description": "pairs of vertices within hyperedge e"},
+              {"symbol": "f(u), f(v) \\in \\mathbb{R}^d", "description": "feature vectors for vertices u and v"},
+              {"symbol": "d(u), d(v)", "description": "vertex degrees from earlier definition"},
+              {"symbol": "\\delta(e)", "description": "edge degree from earlier definition"},
+              {"symbol": "\\omega(e)", "description": "weight of hyperedge e"},
+              {"symbol": "h(u,e), h(v,e)", "description": "incidence values (both 1 since u,v ∈ e)"}
+            ]
+          },
+          {
+            "title": "Matrix form (Eq. 4):",
+            "equation": "\\Omega(f) = \\mathbf{f}^{\\top} \\Delta \\mathbf{f}",
+            "variables": [
+              {"symbol": "\\mathbf{f} \\in \\mathbb{R}^{n \\times d}", "description": "matrix of all vertex features (stacked)"},
+              {"symbol": "\\Delta \\in \\mathbb{R}^{n \\times n}", "description": "hypergraph Laplacian from Section 3"},
+              {"symbol": "\\mathbf{f}^{\\top}", "description": "transpose of feature matrix"}
+            ],
+            "note": "Key insight: The regularizer encourages smoothness - vertices in the same hyperedge should have similar feature representations."
+          }
+        ]
+      },
+      "code": "# Equations 2-4: Regularization Framework\ndef hypergraph_regularizer(f, H, W, D_v, D_e):\n    \"\"\"\n    Ω(f) = 1/2 Σ_e Σ_{u,v} w(e)h(u,e)h(v,e)/δ(e) * \n           (f(u)/√d(u) - f(v)/√d(v))²\n           \n    Matrix form: Ω(f) = f^T Δ f\n    \"\"\"\n    # Normalized incidence\n    D_v_sqrt_inv = 1.0 / torch.sqrt(D_v + 1e-8)\n    D_e_inv = 1.0 / (D_e + 1e-8)\n    \n    # Compute Laplacian\n    Theta = torch.diag(D_v_sqrt_inv) @ H @ torch.diag(W) @ \\\n            torch.diag(D_e_inv) @ H.t() @ torch.diag(D_v_sqrt_inv)\n    Delta = torch.eye(len(D_v)) - Theta\n    \n    # Regularization term\n    reg = 0.5 * torch.sum(f * (Delta @ f))\n    return reg\n\ndef training_objective(predictions, labels, f, H, W, lambda_reg=0.01):\n    \"\"\"\n    Equation 2: min_f {R_emp(f) + Ω(f)}\n    \"\"\"\n    # Empirical risk (classification loss)\n    R_emp = F.cross_entropy(predictions, labels)\n    \n    # Regularization\n    D_v, D_e = compute_degrees(H, W)\n    omega = hypergraph_regularizer(f, H, W, D_v, D_e)\n    \n    # Total objective\n    return R_emp + lambda_reg * omega"
+    },
+    {
+      "id": "section-5",
+      "title": "5. Spectral Convolution (Equations 5-10)",
+      "leftTitle": "Mathematical Theory",
+      "leftContent": {
+        "description": "To define spectral convolution, we first need the eigendecomposition of the Laplacian:",
+        "subSections": [
+          {
+            "title": "Eigendecomposition of Laplacian:",
+            "equation": "\\Delta = \\mathbf{\\Phi} \\mathbf{\\Lambda} \\mathbf{\\Phi}^{\\top}",
+            "variables": [
+              {"symbol": "\\mathbf{\\Phi} \\in \\mathbb{R}^{n \\times n}", "description": "matrix of orthonormal eigenvectors"},
+              {"symbol": "\\mathbf{\\Lambda} = \\text{diag}(\\lambda_1, \\lambda_2, ..., \\lambda_n)", "description": "diagonal matrix of eigenvalues"},
+              {"symbol": "\\lambda_i \\in \\mathbb{R}", "description": "i-th eigenvalue of the Laplacian"},
+              {"symbol": "\\mathbf{\\Phi}^{\\top}", "description": "transpose of eigenvector matrix"}
+            ]
+          },
+          {
+            "title": "Spectral convolution (Eq. 5) - Full form:",
+            "equation": "\\mathbf{g} \\star \\mathbf{x} = \\mathbf{\\Phi}((\\mathbf{\\Phi}^{\\top}\\mathbf{g}) \\odot (\\mathbf{\\Phi}^{\\top}\\mathbf{x})) = \\mathbf{\\Phi}\\mathbf{g}(\\mathbf{\\Lambda})\\mathbf{\\Phi}^{\\top}\\mathbf{x}",
+            "variables": [
+              {"symbol": "\\mathbf{g} \\in \\mathbb{R}^n", "description": "filter in the vertex domain"},
+              {"symbol": "\\mathbf{x} \\in \\mathbb{R}^n", "description": "signal (feature vector) on vertices"},
+              {"symbol": "\\star", "description": "convolution operator"},
+              {"symbol": "\\odot", "description": "element-wise multiplication"},
+              {"symbol": "\\mathbf{g}(\\mathbf{\\Lambda}) = \\text{diag}(g(\\lambda_1), g(\\lambda_2), ..., g(\\lambda_n))", "description": "spectral filter"},
+              {"symbol": "g(\\lambda_i)", "description": "filter function evaluated at eigenvalue \\lambda_i"}
+            ]
+          },
+          {
+            "title": "Fourier transform on hypergraph:",
+            "equation": "\\hat{\\mathbf{x}} = \\mathbf{\\Phi}^{\\top}\\mathbf{x}, \\quad \\hat{\\mathbf{g}} = \\mathbf{\\Phi}^{\\top}\\mathbf{g}",
+            "variables": [
+              {"symbol": "\\hat{\\mathbf{x}}, \\hat{\\mathbf{g}} \\in \\mathbb{R}^n", "description": "signals in the spectral domain"},
+              {"symbol": "\\mathbf{\\Phi}^{\\top}", "description": "Fourier transform operator (eigenvector projection)"}
+            ]
+          },
+          {
+            "title": "Chebyshev approximation (Eq. 6):",
+            "equation": "\\mathbf{g} \\star \\mathbf{x} \\approx \\sum_{k=0}^{K} \\theta_k T_k(\\tilde{\\Delta}) \\mathbf{x}",
+            "variables": [
+              {"symbol": "K \\in \\mathbb{N}", "description": "order of Chebyshev approximation"},
+              {"symbol": "\\theta_k \\in \\mathbb{R}", "description": "learnable Chebyshev coefficients"},
+              {"symbol": "T_k(\\cdot)", "description": "Chebyshev polynomial of order k"},
+              {"symbol": "\\tilde{\\Delta}", "description": "scaled Laplacian (defined below)"}
+            ]
+          },
+          {
+            "title": "Scaled Laplacian:",
+            "equation": "\\tilde{\\Delta} = \\frac{2}{\\lambda_{\\max}}\\Delta - \\mathbf{I}",
+            "variables": [
+              {"symbol": "\\lambda_{\\max}", "description": "largest eigenvalue of \\Delta"},
+              {"symbol": "\\tilde{\\Delta} \\in \\mathbb{R}^{n \\times n}", "description": "scaled Laplacian with eigenvalues in [-1, 1]"}
+            ]
+          },
+          {
+            "title": "Chebyshev recurrence:",
+            "equation": "T_0(\\tilde{\\Delta}) = \\mathbf{I}, \\quad T_1(\\tilde{\\Delta}) = \\tilde{\\Delta}, \\quad T_k(\\tilde{\\Delta}) = 2\\tilde{\\Delta}T_{k-1}(\\tilde{\\Delta}) - T_{k-2}(\\tilde{\\Delta})",
+            "variables": [
+              {"symbol": "T_k(\\tilde{\\Delta}) \\in \\mathbb{R}^{n \\times n}", "description": "k-th order Chebyshev polynomial evaluated at \\tilde{\\Delta}"}
+            ]
+          },
+          {
+            "title": "First-order approximation (K=1):",
+            "equation": "\\mathbf{g} \\star \\mathbf{x} \\approx \\theta_0\\mathbf{x} - \\theta_1\\mathbf{D}_v^{-1/2} \\mathbf{H} \\mathbf{W} \\mathbf{D}_e^{-1} \\mathbf{H}^{\\top} \\mathbf{D}_v^{-1/2} \\mathbf{x}",
+            "variables": [
+              {"symbol": "\\theta_0, \\theta_1 \\in \\mathbb{R}", "description": "two learnable parameters"},
+              {"symbol": "", "description": "Using \\lambda_{\\max} \\approx 2 and \\Delta = \\mathbf{I} - \\Theta"}
+            ]
+          },
+          {
+            "title": "Simplified with single parameter (Eq. 9):",
+            "equation": "\\mathbf{g} \\star \\mathbf{x} \\approx \\theta \\mathbf{D}_v^{-1/2} \\mathbf{H} \\mathbf{W} \\mathbf{D}_e^{-1} \\mathbf{H}^{\\top} \\mathbf{D}_v^{-1/2} \\mathbf{x}",
+            "variables": [
+              {"symbol": "\\theta \\in \\mathbb{R}", "description": "single learnable parameter"},
+              {"symbol": "", "description": "This simplification leads directly to the HGNN layer formula"}
+            ]
+          }
+        ]
+      },
+      "code": "# Equations 6-9: Chebyshev Approximation\ndef chebyshev_convolution(X, Delta, K=2, theta=None):\n    \"\"\"\n    g★x ≈ Σ_{k=0}^K θ_k T_k(Δ̃)x\n    \n    First-order (K=1) simplification:\n    g★x ≈ θ(D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2))x\n    \"\"\"\n    if theta is None:\n        theta = nn.Parameter(torch.Tensor(K+1))\n        nn.init.normal_(theta)\n    \n    # Scaled Laplacian: Δ̃ = 2Δ/λ_max - I\n    lambda_max = 2.0  # Approximation\n    Delta_tilde = 2 * Delta / lambda_max - torch.eye(Delta.size(0))\n    \n    # Chebyshev polynomials\n    T = [torch.eye(X.size(0)), Delta_tilde]\n    for k in range(2, K+1):\n        T.append(2 * Delta_tilde @ T[k-1] - T[k-2])\n    \n    # Apply filter\n    output = torch.zeros_like(X)\n    for k in range(K+1):\n        output += theta[k] * (T[k] @ X)\n    \n    return output\n\n# Simplified first-order version (Equation 9)\ndef simplified_hgnn_conv(X, H, W=None):\n    \"\"\"\n    Simplified: g★x ≈ θ(D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2))x\n    \"\"\"\n    D_v, D_e = compute_degrees(H, W)\n    \n    # Normalizations\n    D_v_norm = 1.0 / torch.sqrt(D_v + 1e-8)\n    D_e_inv = 1.0 / (D_e + 1e-8)\n    \n    # Apply convolution\n    X = X * D_v_norm.unsqueeze(1)\n    X = H.t() @ X  # Node to edge\n    X = X * D_e_inv.unsqueeze(1)\n    if W is not None:\n        X = X * W.unsqueeze(1)\n    X = H @ X  # Edge to node\n    X = X * D_v_norm.unsqueeze(1)\n    \n    return X"
+    },
+    {
+      "id": "section-6",
+      "title": "6. HGNN Layer (Equation 11)",
+      "leftTitle": "Mathematical Formula",
+      "leftContent": {
+        "equation": "\\mathbf{X}^{(l+1)} = \\sigma\\left(\\mathbf{D}_v^{-1/2} \\mathbf{H} \\mathbf{W} \\mathbf{D}_e^{-1} \\mathbf{H}^{\\top} \\mathbf{D}_v^{-1/2} \\mathbf{X}^{(l)} \\Theta^{(l)}\\right)",
+        "variables": [
+          {"symbol": "\\mathbf{X}^{(l)} \\in \\mathbb{R}^{n \\times d_l}", "description": "node feature matrix at layer l"},
+          {"symbol": "\\mathbf{X}^{(l+1)} \\in \\mathbb{R}^{n \\times d_{l+1}}", "description": "updated node features after layer l"},
+          {"symbol": "\\Theta^{(l)} \\in \\mathbb{R}^{d_l \\times d_{l+1}}", "description": "learnable weight matrix for layer l"},
+          {"symbol": "\\sigma", "description": "activation function (e.g., ReLU)"},
+          {"symbol": "d_l", "description": "feature dimension at layer l"},
+          {"symbol": "d_{l+1}", "description": "feature dimension at layer l+1"},
+          {"symbol": "", "description": "All other matrices (\\mathbf{D}_v, \\mathbf{H}, \\mathbf{W}, \\mathbf{D}_e) are from previous definitions"}
+        ],
+        "note": "Computation flow: Features are first transformed by Θ, then propagated through the normalized hypergraph structure (node→edge→node), and finally passed through activation."
+      },
+      "code": "# Equation 11: HGNN Layer Implementation\nclass HGNNLayer(nn.Module):\n    \"\"\"\n    X^(l+1) = σ(D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2) X^(l) Θ^(l))\n    \"\"\"\n    def __init__(self, in_features, out_features):\n        super().__init__()\n        self.Theta = nn.Parameter(torch.Tensor(in_features, out_features))\n        nn.init.xavier_uniform_(self.Theta)\n    \n    def forward(self, X, H, W=None):\n        # Compute degrees\n        D_v, D_e = compute_degrees(H, W)\n        \n        # Normalization terms\n        D_v_sqrt_inv = 1.0 / torch.sqrt(D_v + 1e-8)\n        D_e_inv = 1.0 / (D_e + 1e-8)\n        \n        # Apply hypergraph convolution\n        # Step 1: X * Θ\n        X = torch.matmul(X, self.Theta)\n        \n        # Step 2: D_v^(-1/2) * X\n        X = X * D_v_sqrt_inv.unsqueeze(1)\n        \n        # Step 3: H^T * X (node to edge)\n        X_e = torch.matmul(H.t(), X)\n        \n        # Step 4: D_e^(-1) * X_e * W\n        if W is not None:\n            X_e = X_e * D_e_inv.unsqueeze(1) * W.unsqueeze(1)\n        else:\n            X_e = X_e * D_e_inv.unsqueeze(1)\n        \n        # Step 5: H * X_e (edge to node)\n        X = torch.matmul(H, X_e)\n        \n        # Step 6: D_v^(-1/2) * X\n        X = X * D_v_sqrt_inv.unsqueeze(1)\n        \n        # Apply activation\n        return F.relu(X)",
+      "showEditor": true,
+      "editorKey": "hgnnLayerCode",
+      "editorPlaceholder": "Try implementing the HGNN layer yourself..."
+    },
+    {
+      "id": "section-7",
+      "title": "7. Session-as-Hyperedge Construction",
+      "leftTitle": "Conceptual Framework",
+      "leftContent": {
+        "description": "Key Insight: Sessions naturally form hyperedges in the item hypergraph!",
+        "subSections": [
+          {
+            "title": "Session to hyperedge mapping:",
+            "equation": "\\text{Session } s = \\{i_1, i_2, ..., i_k\\} \\rightarrow \\text{Hyperedge } e_s"
+          },
+          {
+            "title": "Incidence matrix entry:",
+            "equation": "h(i, s) = \\begin{cases} 1, & \\text{if item } i \\in \\text{session } s \\\\ 0, & \\text{otherwise} \\end{cases}"
+          },
+          {
+            "title": "Edge weight (normalization):",
+            "equation": "\\omega(e_s) = \\frac{1}{\\sqrt{|s|}}"
+          }
+        ],
+        "variables": [
+          {"symbol": "s = \\{i_1, i_2, ..., i_k\\}", "description": "a session containing k items"},
+          {"symbol": "i_j \\in \\{1, 2, ..., n\\}", "description": "item indices"},
+          {"symbol": "e_s \\in \\mathcal{E}", "description": "hyperedge corresponding to session s"},
+          {"symbol": "h(i, s)", "description": "incidence value between item i and session s"},
+          {"symbol": "\\omega(e_s) \\in \\mathbb{R}^+", "description": "weight for session hyperedge"},
+          {"symbol": "|s|", "description": "cardinality of session s (number of items)"},
+          {"symbol": "k \\in \\mathbb{N}", "description": "number of items in the session"}
+        ],
+        "note": "Why this works: Sessions naturally capture co-occurrence patterns. Unlike pairwise graphs, hyperedges preserve the full context of which items appeared together in a session."
+      },
+      "code": "# Session-as-Hyperedge Construction\ndef construct_session_hypergraph(sequences, lengths, n_items):\n    \"\"\"\n    Each session forms a hyperedge connecting all its items.\n    This implements the key insight: sessions are hyperedges!\n    \"\"\"\n    batch_size = sequences.size(0)\n    max_edges = batch_size\n    \n    # Initialize incidence matrix\n    H = torch.zeros(n_items + 1, max_edges)\n    edge_weights = []\n    \n    for session_idx in range(batch_size):\n        seq_len = lengths[session_idx].item()\n        if seq_len == 0:\n            continue\n        \n        # Get items in this session\n        items = sequences[session_idx, :seq_len]\n        items = items[items > 0]  # Remove padding\n        \n        if len(items) > 0:\n            # Create hyperedge for this session\n            H[items, session_idx] = 1\n            \n            # Edge weight = 1/sqrt(|e|) for normalization\n            edge_weights.append(1.0 / math.sqrt(len(items)))\n    \n    return H, torch.tensor(edge_weights)"
+    },
+    {
+      "id": "section-8",
+      "title": "8. Attention Mechanisms for Session Representation",
+      "leftTitle": "Mathematical Framework",
+      "leftContent": {
+        "description": "After HGNN propagation, we need to aggregate item embeddings into a session representation:",
+        "subSections": [
+          {
+            "title": "Standard attention scores:",
+            "equation": "\\alpha_i = \\mathbf{v}^{\\top} \\tanh(\\mathbf{W} \\cdot \\mathbf{h}_i)",
+            "variables": [
+              {"symbol": "\\alpha_i \\in \\mathbb{R}", "description": "unnormalized attention score for item i"},
+              {"symbol": "\\mathbf{v} \\in \\mathbb{R}^d", "description": "learnable attention vector"},
+              {"symbol": "\\mathbf{W} \\in \\mathbb{R}^{d \\times d}", "description": "attention weight matrix"},
+              {"symbol": "\\mathbf{h}_i \\in \\mathbb{R}^d", "description": "embedding of item i after HGNN layers"},
+              {"symbol": "\\tanh", "description": "hyperbolic tangent activation"},
+              {"symbol": "d", "description": "hidden dimension"}
+            ]
+          },
+          {
+            "title": "Normalized attention weights:",
+            "equation": "\\alpha_i = \\frac{\\exp(\\alpha_i)}{\\sum_{j \\in \\text{session}} \\exp(\\alpha_j)}",
+            "variables": [
+              {"symbol": "\\alpha_i \\in [0,1]", "description": "normalized attention weight (after softmax)"},
+              {"symbol": "\\exp", "description": "exponential function"},
+              {"symbol": "j \\in \\text{session}", "description": "all items in the current session"}
+            ]
+          },
+          {
+            "title": "Session representation:",
+            "equation": "\\mathbf{s} = \\sum_{i \\in \\text{session}} \\alpha_i \\cdot \\mathbf{h}_i",
+            "variables": [
+              {"symbol": "\\mathbf{s} \\in \\mathbb{R}^d", "description": "final session representation"},
+              {"symbol": "\\alpha_i", "description": "normalized attention weight for item i"},
+              {"symbol": "\\mathbf{h}_i", "description": "item i embedding after HGNN"}
+            ]
+          },
+          {
+            "title": "Last-click attention (SR-GNN style):",
+            "subtitle": "Query-based attention:",
+            "equation": "\\alpha_i = \\mathbf{v}^{\\top} \\tanh(\\mathbf{W}_{last} \\cdot \\mathbf{h}_n + \\mathbf{W}_{item} \\cdot \\mathbf{h}_i)",
+            "variables": [
+              {"symbol": "\\mathbf{h}_n \\in \\mathbb{R}^d", "description": "last item embedding (used as query)"},
+              {"symbol": "\\mathbf{W}_{last} \\in \\mathbb{R}^{d \\times d}", "description": "query transformation matrix"},
+              {"symbol": "\\mathbf{W}_{item} \\in \\mathbb{R}^{d \\times d}", "description": "key transformation matrix"},
+              {"symbol": "", "description": "All other symbols as defined above"}
+            ],
+            "note": "Key insight: Last-click attention uses the most recent item as a query to weight the importance of all items in the session, capturing recency bias in user behavior."
+          }
+        ]
+      },
+      "code": "# Attention Mechanisms (from implementation)\nclass HGNNAttention(nn.Module):\n    \"\"\"Two types of attention for session modeling\"\"\"\n    \n    def __init__(self, hidden_dim):\n        super().__init__()\n        # Standard attention\n        self.W_att = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.v_att = nn.Linear(hidden_dim, 1, bias=False)\n        \n        # SR-GNN style last-click attention\n        self.W_last = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.W_item = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.v_last_att = nn.Linear(hidden_dim, 1, bias=False)\n    \n    def standard_attention(self, item_reprs):\n        \"\"\"\n        α_i = softmax(v^T tanh(W·h_i))\n        s = Σ α_i · h_i\n        \"\"\"\n        att_scores = self.v_att(torch.tanh(self.W_att(item_reprs)))\n        att_weights = F.softmax(att_scores, dim=0)\n        session_repr = torch.sum(att_weights * item_reprs, dim=0)\n        return session_repr, att_weights\n    \n    def last_click_attention(self, item_reprs):\n        \"\"\"\n        Use last item as query (SR-GNN style)\n        α_i = softmax(v^T tanh(W_last·h_n + W_item·h_i))\n        \"\"\"\n        last_item = item_reprs[-1]\n        last_transformed = self.W_last(last_item).unsqueeze(0)\n        items_transformed = self.W_item(item_reprs)\n        \n        att_scores = self.v_last_att(\n            torch.tanh(last_transformed + items_transformed)\n        )\n        att_weights = F.softmax(att_scores, dim=0)\n        session_repr = torch.sum(att_weights * item_reprs, dim=0)\n        return session_repr, att_weights"
+    },
+    {
+      "id": "section-9",
+      "title": "9. Session Representation and Prediction",
+      "leftTitle": "Prediction Pipeline",
+      "rightTitle": "Full Implementation",
+      "leftContent": {
+        "description": "After propagating through HGNN layers, we compute session representations and make predictions:",
+        "subSections": [
+          {
+            "title": "Session representation computation:",
+            "equation": "\\mathbf{s} = \\text{Aggregation}(\\{\\mathbf{x}_i^{(T)} : i \\in \\text{session}\\})",
+            "variables": [
+              {"symbol": "\\mathbf{x}_i^{(T)} \\in \\mathbb{R}^d", "description": "embedding of item i after T HGNN layers"},
+              {"symbol": "T \\in \\mathbb{N}", "description": "total number of HGNN layers"},
+              {"symbol": "\\text{session}", "description": "set of items in the current session"},
+              {"symbol": "\\mathbf{s} \\in \\mathbb{R}^d", "description": "aggregated session representation"}
+            ],
+            "additionalInfo": [
+              {"label": "Aggregation options:", "items": [
+                "Mean pooling: \\mathbf{s} = \\frac{1}{|\\text{session}|} \\sum_{i \\in \\text{session}} \\mathbf{x}_i^{(T)}",
+                "Last-click attention: \\mathbf{s} = \\sum_{i} \\alpha_i \\mathbf{x}_i^{(T)} with \\alpha_i based on last item"
+              ]}
+            ]
+          },
+          {
+            "title": "Transformed session embedding:",
+            "equation": "\\mathbf{s}_h = \\mathbf{W}_{\\text{out}} \\mathbf{s}",
+            "variables": [
+              {"symbol": "\\mathbf{s}_h \\in \\mathbb{R}^d", "description": "transformed session embedding"},
+              {"symbol": "\\mathbf{W}_{\\text{out}} \\in \\mathbb{R}^{d \\times d}", "description": "output transformation matrix"},
+              {"symbol": "\\mathbf{s}", "description": "aggregated session representation from above"}
+            ]
+          },
+          {
+            "title": "Prediction scores for all items:",
+            "equation": "\\hat{\\mathbf{z}} = \\mathbf{s}_h^{\\top} \\mathbf{E}^{\\top}",
+            "variables": [
+              {"symbol": "\\hat{\\mathbf{z}} \\in \\mathbb{R}^n", "description": "unnormalized scores for all n items"},
+              {"symbol": "\\mathbf{s}_h^{\\top} \\in \\mathbb{R}^{1 \\times d}", "description": "transposed session embedding"},
+              {"symbol": "\\mathbf{E} \\in \\mathbb{R}^{n \\times d}", "description": "item embedding matrix (all n items)"},
+              {"symbol": "\\mathbf{E}^{\\top} \\in \\mathbb{R}^{d \\times n}", "description": "transposed item embeddings"}
+            ]
+          },
+          {
+            "title": "Probability distribution over items:",
+            "equation": "\\hat{\\mathbf{y}} = \\text{softmax}(\\hat{\\mathbf{z}}) = \\frac{\\exp(\\hat{\\mathbf{z}})}{\\sum_{j=1}^{n} \\exp(\\hat{z}_j)}",
+            "variables": [
+              {"symbol": "\\hat{\\mathbf{y}} \\in [0,1]^n", "description": "predicted probability distribution"},
+              {"symbol": "\\hat{z}_j", "description": "score for item j"},
+              {"symbol": "\\sum_{j=1}^{n} \\hat{y}_j = 1", "description": "probabilities sum to 1"}
+            ]
+          },
+          {
+            "title": "Cross-entropy loss:",
+            "equation": "\\mathcal{L} = -\\sum_{i=1}^{n} y_i \\log(\\hat{y}_i)",
+            "variables": [
+              {"symbol": "\\mathcal{L} \\in \\mathbb{R}", "description": "loss value"},
+              {"symbol": "\\mathbf{y} \\in \\{0,1\\}^n", "description": "one-hot encoded ground truth"},
+              {"symbol": "y_i = 1", "description": "for the correct next item, 0 otherwise"},
+              {"symbol": "\\log", "description": "natural logarithm"}
+            ]
+          }
+        ]
+      },
+      "code": "# Complete HGNN Model with Prediction Pipeline\nclass HGNN(nn.Module):\n    \"\"\"\n    Full HGNN for session-based recommendation\n    Implements: Hypergraph construction → HGNN layers → Session embedding → Prediction\n    \"\"\"\n    \n    def __init__(self, n_items, embedding_dim=100, hidden_dim=100, \n                 n_layers=2, dropout=0.25, use_attention=True):\n        super().__init__()\n        \n        # Item embeddings with padding\n        self.embedding = nn.Embedding(n_items + 1, embedding_dim, \n                                    padding_idx=0)\n        \n        # Stack of HGNN layers (Equation 11)\n        self.layers = nn.ModuleList()\n        dims = [embedding_dim] + [hidden_dim] * n_layers\n        \n        for i in range(n_layers):\n            self.layers.append(\n                HGNNLayer(dims[i], dims[i+1])\n            )\n        \n        # Attention module for session aggregation\n        if use_attention:\n            self.attention = HGNNAttention(hidden_dim)\n        self.use_attention = use_attention\n        \n        # Output transformation: s_h = W_out @ s\n        self.W_out = nn.Linear(hidden_dim, hidden_dim)\n        \n        # For dimension matching in scoring\n        if embedding_dim != hidden_dim:\n            self.W_item_proj = nn.Linear(embedding_dim, hidden_dim)\n        else:\n            self.W_item_proj = None\n        \n        self.dropout = nn.Dropout(dropout)\n    \n    def forward(self, sequences, lengths):\n        \"\"\"\n        Complete forward pass:\n        1. Session → Hypergraph construction\n        2. HGNN propagation: X^(l+1) = σ(normalized_propagation(X^(l)Θ^(l)))\n        3. Session embedding: s = Attention({x_i : i ∈ session})\n        4. Prediction scores: ẑ = s_h @ E^T\n        \n        Returns:\n            scores: [batch_size, n_items] unnormalized prediction scores\n            probs: [batch_size, n_items] probability distribution\n        \"\"\"\n        batch_size = sequences.size(0)\n        \n        # Step 1: Construct hypergraph from sessions\n        # Each session becomes a hyperedge\n        H, edge_weights = construct_session_hypergraph(\n            sequences, lengths, self.embedding.num_embeddings - 1\n        )\n        \n        # Step 2: Get initial item embeddings X^(0)\n        X = self.embedding.weight  # [n_items+1, embedding_dim]\n        \n        # Step 3: Apply T layers of HGNN propagation (Equation 11)\n        # X^(l+1) = σ(D_v^(-1/2) H W D_e^(-1) H^T D_v^(-1/2) X^(l) Θ^(l))\n        for i, layer in enumerate(self.layers):\n            X_new = layer(X, H, edge_weights)\n            \n            # Residual connection after first layer\n            if i > 0:\n                X = X_new + X\n            else:\n                X = X_new\n            \n            # Dropout between layers\n            if i < len(self.layers) - 1:\n                X = self.dropout(X)\n        \n        # Step 4: Compute session representations\n        session_embeds = []\n        \n        for idx in range(batch_size):\n            seq_len = lengths[idx].item()\n            if seq_len == 0:\n                session_embeds.append(\n                    torch.zeros(X.size(1), device=X.device)\n                )\n                continue\n            \n            # Get final embeddings for items in this session\n            items = sequences[idx, :seq_len]\n            items = items[items > 0]  # Remove padding\n            item_reprs = X[items]  # [seq_len, hidden_dim]\n            \n            # Aggregate using attention or mean pooling\n            if self.use_attention:\n                # s = Σ α_i * x_i, where α_i depends on last item\n                session_repr, _ = self.attention.last_click_attention(\n                    item_reprs\n                )\n            else:\n                # s = mean(x_i for i in session)\n                session_repr = torch.mean(item_reprs, dim=0)\n            \n            session_embeds.append(session_repr)\n        \n        # Stack all session embeddings\n        session_embeds = torch.stack(session_embeds)  # [batch_size, hidden_dim]\n        \n        # Step 5: Transform session embeddings\n        # s_h = W_out @ s\n        session_embeds = self.W_out(session_embeds)\n        \n        # Step 6: Compute prediction scores\n        # Get all item embeddings (excluding padding)\n        item_embeds = self.embedding.weight[1:]  # [n_items, embedding_dim]\n        \n        # Project item embeddings if dimensions don't match\n        if self.W_item_proj is not None:\n            item_embeds = self.W_item_proj(item_embeds)\n        \n        # Compute scores: ẑ = s_h @ E^T\n        scores = torch.matmul(session_embeds, item_embeds.t())\n        \n        # Apply softmax to get probabilities\n        probs = F.softmax(scores, dim=-1)\n        \n        return scores, probs\n    \n    def compute_loss(self, scores, targets):\n        \"\"\"\n        Cross-entropy loss for next-item prediction\n        L = -Σ y_i log(ŷ_i)\n        \n        Args:\n            scores: [batch_size, n_items] unnormalized scores\n            targets: [batch_size] ground truth item indices\n        \"\"\"\n        return F.cross_entropy(scores, targets)",
+      "showEditor": true,
+      "editorKey": "completeModelCode",
+      "editorPlaceholder": "Try implementing the complete HGNN model..."
+    },
+    {
+      "id": "section-10",
+      "title": "10. Complete HGNN Pipeline",
+      "leftTitle": "Complete Architecture",
+      "fullWidth": true,
+      "leftContent": {
+        "description": "End-to-End HGNN Workflow:",
+        "steps": [
+          {
+            "title": "1. Session to Hypergraph Construction",
+            "equation": "\\text{Session } s = \\{i_1, i_2, ..., i_k\\} \\rightarrow \\text{Hyperedge } e_s",
+            "note": "Each session becomes a hyperedge connecting all its items",
+            "bgColor": "blue"
+          },
+          {
+            "title": "2. Initial Item Embeddings",
+            "equation": "\\mathbf{X}^{(0)} = \\text{Embedding}(\\text{items}) \\in \\mathbb{R}^{(n+1) \\times d}",
+            "note": "Initialize embeddings for all n items plus padding token",
+            "bgColor": "green"
+          },
+          {
+            "title": "3. HGNN Propagation (T layers)",
+            "equation": "\\mathbf{X}^{(t+1)} = \\sigma\\left(\\mathbf{D}_v^{-1/2} \\mathbf{H} \\mathbf{W} \\mathbf{D}_e^{-1} \\mathbf{H}^{\\top} \\mathbf{D}_v^{-1/2} \\mathbf{X}^{(t)} \\Theta^{(t)}\\right)",
+            "note": "Message passing: node → edge → node with normalization",
+            "bgColor": "yellow"
+          },
+          {
+            "title": "4. Session Representation",
+            "equation": "\\mathbf{s} = \\text{Attention}(\\{\\mathbf{x}_i^{(T)} : i \\in \\text{session}\\})",
+            "note": "Aggregate item embeddings using attention mechanism",
+            "bgColor": "purple"
+          },
+          {
+            "title": "5. Next-Item Prediction",
+            "equation": "\\hat{\\mathbf{y}} = \\text{softmax}(\\mathbf{W}_{\\text{out}}\\mathbf{s} \\cdot \\mathbf{E}^{\\top})",
+            "note": "Score all items and apply softmax for probabilities",
+            "bgColor": "red"
+          }
+        ],
+        "keyDesignChoices": [
+          "Sessions naturally map to hyperedges (many-to-many relations)",
+          "Normalized message passing ensures stable gradients",
+          "Attention aggregation captures session context",
+          "Shared item embeddings between HGNN and prediction",
+          "Cross-entropy loss for multi-class classification"
+        ]
+      }
+    },
+    {
+      "id": "section-11",
+      "title": "11. Training HGNN",
+      "leftTitle": "Training Strategy",
+      "fullWidth": true,
+      "code": "# Training HGNN for Session-based Recommendation\ndef train_hgnn(model, train_data, epochs=30, batch_size=100, lr=0.001, l2_reg=1e-5):\n    \"\"\"\n    Train HGNN model on session data\n    \n    Args:\n        model: HGNN model instance\n        train_data: list of session sequences\n        epochs: number of training epochs\n        batch_size: batch size for training\n        lr: learning rate\n        l2_reg: L2 regularization weight\n    \"\"\"\n    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=l2_reg)\n    \n    for epoch in range(epochs):\n        model.train()\n        total_loss = 0.0\n        \n        # Process sessions in batches\n        for batch_idx in range(0, len(train_data), batch_size):\n            batch_sessions = train_data[batch_idx:batch_idx + batch_size]\n            batch_loss = 0.0\n            \n            # Prepare batch data\n            sequences = []\n            targets = []\n            lengths = []\n            \n            for session in batch_sessions:\n                # Generate training sequences from session\n                # For session [v1, v2, v3, v4], generate:\n                # ([v1], v2), ([v1, v2], v3), ([v1, v2, v3], v4)\n                for i in range(1, len(session)):\n                    sequences.append(session[:i])\n                    targets.append(session[i])\n                    lengths.append(i)\n            \n            # Convert to tensors\n            max_len = max(lengths)\n            padded_seqs = torch.zeros(len(sequences), max_len, dtype=torch.long)\n            for i, seq in enumerate(sequences):\n                padded_seqs[i, :len(seq)] = torch.tensor(seq)\n            \n            lengths = torch.tensor(lengths)\n            targets = torch.tensor(targets)\n            \n            # Forward pass\n            scores, probs = model(padded_seqs, lengths)\n            \n            # Compute loss\n            loss = model.compute_loss(scores, targets)\n            \n            # Backward pass\n            optimizer.zero_grad()\n            loss.backward()\n            optimizer.step()\n            \n            total_loss += loss.item() * len(sequences)\n        \n        # Learning rate decay\n        if (epoch + 1) % 10 == 0:\n            for param_group in optimizer.param_groups:\n                param_group['lr'] *= 0.1\n        \n        avg_loss = total_loss / sum(len(s)-1 for s in train_data)\n        print(f'Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}')\n\n# Evaluation function\ndef evaluate_hgnn(model, test_data, k=20):\n    \"\"\"\n    Evaluate HGNN using P@K and MRR@K metrics\n    \n    Args:\n        model: trained HGNN model\n        test_data: list of test session sequences\n        k: cutoff for metrics (default: 20)\n    \n    Returns:\n        precision@k: fraction of sessions with correct item in top-k\n        mrr@k: mean reciprocal rank\n    \"\"\"\n    model.eval()\n    total_precision = 0.0\n    total_mrr = 0.0\n    \n    with torch.no_grad():\n        for session in test_data:\n            if len(session) < 2:\n                continue\n                \n            # Use all but last item as input\n            input_seq = torch.tensor(session[:-1]).unsqueeze(0)\n            length = torch.tensor([len(session) - 1])\n            target = session[-1]\n            \n            # Get predictions\n            scores, _ = model(input_seq, length)\n            \n            # Get top-k items\n            _, top_k_items = torch.topk(scores[0], k)\n            \n            # Calculate P@k\n            if target in top_k_items:\n                total_precision += 1.0\n                \n                # Calculate MRR\n                rank = (top_k_items == target).nonzero()[0].item() + 1\n                total_mrr += 1.0 / rank\n    \n    precision = total_precision / len(test_data)\n    mrr = total_mrr / len(test_data)\n    \n    return precision, mrr\n\n# Example usage\nif __name__ == \"__main__\":\n    # Dataset parameters (e.g., Diginetica)\n    n_items = 43097  # number of unique items\n    embedding_dim = 100\n    hidden_dim = 100\n    n_layers = 2\n    \n    # Create model\n    model = HGNN(n_items, embedding_dim, hidden_dim, n_layers, \n                 dropout=0.25, use_attention=True)\n    \n    # Example training data (item IDs)\n    train_sessions = [\n        [214, 125, 589, 214, 875],  # Example session 1\n        [589, 214, 125, 987, 589],  # Example session 2\n        [125, 875, 214, 589],        # Example session 3\n        # ... more sessions\n    ]\n    \n    # Train model\n    train_hgnn(model, train_sessions, epochs=30)\n    \n    # Test data\n    test_sessions = [\n        [125, 589, 875, 214],\n        [987, 214, 589, 125],\n        # ... more test sessions\n    ]\n    \n    # Evaluate\n    p_at_20, mrr_at_20 = evaluate_hgnn(model, test_sessions)\n    print(f\"P@20: {p_at_20:.4f}, MRR@20: {mrr_at_20:.4f}\")",
+      "showEditor": true,
+      "editorKey": "trainingCode",
+      "editorPlaceholder": "Implement the training loop for HGNN..."
+    }
+  ],
+  "summary": {
+    "title": "HGNN vs SR-GNN: Key Differences",
+    "comparisons": [
+      {
+        "title": "HGNN Advantages",
+        "items": [
+          "Natural modeling: Sessions as hyperedges preserve co-occurrence",
+          "Spectral foundation: Solid theoretical basis from spectral graph theory",
+          "Flexible aggregation: Can model arbitrary set relationships",
+          "Normalized propagation: Better gradient flow with proper normalization"
+        ]
+      },
+      {
+        "title": "SR-GNN Advantages",
+        "items": [
+          "Sequential modeling: Captures order through directed edges",
+          "GRU-based updates: Sophisticated gating mechanisms",
+          "Local+Global fusion: Explicit modeling of immediate and general interest",
+          "Proven performance: Strong empirical results on benchmarks"
+        ]
+      }
+    ],
+    "whenToUse": [
+      "Use HGNN when: Sessions have strong co-occurrence patterns, order is less critical, need theoretical guarantees",
+      "Use SR-GNN when: Sequential patterns are important, proven baseline needed, computational efficiency matters",
+      "Hybrid approach: Could combine hypergraph structure with sequential gating for best of both worlds"
+    ]
+  },
+  "keyTakeaways": [
+    "HGNN models high-order relationships using hyperedges (sessions)",
+    "The core operation is node→edge→node message passing (Equation 11)",
+    "Proper normalization (D_v^(-1/2) and D_e^(-1)) ensures stable learning",
+    "Spectral theory provides foundation; first-order approximation is practical",
+    "Attention mechanisms enhance session representation quality",
+    "The framework naturally extends GNNs to handle multi-way relationships"
+  ],
+  "productionConsiderations": [
+    "Use sparse operations for large-scale hypergraphs",
+    "Batch processing requires careful hypergraph construction",
+    "Edge weights can encode session importance or recency",
+    "Residual connections help with deeper models",
+    "Dropout and proper initialization prevent overfitting"
+  ]
+}

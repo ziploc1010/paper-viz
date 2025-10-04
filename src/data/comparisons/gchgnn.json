@@ -1,0 +1,52 @@
+{
+  "id": "gchgnn-comparison",
+  "title": "Global-Context Hypergraph Neural Networks (GC-HGNN) - Complete Implementation",
+  "description": "This implementation follows 'GC-HGNN: A Global-Context Supported Hypergraph Neural Network for Enhancing Session-Based Recommendation' (Electronic Commerce Research and Applications, 2022). Each code section directly implements the corresponding mathematical equations from the paper.",
+  "overview": {
+    "title": "Basic Definitions and Architecture Overview",
+    "description": "GC-HGNN combines global and local contexts for session-based recommendation",
+    "keyInnovation": "The model captures both global item co-occurrence patterns (via hypergraph) and local sequential patterns (via GAT) in a unified framework.",
+    "architecture": "\\text{GC-HGNN} = \\text{Global Hypergraph} + \\text{Local GAT} + \\text{Feature Fusion}",
+    "sessionMapping": "\\text{Session } s = \\{i_1, i_2, ..., i_k\\} \\rightarrow \\text{Hyperedge } e_s"
+  },
+  "sections": [
+    {
+      "id": "input-embeddings",
+      "sectionNumber": 2,
+      "title": "Input Embeddings (Equation 1)",
+      "leftContent": {
+        "equation": "x_i = E_{\\text{ID}}(i) \\in \\mathbb{R}^d",
+        "variables": [
+          {"symbol": "x_i \\in \\mathbb{R}^d", "description": "d-dimensional embedding vector for item i"},
+          {"symbol": "E_{\\text{ID}} \\in \\mathbb{R}^{(n+1) \\times d}", "description": "learnable embedding matrix"},
+          {"symbol": "i \\in \\{1, 2, ..., n\\}", "description": "item index (1-based)"},
+          {"symbol": "d", "description": "embedding dimension (typically 100)"},
+          {"symbol": "Index 0", "description": "reserved for padding"}
+        ]
+      },
+      "code": "# Equation 1: Item Embeddings\nclass GCHGNN(nn.Module):\n    def __init__(self, n_items, embedding_dim=100, hidden_dim=100, \n                 n_layers=3, n_heads=4, dropout=0.25, alpha=0.2):\n        super().__init__()\n        \n        # Item embedding matrix E_ID ∈ R^{(n+1) × d}\n        # +1 for padding token at index 0\n        self.item_embedding = nn.Embedding(\n            n_items + 1, \n            embedding_dim, \n            padding_idx=0\n        )\n        \n        # Initialize embeddings with small random values\n        nn.init.normal_(self.item_embedding.weight[1:], 0, 0.1)\n        \n    def get_item_embedding(self, item_id):\n        \"\"\"\n        x_i = E_ID(i) ∈ R^d\n        \n        Args:\n            item_id: Item index (1-based)\n        Returns:\n            d-dimensional embedding vector\n        \"\"\"\n        return self.item_embedding(item_id)",
+      "leftId": "itemEmbedEq",
+      "rightId": "inputEmbedCode"
+    },
+    {
+      "id": "hypergraph-construction",
+      "sectionNumber": 3,
+      "title": "Global Hypergraph Construction",
+      "leftContent": {
+        "description": "Build a global hypergraph from all training sessions",
+        "incidenceMatrix": "H_{ij} = \\begin{cases} 1, & \\text{if item } i \\in \\text{session } j \\\\ 0, & \\text{otherwise} \\end{cases}",
+        "degreeMatrices": "D_v[i] = \\sum_{j=1}^{m} H_{ij}, \\quad D_e[j] = \\sum_{i=1}^{n+1} H_{ij}",
+        "variables": [
+          {"symbol": "H \\in \\{0,1\\}^{(n+1) \\times m}", "description": "incidence matrix"},
+          {"symbol": "n+1", "description": "number of items (including padding)"},
+          {"symbol": "m", "description": "number of hyperedges (sessions)"},
+          {"symbol": "D_v[i]", "description": "degree of vertex i (number of sessions containing item i)"},
+          {"symbol": "D_e[j]", "description": "degree of hyperedge j (number of items in session j)"}
+        ]
+      },
+      "code": "# Equations for Global Hypergraph Construction\ndef build_global_hypergraph(self, sessions):\n    \"\"\"\n    Build global hypergraph where each session forms a hyperedge\n    H[i,j] = 1 if item i ∈ session j, else 0\n    \"\"\"\n    print(\"Building global hypergraph...\")\n    \n    # Each session is a hyperedge connecting all its items\n    n_hyperedges = len(sessions)\n    rows, cols = [], []\n    \n    for edge_idx, session in enumerate(sessions):\n        # Remove padding (item 0)\n        items = [item for item in session if item > 0]\n        if len(items) < 2:  # Skip sessions with less than 2 items\n            continue\n            \n        # Add all items in this session to the hyperedge\n        for item in items:\n            rows.append(item)      # item index (1-based)\n            cols.append(edge_idx)  # hyperedge (session) index\n    \n    # Create incidence matrix H ∈ {0,1}^{(n+1) × m}\n    # n+1 items (including padding), m hyperedges\n    data = np.ones(len(rows))\n    self.H = sp.coo_matrix(\n        (data, (rows, cols)), \n        shape=(self.n_items + 1, n_hyperedges)\n    )\n    \n    # Compute degree matrices\n    # D_v[i] = Σ_j H[i,j] - degree of vertex i\n    self.D_v = np.array(self.H.sum(axis=1)).flatten()\n    \n    # D_e[j] = Σ_i H[i,j] - degree of hyperedge j  \n    self.D_e = np.array(self.H.sum(axis=0)).flatten()\n    \n    # Avoid division by zero\n    self.D_v[self.D_v == 0] = 1\n    self.D_e[self.D_e == 0] = 1\n    \n    print(f\"Global hypergraph: {self.n_items} items, {n_hyperedges} hyperedges\")",
+      "leftId": "incidenceMatrixEq",
+      "rightId": "hypergraphConstructCode"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "id": "srgnn",
+  "title": "SR-GNN: Session-based Recommendation with Graph Neural Networks",
+  "subtitle": "Session-based Recommendation with Graph Neural Networks",
+  "authors": "Wu et al. (AAAI 2019)",
+  "description": "Based on 'Session-based Recommendation with Graph Neural Networks' by Wu et al. (AAAI 2019). This component shows the exact equations and formulations from the paper alongside their implementations.",
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "Session Graph Construction",
+      "leftTitle": "Graph Structure Definition",
+      "leftContent": {
+        "description": "A session sequence s = [v_{s,1}, v_{s,2}, ..., v_{s,l}] is transformed into a directed graph:",
+        "equation": "\\mathcal{G}_s = (\\mathcal{V}_s, \\mathcal{E}_s)",
+        "variables": [
+          {"symbol": "\\mathcal{V}_s", "description": "set of unique items in session s"},
+          {"symbol": "\\mathcal{E}_s", "description": "set of directed edges (v_{s,i-1}, v_{s,i})"},
+          {"symbol": "n = |\\mathcal{V}_s|", "description": "number of unique items in the session"},
+          {"symbol": "l", "description": "length of the session sequence"},
+          {"symbol": "Edge weights", "description": "normalized by occurrence divided by outdegree"}
+        ],
+        "note": "Example: Session [v₁, v₂, v₃, v₂, v₄] creates edges: (v₁→v₂), (v₂→v₃), (v₃→v₂), (v₂→v₄) with normalized weights.",
+        "additionalEquations": [
+          {
+            "title": "Initial node embeddings:",
+            "equation": "\\mathbf{v}_i^0 \\in \\mathbb{R}^d, \\quad i = 1, ..., n",
+            "variables": [
+              {"symbol": "\\mathbf{v}_i^0", "description": "initial embedding vector for node/item i"},
+              {"symbol": "d", "description": "embedding dimension"}
+            ]
+          },
+          {
+            "title": "Connection matrix A_s:",
+            "equation": "\\mathbf{A}_s = [\\mathbf{A}_s^{\\text{(out)}}, \\mathbf{A}_s^{\\text{(in)}}] \\in \\mathbb{R}^{n \\times 2n}",
+            "variables": [
+              {"symbol": "\\mathbf{A}_s^{\\text{(out)}} \\in \\mathbb{R}^{n \\times n}", "description": "outgoing edges adjacency matrix"},
+              {"symbol": "\\mathbf{A}_s^{\\text{(in)}} \\in \\mathbb{R}^{n \\times n}", "description": "incoming edges adjacency matrix"},
+              {"symbol": "\\mathbf{A}_{s,i:}", "description": "i-th row of \\mathbf{A}_s"}
+            ]
+          }
+        ]
+      },
+      "code": "import torch\nimport torch.nn as nn\nimport torch.nn.functional as F\nimport numpy as np\n\nclass SessionGraph:\n    def __init__(self, session_sequence):\n        \"\"\"\n        Convert session sequence to directed graph\n        Paper: \"each session sequence can be modeled as a directed graph\"\n        \n        Args:\n            session_sequence: list of item IDs in chronological order\n        \"\"\"\n        self.sequence = session_sequence\n        self.unique_items = list(set(session_sequence))\n        self.n_nodes = len(self.unique_items)\n        self.item_to_idx = {item: idx for idx, item in enumerate(self.unique_items)}\n        \n        # Build adjacency matrices for incoming and outgoing edges\n        self.build_graph()\n    \n    def build_graph(self):\n        \"\"\"Build directed graph from session sequence\"\"\"\n        # Initialize adjacency matrices\n        self.A_out = np.zeros((self.n_nodes, self.n_nodes))\n        self.A_in = np.zeros((self.n_nodes, self.n_nodes))\n        \n        # Count transitions between items\n        edge_counts = {}\n        for i in range(len(self.sequence) - 1):\n            src = self.item_to_idx[self.sequence[i]]\n            dst = self.item_to_idx[self.sequence[i + 1]]\n            edge = (src, dst)\n            edge_counts[edge] = edge_counts.get(edge, 0) + 1\n        \n        # Normalize by outdegree (as per paper)\n        for (src, dst), count in edge_counts.items():\n            # Calculate outdegree for source node\n            src_item = self.unique_items[src]\n            outdegree = sum(1 for i in range(len(self.sequence) - 1) \n                          if self.sequence[i] == src_item)\n            \n            # Normalized weight\n            weight = count / outdegree if outdegree > 0 else 0\n            self.A_out[src, dst] = weight\n            self.A_in[dst, src] = weight\n    \n    def get_connection_matrix(self):\n        \"\"\"\n        Get connection matrix A_s as concatenation of A_out and A_in\n        Paper: \"A_s is defined as the concatenation of two adjacency matrices\"\n        \"\"\"\n        return np.concatenate([self.A_out, self.A_in], axis=1)",
+      "showEditor": true,
+      "editorKey": "sessionGraphCode",
+      "editorPlaceholder": "Type the session graph code here..."
+    },
+    {
+      "id": "section-2",
+      "title": "Gated Graph Neural Network",
+      "leftTitle": "Node Update Equations",
+      "leftContent": {
+        "description": "The Gated GNN updates node embeddings through T layers:",
+        "equations": [
+          {
+            "id": "nodeUpdateEq",
+            "title": "Node representation update (Equation 1):",
+            "equation": "\\mathbf{a}^t_{s,i} = \\mathbf{A}_{s,i:} [\\mathbf{v}^{t-1}_1, \\dots ,\\mathbf{v}^{t-1}_n]^\\top \\mathbf{H} + \\mathbf{b}"
+          },
+          {
+            "id": "updateGateEq",
+            "title": "Update gate (Equation 2):",
+            "equation": "\\mathbf{z}^t_{s,i} = \\sigma(\\mathbf{W}_z\\mathbf{a}^t_{s,i}+\\mathbf{U}_z\\mathbf{v}^{t-1}_{i})"
+          },
+          {
+            "id": "resetGateEq",
+            "title": "Reset gate (Equation 3):",
+            "equation": "\\mathbf{r}^t_{s,i} = \\sigma(\\mathbf{W}_r\\mathbf{a}^t_{s,i}+\\mathbf{U}_r\\mathbf{v}^{t-1}_{i})"
+          },
+          {
+            "id": "candidateStateEq",
+            "title": "Candidate state (Equation 4):",
+            "equation": "\\widetilde{\\mathbf{v}^t_{i}} = \\tanh(\\mathbf{W}_o \\mathbf{a}^t_{s,i}+\\mathbf{U}_o (\\mathbf{r}^t_{s,i} \\odot \\mathbf{v}^{t-1}_{i}))"
+          },
+          {
+            "id": "finalStateEq",
+            "title": "Final state (Equation 5):",
+            "equation": "\\mathbf{v}^t_{i} = (1-\\mathbf{z}^t_{s,i}) \\odot \\mathbf{v}^{t-1}_{i} + \\mathbf{z}^t_{s,i} \\odot \\widetilde{\\mathbf{v}^t_{i}}"
+          }
+        ],
+        "variables": [
+          {"symbol": "t = 1, ..., T", "description": "layer index (typically T = 1)"},
+          {"symbol": "\\mathbf{v}^{t}_{i} \\in \\mathbb{R}^d", "description": "node i embedding at layer t"},
+          {"symbol": "\\mathbf{a}^t_{s,i} \\in \\mathbb{R}^d", "description": "aggregated neighbor information"},
+          {"symbol": "\\mathbf{H} \\in \\mathbb{R}^{2d \\times d}", "description": "transformation matrix"},
+          {"symbol": "\\mathbf{b} \\in \\mathbb{R}^d", "description": "bias vector"},
+          {"symbol": "\\mathbf{W}_z, \\mathbf{W}_r, \\mathbf{W}_o \\in \\mathbb{R}^{d \\times 2d}", "description": "weight matrices for gates"},
+          {"symbol": "\\mathbf{U}_z, \\mathbf{U}_r, \\mathbf{U}_o \\in \\mathbb{R}^{d \\times d}", "description": "recurrent weight matrices"},
+          {"symbol": "\\mathbf{z}^t_{s,i}, \\mathbf{r}^t_{s,i} \\in \\mathbb{R}^d", "description": "update and reset gates"},
+          {"symbol": "\\widetilde{\\mathbf{v}^t_{i}} \\in \\mathbb{R}^d", "description": "candidate hidden state"},
+          {"symbol": "\\odot", "description": "element-wise (Hadamard) multiplication"},
+          {"symbol": "\\sigma", "description": "sigmoid activation function"},
+          {"symbol": "\\tanh", "description": "hyperbolic tangent activation"}
+        ]
+      },
+      "code": "class GatedGraphNeuralNetwork(nn.Module):\n    def __init__(self, n_items, embedding_dim, n_layers=1):\n        \"\"\"\n        Gated Graph Neural Network for session graphs\n        Paper equations 1-5 implementation\n        \"\"\"\n        super(GatedGraphNeuralNetwork, self).__init__()\n        self.n_items = n_items\n        self.embedding_dim = embedding_dim\n        self.n_layers = n_layers\n        \n        # Item embeddings\n        self.item_embeddings = nn.Embedding(n_items, embedding_dim)\n        \n        # GRU parameters for graph propagation\n        self.W_z = nn.Linear(2 * embedding_dim, embedding_dim, bias=False)\n        self.U_z = nn.Linear(embedding_dim, embedding_dim, bias=False)\n        \n        self.W_r = nn.Linear(2 * embedding_dim, embedding_dim, bias=False)\n        self.U_r = nn.Linear(embedding_dim, embedding_dim, bias=False)\n        \n        self.W_o = nn.Linear(2 * embedding_dim, embedding_dim, bias=False)\n        self.U_o = nn.Linear(embedding_dim, embedding_dim, bias=False)\n        \n        # Transformation matrix H from paper\n        self.H = nn.Linear(2 * embedding_dim, embedding_dim, bias=True)\n        \n    def forward(self, item_indices, A_s):\n        \"\"\"\n        Forward propagation through gated GNN\n        Implements equations 1-5 from the paper\n        \n        Args:\n            item_indices: indices of items in the session graph\n            A_s: connection matrix (n_nodes x 2*n_nodes)\n        \"\"\"\n        # Get initial embeddings\n        v = self.item_embeddings(item_indices)  # [n_nodes, embedding_dim]\n        \n        # Propagate through layers\n        for t in range(self.n_layers):\n            v = self.propagate(v, A_s)\n        \n        return v\n    \n    def propagate(self, v, A_s):\n        \"\"\"\n        One step of propagation (equations 1-5)\n        \"\"\"\n        n_nodes = v.shape[0]\n        \n        # Equation 1: Aggregate neighbor information\n        # a_s,i = A_s,i: @ [v_1, ..., v_n]^T @ H + b\n        v_concat = torch.cat([v, v], dim=0)  # [2*n_nodes, embedding_dim]\n        a = torch.matmul(A_s, v_concat)  # [n_nodes, embedding_dim]\n        a = self.H(torch.cat([a, v], dim=1))  # [n_nodes, embedding_dim]\n        \n        # Equation 2: Update gate\n        # z_s,i = σ(W_z @ a_s,i + U_z @ v_i)\n        z = torch.sigmoid(self.W_z(torch.cat([a, v], dim=1)) + self.U_z(v))\n        \n        # Equation 3: Reset gate  \n        # r_s,i = σ(W_r @ a_s,i + U_r @ v_i)\n        r = torch.sigmoid(self.W_r(torch.cat([a, v], dim=1)) + self.U_r(v))\n        \n        # Equation 4: Candidate state\n        # ṽ_i = tanh(W_o @ a_s,i + U_o @ (r_s,i ⊙ v_i))\n        v_tilde = torch.tanh(self.W_o(torch.cat([a, v], dim=1)) + \n                            self.U_o(r * v))\n        \n        # Equation 5: Final state\n        # v_i = (1 - z_s,i) ⊙ v_i + z_s,i ⊙ ṽ_i\n        v_new = (1 - z) * v + z * v_tilde\n        \n        return v_new",
+      "showEditor": true,
+      "editorKey": "gatedGNNCode",
+      "editorPlaceholder": "Type the gated GNN code here..."
+    },
+    {
+      "id": "section-3",
+      "title": "Session Embeddings",
+      "leftTitle": "Embedding Formulation",
+      "leftContent": {
+        "description": "After T GNN layers, we obtain final node embeddings v_i = v_i^T for each node.",
+        "equations": [
+          {
+            "id": "localEmbeddingEq",
+            "title": "Local embedding (last-clicked item):",
+            "equation": "\\mathbf{s}_{\\text{l}} = \\mathbf{v}_{n}",
+            "note": "where n is the index of the last item in the session sequence"
+          },
+          {
+            "id": "attentionEq",
+            "title": "Attention weights:",
+            "equation": "\\alpha_i = \\mathbf{q}^{\\top} \\sigma(\\mathbf{W}_1 \\mathbf{v}_{n} + \\mathbf{W}_2 \\mathbf{v}_{i} + \\mathbf{c})"
+          },
+          {
+            "title": "Normalized attention:",
+            "equation": "\\alpha_i = \\frac{\\exp(\\alpha_i)}{\\sum_{j=1}^{n} \\exp(\\alpha_j)}"
+          },
+          {
+            "id": "globalEmbeddingEq",
+            "title": "Global embedding (weighted sum):",
+            "equation": "\\mathbf{s}_{\\text{g}} = \\sum_{i = 1}^{n} {\\alpha_i \\mathbf{v}_{i}}"
+          },
+          {
+            "id": "hybridEmbeddingEq",
+            "title": "Hybrid embedding:",
+            "equation": "\\mathbf{s}_{\\text{h}} = \\mathbf{W}_3 [\\mathbf{s}_{\\text{l}}; \\mathbf{s}_{\\text{g}}]"
+          }
+        ],
+        "variables": [
+          {"symbol": "\\mathbf{v}_i \\in \\mathbb{R}^d", "description": "final embedding of node i from GNN"},
+          {"symbol": "\\mathbf{s}_{\\text{l}} \\in \\mathbb{R}^d", "description": "local embedding (current interest)"},
+          {"symbol": "\\mathbf{s}_{\\text{g}} \\in \\mathbb{R}^d", "description": "global embedding (general preference)"},
+          {"symbol": "\\mathbf{s}_{\\text{h}} \\in \\mathbb{R}^d", "description": "hybrid embedding combining both"},
+          {"symbol": "\\mathbf{q} \\in \\mathbb{R}^d", "description": "learnable attention query vector"},
+          {"symbol": "\\mathbf{c} \\in \\mathbb{R}^d", "description": "learnable attention bias"},
+          {"symbol": "\\mathbf{W}_1, \\mathbf{W}_2 \\in \\mathbb{R}^{d \\times d}", "description": "attention weight matrices"},
+          {"symbol": "\\mathbf{W}_3 \\in \\mathbb{R}^{d \\times 2d}", "description": "transformation matrix for hybrid embedding"},
+          {"symbol": "[\\cdot;\\cdot]", "description": "concatenation operation"},
+          {"symbol": "\\alpha_i", "description": "attention weight for node i"}
+        ],
+        "note": "Key Innovation: Combines immediate interest (last item) with overall session context using attention mechanism to capture both short-term and session-level preferences."
+      },
+      "code": "class SessionEmbedding(nn.Module):\n    def __init__(self, embedding_dim):\n        \"\"\"\n        Generate session embeddings combining global and local preferences\n        Paper Section 3.4: Generating Session Embeddings\n        \"\"\"\n        super(SessionEmbedding, self).__init__()\n        self.embedding_dim = embedding_dim\n        \n        # Attention mechanism parameters\n        self.W_1 = nn.Linear(embedding_dim, embedding_dim, bias=False)\n        self.W_2 = nn.Linear(embedding_dim, embedding_dim, bias=False)\n        self.q = nn.Parameter(torch.randn(embedding_dim))\n        self.c = nn.Parameter(torch.randn(embedding_dim))\n        \n        # Hybrid embedding transformation\n        self.W_3 = nn.Linear(2 * embedding_dim, embedding_dim)\n        \n    def forward(self, node_vectors, session_items, last_item_idx):\n        \"\"\"\n        Compute session embedding from node vectors\n        \n        Args:\n            node_vectors: GNN output vectors for all nodes [n_nodes, embedding_dim]\n            session_items: indices mapping nodes to session sequence\n            last_item_idx: index of last clicked item\n        \"\"\"\n        # Local embedding: simply the last clicked item\n        # s_l = v_n\n        s_l = node_vectors[last_item_idx]\n        \n        # Global embedding with soft attention\n        # α_i = q^T σ(W_1 @ v_n + W_2 @ v_i + c)\n        v_n = node_vectors[last_item_idx].unsqueeze(0)\n        \n        # Compute attention scores\n        scores = []\n        for i in range(node_vectors.shape[0]):\n            v_i = node_vectors[i]\n            score = torch.matmul(\n                self.q,\n                torch.sigmoid(self.W_1(v_n).squeeze() + self.W_2(v_i) + self.c)\n            )\n            scores.append(score)\n        \n        # Normalize attention scores\n        alpha = F.softmax(torch.stack(scores), dim=0)\n        \n        # Global preference: weighted sum\n        # s_g = Σ α_i @ v_i\n        s_g = torch.sum(alpha.unsqueeze(1) * node_vectors, dim=0)\n        \n        # Hybrid embedding\n        # s_h = W_3 @ [s_l; s_g]\n        s_h = self.W_3(torch.cat([s_l, s_g]))\n        \n        return s_h, s_l, s_g",
+      "showEditor": true,
+      "editorKey": "sessionEmbeddingCode",
+      "editorPlaceholder": "Type the session embedding code here..."
+    },
+    {
+      "id": "section-4",
+      "title": "Making Predictions",
+      "leftTitle": "Prediction Formulation",
+      "leftContent": {
+        "equations": [
+          {
+            "id": "scoreEq",
+            "title": "Recommendation score for each item:",
+            "equation": "\\hat{z}_i = \\mathbf{s}_{\\text{h}}^{\\top} \\mathbf{v}_i",
+            "note": "where \\mathbf{v}_i is the embedding of candidate item i from the global item embedding matrix"
+          },
+          {
+            "title": "Score vector for all items:",
+            "equation": "\\hat{\\mathbf{z}} = [\\hat{z}_1, \\hat{z}_2, ..., \\hat{z}_m]^\\top \\in \\mathbb{R}^m"
+          },
+          {
+            "id": "softmaxEq",
+            "title": "Probability distribution:",
+            "equation": "\\hat{\\mathbf{y}} = \\text{softmax}(\\hat{\\mathbf{z}}) = \\frac{\\exp(\\hat{\\mathbf{z}})}{\\sum_{j=1}^{m} \\exp(\\hat{z}_j)}"
+          },
+          {
+            "id": "lossEq",
+            "title": "Cross-entropy loss function:",
+            "equation": "\\mathcal{L}(\\hat{\\mathbf{y}}) = -\\sum_{i = 1}^{m} \\mathbf{y}_i \\log(\\hat{\\mathbf{y}_i}) + (1 - \\mathbf{y}_i) \\log(1 - \\hat{\\mathbf{y}_i})"
+          }
+        ],
+        "variables": [
+          {"symbol": "m", "description": "total number of items in the catalog"},
+          {"symbol": "\\hat{z}_i \\in \\mathbb{R}", "description": "score for item i"},
+          {"symbol": "\\hat{\\mathbf{z}} \\in \\mathbb{R}^m", "description": "scores for all m items"},
+          {"symbol": "\\hat{\\mathbf{y}} \\in \\mathbb{R}^m", "description": "predicted probability distribution"},
+          {"symbol": "\\mathbf{y} \\in \\{0, 1\\}^m", "description": "one-hot encoded ground truth (next item)"},
+          {"symbol": "\\mathbf{v}_i \\in \\mathbb{R}^d", "description": "item embedding from global item embedding matrix"}
+        ],
+        "note": "Evaluation Metrics: P@K (Precision at K = fraction of test sessions where the ground truth item appears in top-K predictions), MRR@K (Mean Reciprocal Rank = average of 1/rank of the ground truth item, 0 if not in top-K)"
+      },
+      "code": "class Predictor(nn.Module):\n    def __init__(self, n_items, embedding_dim):\n        \"\"\"\n        Make next-item predictions\n        Paper Section 3.5: Making Recommendation and Model Training\n        \"\"\"\n        super(Predictor, self).__init__()\n        self.n_items = n_items\n        self.embedding_dim = embedding_dim\n        \n        # Share embeddings with GNN\n        self.item_embeddings = nn.Embedding(n_items, embedding_dim)\n        \n    def forward(self, session_embedding, candidate_items=None):\n        \"\"\"\n        Compute scores for next item prediction\n        \n        Args:\n            session_embedding: hybrid session representation s_h\n            candidate_items: specific items to score (None = all items)\n        \"\"\"\n        # Get all item embeddings or specific candidates\n        if candidate_items is None:\n            item_embs = self.item_embeddings.weight  # [n_items, embedding_dim]\n        else:\n            item_embs = self.item_embeddings(candidate_items)\n        \n        # Compute scores: ẑ_i = s_h^T @ v_i\n        scores = torch.matmul(session_embedding, item_embs.t())\n        \n        # Apply softmax to get probabilities\n        # ŷ = softmax(ẑ)\n        probs = F.softmax(scores, dim=-1)\n        \n        return scores, probs\n    \n    def compute_loss(self, scores, target):\n        \"\"\"\n        Cross-entropy loss for next-item prediction\n        L(ŷ) = -Σ y_i log(ŷ_i) + (1-y_i)log(1-ŷ_i)\n        \n        Args:\n            scores: unnormalized prediction scores\n            target: ground truth next item (index)\n        \"\"\"\n        return F.cross_entropy(scores.unsqueeze(0), target.unsqueeze(0))",
+      "showEditor": true,
+      "editorKey": "predictionCode",
+      "editorPlaceholder": "Type the prediction code here..."
+    },
+    {
+      "id": "section-5",
+      "title": "Complete SR-GNN Model",
+      "leftTitle": "Architecture Overview",
+      "code": "class SRGNN(nn.Module):\n    def __init__(self, n_items, embedding_dim, n_layers=1):\n        \"\"\"\n        Complete SR-GNN model\n        Session-based Recommendation with Graph Neural Networks\n        \"\"\"\n        super(SRGNN, self).__init__()\n        self.n_items = n_items\n        self.embedding_dim = embedding_dim\n        \n        # Components\n        self.gnn = GatedGraphNeuralNetwork(n_items, embedding_dim, n_layers)\n        self.session_embedding = SessionEmbedding(embedding_dim)\n        self.predictor = Predictor(n_items, embedding_dim)\n        \n        # Share embeddings between GNN and Predictor\n        self.predictor.item_embeddings = self.gnn.item_embeddings\n        \n    def forward(self, session_sequence):\n        \"\"\"\n        Forward pass through SR-GNN\n        \n        Args:\n            session_sequence: list of item IDs in chronological order\n        \n        Returns:\n            scores: prediction scores for all items\n            probs: probability distribution over items\n        \"\"\"\n        # Step 1: Build session graph\n        graph = SessionGraph(session_sequence)\n        unique_items = graph.unique_items\n        item_indices = torch.LongTensor([self.item_to_idx(item) \n                                        for item in unique_items])\n        \n        # Get connection matrix\n        A_s = torch.FloatTensor(graph.get_connection_matrix())\n        \n        # Step 2: Get node vectors through GNN\n        node_vectors = self.gnn(item_indices, A_s)\n        \n        # Step 3: Generate session embedding\n        last_item_idx = graph.item_to_idx[session_sequence[-1]]\n        session_emb, _, _ = self.session_embedding(\n            node_vectors, \n            session_sequence,\n            last_item_idx\n        )\n        \n        # Step 4: Make predictions\n        scores, probs = self.predictor(session_emb)\n        \n        return scores, probs\n    \n    def item_to_idx(self, item_id):\n        \"\"\"Map item ID to embedding index\"\"\"\n        # In practice, you'd have a global item-to-index mapping\n        return item_id",
+      "showEditor": true,
+      "editorKey": "completeModelCode",
+      "editorPlaceholder": "Type the complete model code here...",
+      "fullWidth": true
+    },
+    {
+      "id": "section-6",
+      "title": "Training SR-GNN",
+      "leftTitle": "Training Strategy",
+      "code": "# Training SR-GNN model\ndef train_srgnn(model, train_data, epochs=30, batch_size=100, lr=0.001, l2_reg=1e-5):\n    \"\"\"\n    Train SR-GNN model on session data\n    Paper uses: learning rate 0.001, batch size 100, L2 penalty 10^-5\n    \"\"\"\n    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=l2_reg)\n    \n    for epoch in range(epochs):\n        model.train()\n        total_loss = 0.0\n        \n        # Process sessions in batches\n        for batch_idx in range(0, len(train_data), batch_size):\n            batch_sessions = train_data[batch_idx:batch_idx + batch_size]\n            batch_loss = 0.0\n            \n            for session in batch_sessions:\n                # Generate training sequences from session\n                # For session [v1, v2, v3, v4], generate:\n                # ([v1], v2), ([v1, v2], v3), ([v1, v2, v3], v4)\n                for i in range(1, len(session)):\n                    input_seq = session[:i]\n                    target = session[i]\n                    \n                    # Forward pass\n                    scores, _ = model(input_seq)\n                    \n                    # Compute loss\n                    loss = model.predictor.compute_loss(scores, torch.tensor(target))\n                    batch_loss += loss\n            \n            # Backward pass\n            optimizer.zero_grad()\n            batch_loss.backward()\n            optimizer.step()\n            \n            total_loss += batch_loss.item()\n        \n        # Learning rate decay\n        if (epoch + 1) % 3 == 0:\n            for param_group in optimizer.param_groups:\n                param_group['lr'] *= 0.1\n        \n        print(f'Epoch {epoch+1}/{epochs}, Loss: {total_loss/len(train_data):.4f}')\n\n# Evaluation metrics\ndef evaluate_srgnn(model, test_data, k=20):\n    \"\"\"\n    Evaluate using P@20 and MRR@20\n    \"\"\"\n    model.eval()\n    total_precision = 0.0\n    total_mrr = 0.0\n    \n    with torch.no_grad():\n        for session in test_data:\n            # Use all but last item as input\n            input_seq = session[:-1]\n            target = session[-1]\n            \n            # Get predictions\n            scores, _ = model(input_seq)\n            \n            # Get top-k items\n            _, top_k_items = torch.topk(scores, k)\n            \n            # Calculate P@k\n            if target in top_k_items:\n                total_precision += 1.0\n                \n                # Calculate MRR\n                rank = (top_k_items == target).nonzero()[0].item() + 1\n                total_mrr += 1.0 / rank\n    \n    precision = total_precision / len(test_data)\n    mrr = total_mrr / len(test_data)\n    \n    return precision, mrr\n\n# Example usage\nif __name__ == \"__main__\":\n    # Dataset parameters (e.g., Yoochoose)\n    n_items = 37483\n    embedding_dim = 100\n    n_gnn_layers = 1\n    \n    # Create model\n    model = SRGNN(n_items, embedding_dim, n_gnn_layers)\n    \n    # Dummy data for illustration\n    train_sessions = [\n        [102, 243, 556, 102, 789],  # Example session\n        [556, 102, 243, 987, 556],\n        # ... more sessions\n    ]\n    \n    # Train model\n    train_srgnn(model, train_sessions, epochs=30)\n    \n    # Evaluate\n    test_sessions = [\n        [243, 556, 789, 102],\n        [987, 102, 556, 243],\n        # ... more test sessions\n    ]\n    \n    p_at_20, mrr_at_20 = evaluate_srgnn(model, test_sessions)\n    print(f\"P@20: {p_at_20:.4f}, MRR@20: {mrr_at_20:.4f}\")",
+      "showEditor": true,
+      "editorKey": "trainingCode",
+      "editorPlaceholder": "Type the training code here...",
+      "fullWidth": true
+    }
+  ],
+  "summary": {
+    "title": "Key Contributions from the Paper",
+    "sections": [
+      {
+        "title": "1. Model Architecture",
+        "items": [
+          "Graph-based modeling of session sequences",
+          "Gated GNN for capturing item transitions",
+          "Attention-based session embedding combining local and global preferences",
+          "No user representations needed (session-based only)"
+        ]
+      },
+      {
+        "title": "2. Experimental Results",
+        "items": [
+          "Yoochoose 1/64: P@20=70.57%, MRR@20=30.94%",
+          "Yoochoose 1/4: P@20=71.36%, MRR@20=31.89%",
+          "Diginetica: P@20=50.73%, MRR@20=17.59%",
+          "Outperforms RNN-based methods (GRU4REC, NARM, STAMP)"
+        ]
+      },
+      {
+        "title": "3. Key Insights",
+        "items": [
+          "Complex item transitions captured through graph structure outperform sequential models",
+          "Combining immediate interest with session context improves recommendations",
+          "Graph neural networks can effectively model session-based recommendation without user profiles",
+          "Normalized edge weights by outdegree improve model stability"
+        ]
+      }
+    ],
+    "quote": "SR-GNN evidently outperforms the state-of-the-art session-based recommendation methods consistently."
+  }
+}

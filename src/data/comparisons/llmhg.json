@@ -1,0 +1,79 @@
+{
+  "id": "llmhg-comparison",
+  "title": "LLMHG: Mathematical Formulations vs Implementation",
+  "description": "LLM-Guided Multi-View Hypergraph Learning for Human-Centric Explainable Recommendation",
+  "keyEnhancement": "Our implementation uses continuous probability scores for interest angles (e.g., 0.63 for 'budget_conscious') rather than the paper's enumerated subcategories approach. This enables more nuanced product-interest relationships through semantic similarity-based scoring.",
+  "sections": [
+    {
+      "id": "overview",
+      "sectionNumber": 1,
+      "title": "Overview of LLMHG Approach",
+      "leftContent": {
+        "description": "LLMHG approach includes four major steps: 1) Interest angle extraction, 2) Multi-view hypergraph construction, 3) Hypergraph structure learning, 4) Representation fusion",
+        "userSequence": "S_u = [v_1^{(u)}, ..., v_t^{(u)}, ..., v_{n_u}^{(u)}]",
+        "nextItemProb": "p(v_{n_u+1}^{(u)} = v | S_u)"
+      },
+      "code": "class LLMHG:\n    # Main pipeline methods:\n    def extract_interest_angles(self, user_sequence):\n        # Step 1: Extract interest angles\n        \n    def build_hypergraph(self, interest_angles):\n        # Step 2: Construct multi-view hypergraph\n        \n    def optimize_hypergraph(self, hypergraph, interest_angles):\n        # Step 3: Apply structure learning\n        \n    # Step 4: Fusion (implemented in LLMHGFusionModel)\n    \n    def end_to_end_pipeline(self, user_sequences, interest_angles):\n        # Orchestrates all four steps",
+      "leftId": "userSequence",
+      "rightId": "overviewCode"
+    },
+    {
+      "id": "multiview",
+      "sectionNumber": 2,
+      "title": "Multi-View Hypergraph Construction",
+      "leftContent": {
+        "description": "A hypergraph is a generalization of a graph where edges can connect any number of vertices",
+        "hypergraphDef": "\\mathcal{G} = (\\mathcal{V}, \\mathcal{E}, \\mathcal{W})",
+        "continuousScore": "s_k(v_i) = \\text{CosineSim}(\\text{emb}(v_i), \\text{emb}(\\text{angle}_k)) \\in [0, 1]",
+        "incidenceMatrix": "H_{i,j} = s_j(v_i) \\quad \\text{(continuous probability score)}",
+        "vertexDegree": "d(v) = \\sum_{e \\in \\mathcal{E}} w(e)h(v, e)",
+        "edgeDegree": "\\delta(e) = \\sum_{v \\in \\mathcal{V}} h(v, e)",
+        "multiViewDef": "\\mathcal{G}^{mv} = \\{\\mathcal{G}_1, \\mathcal{G}_2, ..., \\mathcal{G}_K\\}"
+      },
+      "code": "class HypergraphConstructor:\n    def construct_hypergraph(self, interest_angles):\n        \"\"\"\n        Construct a multi-view hypergraph from interest angles.\n        Our implementation creates continuous probability-based hyperedges.\n        \"\"\"\n        hypergraph = {\n            'num_nodes': len(self.products_df),\n            'views': {},\n            'node_mapping': self.product_to_idx,\n            'reverse_mapping': self.idx_to_product\n        }\n        \n        # Process each interest angle as a separate view\n        for angle_name, angle_data in interest_angles.items():\n            view = {\n                'hyperedges': [],\n                'hyperedge_weights': [],\n                'hyperedge_names': [],\n                'pattern_type': angle_data.get('pattern_type', ''),\n                'description': angle_data.get('description', '')\n            }\n            \n            # Create hyperedges based on discovered patterns\n            pattern_details = angle_data.get('pattern_details', {})\n            \n            if 'products' in pattern_details:\n                product_ids = pattern_details['products']\n                product_indices = [self._get_product_idx(pid) \n                                 for pid in product_ids \n                                 if self._get_product_idx(pid) != -1]\n                if product_indices:\n                    view['hyperedges'].append(product_indices)\n                    view['hyperedge_weights'].append(1.0)\n                    view['hyperedge_names'].append(f\"{angle_name}_main\")\n                \n            # Add this view to the hypergraph\n            if view['hyperedges']:\n                hypergraph['views'][angle_name] = view\n                \n        return hypergraph",
+      "leftId": "hypergraphDef",
+      "rightId": "multiViewCode"
+    },
+    {
+      "id": "continuous-scoring",
+      "sectionNumber": 3,
+      "title": "Continuous Interest Angle Scoring",
+      "leftContent": {
+        "description": "Our implementation uses continuous probability scores for interest angles using semantic similarity",
+        "approach": "For each interest angle k and item v_i, we compute: s_k(v_i) = CosineSim(emb(v_i), emb(angle_k)) ∈ [0, 1]"
+      },
+      "code": "def calculate_interest_product_scores(self, product_id: str, interest_angles: Dict) -> Dict:\n    \"\"\"\n    Calculate continuous probability scores (0-1) for how strongly a product \n    aligns with EVERY interest angle using semantic similarity.\n    \"\"\"\n    scores = {}\n    \n    # Get product embedding\n    product_text = f\"{title}. {description}. Brand: {brand}. {price_info}\"\n    product_embedding = self.sentence_model.encode([product_text])[0]\n    \n    # Score against each interest angle\n    for angle_name, angle_data in interest_angles.items():\n        # Create rich representation of the interest angle\n        angle_text = f\"Interest angle: {angle_name}. {angle_description}. \"\n        if keywords_text:\n            angle_text += f\"Keywords: {keywords_text}. \"\n        if sample_text:\n            angle_text += f\"Example products: {sample_text}\"\n        \n        # Generate angle embedding\n        angle_embedding = self.sentence_model.encode([angle_text])[0]\n        \n        # Calculate cosine similarity\n        similarity = self._cosine_similarity(product_embedding, angle_embedding)\n        \n        # Transform to 0-1 probability score\n        normalized_score = (similarity + 1) / 2\n        scores[angle_name] = round(normalized_score, 2)\n    \n    return scores\n    \n# Example output:\n# {\n#   \"budget_conscious\": 0.63,\n#   \"luxury_minded\": 0.21,\n#   \"convenience_seeker\": 0.78,\n#   \"sustainability_focused\": 0.45\n# }",
+      "leftId": "continuousScore",
+      "rightId": "continuousScoreCode"
+    },
+    {
+      "id": "prototype",
+      "sectionNumber": 4,
+      "title": "Prototype Computation with LLM Correction",
+      "leftContent": {
+        "description": "For each hyperedge, a prototype (centroid) is computed and then corrected using LLM-generated text embeddings",
+        "originalPrototype": "p_k^{orig} = \\frac{1}{|e_k|}\\sum_{v_i \\in e_k} x_i",
+        "textCorrectedPrototype": "p_k = (1 - \\lambda_k) \\cdot p_k^{orig} + \\lambda_k \\cdot emb(T_{e_k})",
+        "correctionWeight": "\\lambda_k = \\frac{exp(-h(T_{e_k}))}{1 + exp(-h(T_{e_k}))}",
+        "simplifiedWeight": "\\lambda_k = \\frac{1}{1 + |e_k|}"
+      },
+      "code": "def compute_prototypes(self, hypergraph, interest_angles, use_text_correction=True):\n    \"\"\"\n    Compute prototypes (centroids) for each hyperedge with LLM text correction.\n    \"\"\"\n    # Create product embeddings\n    product_embeddings = self._create_product_embeddings()\n    hypergraph['node_features'] = product_embeddings\n    \n    # Process each view (interest angle)\n    for view_name, view in hypergraph['views'].items():\n        angle_data = interest_angles.get(view_name, {})\n        angle_description = angle_data.get('description', '')\n        \n        # Get text representation for the view\n        view_text = f\"Interest angle: {view_name}. {angle_description}\"\n        view_embedding = self.text_encoder.encode([view_text])[0]\n        \n        view['hyperedge_prototypes'] = []\n        \n        # Calculate prototype for each hyperedge in this view\n        for edge_idx, (node_indices, edge_name) in enumerate(\n                zip(view['hyperedges'], view['hyperedge_names'])):\n            # Calculate original prototype (mean of node features)\n            edge_nodes = np.array(node_indices)\n            if len(edge_nodes) > 0:\n                original_prototype = np.mean(product_embeddings[edge_nodes], axis=0)\n            else:\n                original_prototype = np.zeros(product_embeddings.shape[1])\n            \n            # Get text embedding for the hyperedge\n            edge_text = f\"{view_text}. Category: {edge_name}\"\n            edge_text_embedding = self.text_encoder.encode([edge_text])[0]\n            \n            # Calculate correction weight lambda\n            edge_size = len(node_indices)\n            lambda_k = 1.0 / (1.0 + min(10, max(1, edge_size)))\n            \n            # Calculate corrected prototype\n            if use_text_correction:\n                corrected_prototype = (1.0 - lambda_k) * original_prototype + \\\n                                     lambda_k * edge_text_embedding\n            else:\n                corrected_prototype = original_prototype\n            \n            view['hyperedge_prototypes'].append(corrected_prototype)",
+      "leftId": "originalPrototype",
+      "rightId": "prototypeCode"
+    },
+    {
+      "id": "structure",
+      "sectionNumber": 5,
+      "title": "Intra-Edge and Inter-Edge Structure Learning",
+      "leftContent": {
+        "description": "Structure learning computes edge weights based on intra-edge and inter-edge similarity",
+        "intraEdgeWeight": "w_{intra}(e_k) = \\frac{1}{|e_k|(|e_k|-1)} \\sum_{v_i, v_j \\in e_k, i \\neq j} \\exp\\left(-\\frac{\\|x_i - x_j\\|^2}{\\mu}\\right)",
+        "interEdgeWeight": "w_{inter}(e_k) = \\frac{1}{|E|-1} \\sum_{e_l \\in E, l \\neq k} \\|p_k - p_l\\|^2",
+        "finalWeight": "w(e_k) = \\beta \\cdot w_{intra}(e_k) + (1 - \\beta) \\cdot w_{inter}(e_k)"
+      },
+      "code": "def compute_intra_edge_weights(self, hypergraph, mu=0.5):\n    \"\"\"\n    Compute intra-edge weights based on pairwise similarity.\n    \"\"\"\n    product_embeddings = hypergraph['node_features']\n    \n    # Process each view\n    for view_name, view in hypergraph['views'].items():\n        view['intra_edge_weights'] = []\n        \n        # Compute weight for each hyperedge\n        for node_indices in view['hyperedges']:\n            if len(node_indices) <= 1:\n                view['intra_edge_weights'].append(1.0)\n                continue\n                \n            # Get embeddings for nodes in this hyperedge\n            edge_nodes = np.array(node_indices)\n            edge_embeddings = product_embeddings[edge_nodes]\n            \n            # Compute pairwise similarities using heat kernel\n            pairwise_dists = np.sum((edge_embeddings[:, np.newaxis, :] - \n                               edge_embeddings[np.newaxis, :, :]) ** 2, axis=2)\n            similarities = np.exp(-pairwise_dists / mu)\n            \n            # Remove self-similarities (diagonal)\n            np.fill_diagonal(similarities, 0.0)\n            \n            # Compute average similarity as intra-edge weight\n            n_pairs = len(node_indices) * (len(node_indices) - 1)\n            if n_pairs > 0:\n                intra_weight = np.sum(similarities) / n_pairs\n            else:\n                intra_weight = 1.0\n                \n            view['intra_edge_weights'].append(intra_weight)\n                \ndef compute_inter_edge_weights(self, hypergraph):\n    \"\"\"\n    Compute inter-edge weights based on prototype distances.\n    \"\"\"\n    # Process each view\n    for view_name, view in hypergraph['views'].items():\n        if 'hyperedge_prototypes' not in view:\n            continue\n            \n        # Stack all prototypes for this view\n        prototypes = np.vstack(view['hyperedge_prototypes'])\n        \n        # Compute pairwise distances between prototypes\n        pairwise_dists = np.sum((prototypes[:, np.newaxis, :] - \n                           prototypes[np.newaxis, :, :]) ** 2, axis=2)\n        \n        # Compute average distance to other prototypes\n        view['inter_edge_weights'] = []\n        for i in range(len(prototypes)):\n            # Remove distance to self\n            other_dists = np.concatenate([pairwise_dists[i, :i], pairwise_dists[i, i+1:]])\n            if len(other_dists) > 0:\n                inter_weight = np.mean(other_dists)\n            else:\n                inter_weight = 1.0\n                \n            view['inter_edge_weights'].append(inter_weight)\n                \ndef compute_final_edge_weights(self, hypergraph, beta=0.5):\n    \"\"\"\n    Compute final hyperedge weights by combining intra-edge and inter-edge weights.\n    \"\"\"\n    # Process each view\n    for view_name, view in hypergraph['views'].items():\n        if 'intra_edge_weights' not in view or 'inter_edge_weights' not in view:\n            continue\n            \n        n_edges = min(len(view['intra_edge_weights']), len(view['inter_edge_weights']))\n        \n        # Combine weights with beta parameter\n        view['hyperedge_weights'] = []\n        for i in range(n_edges):\n            intra_weight = view['intra_edge_weights'][i]\n            inter_weight = view['inter_edge_weights'][i]\n            \n            # As per paper: w(e) = β * intra_weight + (1 - β) * inter_weight\n            combined_weight = beta * intra_weight + (1 - beta) * inter_weight\n            view['hyperedge_weights'].append(combined_weight)",
+      "leftId": "intraEdgeWeight",
+      "rightId": "structureCode"
+    }
+  ]
+}

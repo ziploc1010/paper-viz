@@ -1,0 +1,65 @@
+{
+  "id": "math",
+  "title": "Mathematical Techniques: RoPE, RMSNorm, and SwiGLU",
+  "description": "Mathematical formulations and implementations of key techniques used in modern language models",
+  "sections": [
+    {
+      "id": "rope",
+      "title": "Rotary Positional Encoding (RoPE)",
+      "leftTitle": "Mathematical Definition",
+      "leftContent": {
+        "description": "RoPE applies a rotation matrix to each pair of dimensions in the embedding space:",
+        "equation": "R_{\\theta}(x) = \\begin{pmatrix} \\cos(m\\theta) & -\\sin(m\\theta) \\\\[0.3em] \\sin(m\\theta) & \\cos(m\\theta) \\end{pmatrix} \\begin{pmatrix} x_1 \\\\[0.3em] x_2 \\end{pmatrix}",
+        "additionalText1": "The frequency bands are computed as:",
+        "equation2": "\\theta_m = m\\theta_b, \\quad \\theta_b = 10000^{-2(i-1)/d}",
+        "additionalText2": "The full transformation can be written as:",
+        "equation3": "\\begin{aligned} \\begin{pmatrix} x'_1 \\\\ x'_2 \\end{pmatrix} &= \\begin{pmatrix} \\cos(m\\theta) & -\\sin(m\\theta) \\\\ \\sin(m\\theta) & \\cos(m\\theta) \\end{pmatrix} \\begin{pmatrix} x_1 \\\\ x_2 \\end{pmatrix} \\\\[1em] &= \\begin{pmatrix} x_1\\cos(m\\theta) - x_2\\sin(m\\theta) \\\\ x_1\\sin(m\\theta) + x_2\\cos(m\\theta) \\end{pmatrix} \\end{aligned}"
+      },
+      "code": "def precompute_rope_cache(dim, seq_len, theta=10000.0):\n    dim = dim // 2\n    pos = torch.arange(0, seq_len)\n    freqs = 1.0 / (theta ** (torch.arange(0, dim) / dim))\n    emb = pos[:, None] * freqs[None, :]\n    rope_cache = torch.cat([emb.cos(), emb.sin()], dim=-1)\n    return rope_cache\n\ndef apply_rope(x, rope_cache):\n    rope = rope_cache[:x.size(1), None, :]\n    dim = x.shape[-1] // 2\n    x_complex = x.float().view(*x.shape[:-1], -1, 2)\n    \n    cos, sin = rope.split(dim, dim=-1)\n    cos = cos.unsqueeze(-1)\n    sin = sin.unsqueeze(-1)\n    \n    x_out = torch.cat([\n        x_complex[..., 0:1] * cos - x_complex[..., 1:2] * sin,\n        x_complex[..., 0:1] * sin + x_complex[..., 1:2] * cos,\n    ], dim=-1)\n    \n    return x_out.flatten(-2)",
+      "leftId": "ropeEquations",
+      "rightId": "ropeCode"
+    },
+    {
+      "id": "rmsnorm",
+      "title": "Root Mean Square Normalization",
+      "leftTitle": "Mathematical Definition",
+      "leftContent": {
+        "description": "RMSNorm differs from LayerNorm by only normalizing the scale, without centering the mean:",
+        "equation": "\\text{RMSNorm}(x) = \\gamma \\odot \\frac{x}{\\sqrt{\\frac{1}{n}\\sum_{i=1}^n x_i^2 + \\epsilon}}",
+        "additionalText1": "For comparison, LayerNorm includes both centering and scaling:",
+        "equation2": "\\text{LayerNorm}(x) = \\gamma \\odot \\frac{x - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}} + \\beta",
+        "variables": [
+          {"symbol": "\\gamma", "description": "learned scale parameter"},
+          {"symbol": "\\beta", "description": "learned bias parameter (LayerNorm only)"},
+          {"symbol": "\\epsilon", "description": "small constant for numerical stability (typically 10⁻⁶)"},
+          {"symbol": "n", "description": "dimension size"},
+          {"symbol": "\\mu", "description": "mean (LayerNorm only)"},
+          {"symbol": "\\sigma^2", "description": "variance (LayerNorm only)"}
+        ]
+      },
+      "code": "class RMSNorm(nn.Module):\n    def __init__(self, dim, eps=1e-6):\n        super().__init__()\n        self.eps = eps\n        self.weight = nn.Parameter(torch.ones(dim))\n\n    def forward(self, x):\n        # Calculate RMS\n        rms = torch.sqrt(x.pow(2).mean(-1, keepdim=True))\n        # Normalize and scale\n        x_normalized = x / (rms + self.eps)\n        return self.weight * x_normalized",
+      "leftId": "rmsNormEquations",
+      "rightId": "rmsNormCode"
+    },
+    {
+      "id": "swiglu",
+      "title": "SwiGLU Activation",
+      "leftTitle": "Mathematical Definition",
+      "leftContent": {
+        "description": "SwiGLU combines Swish activation with a gating mechanism:",
+        "equation": "\\text{SwiGLU}(x) = \\text{Swish}(W_1x) \\odot W_2x",
+        "additionalText1": "Where Swish is defined as:",
+        "equation2": "\\text{Swish}(x) = x \\cdot \\sigma(\\beta x)",
+        "variables": [
+          {"symbol": "\\sigma", "description": "sigmoid function"},
+          {"symbol": "\\beta", "description": "learnable parameter (typically set to 1)"},
+          {"symbol": "W_1, W_2", "description": "learnable weight matrices"},
+          {"symbol": "\\odot", "description": "element-wise multiplication (Hadamard product)"}
+        ]
+      },
+      "code": "class SwiGLU(nn.Module):\n    def __init__(self, size):\n        super().__init__()\n        self.linear_gate = nn.Linear(size, size)\n        self.linear = nn.Linear(size, size)\n        self.beta = nn.Parameter(torch.ones(1))\n\n    def forward(self, x):\n        # Compute Swish gate\n        swish_gate = self.linear_gate(x) * torch.sigmoid(\n            self.beta * self.linear_gate(x)\n        )\n        return swish_gate * self.linear(x)",
+      "leftId": "swiGLUEquations",
+      "rightId": "swiGLUCode"
+    }
+  ]
+}

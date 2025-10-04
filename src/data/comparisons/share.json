@@ -1,0 +1,137 @@
+{
+  "id": "share-comparison",
+  "title": "SHARE: Session-based Recommendation with Hypergraph Attention Networks",
+  "description": "Based on 'Session-based Recommendation with Hypergraph Attention Networks' by Wang et al. (2021). This component shows the exact equations from the paper alongside their implementations.",
+  "sections": [
+    {
+      "id": "hypergraph-construction",
+      "title": "Session Hypergraph Construction",
+      "leftTitle": "Sliding Window Construction",
+      "leftContent": {
+        "description": "Hypergraph construction using sliding windows of varying sizes",
+        "equation": "\\mathcal{E}_s = \\mathcal{E}_s^2 \\cup \\mathcal{E}_s^3 \\cup ... \\cup \\mathcal{E}_s^W",
+        "variables": [
+          {"symbol": "\\mathcal{E}_s", "description": "set of all hyperedges for session s"},
+          {"symbol": "\\mathcal{E}_s^w", "description": "hyperedges created with sliding window of size w"},
+          {"symbol": "W", "description": "maximum window size considered"},
+          {"symbol": "Window", "description": "Each window creates a hyperedge connecting items within that context"}
+        ],
+        "example": "Session [A, B, C, D] with W=3 creates: Window size 2: hyperedges (A,B), (B,C), (C,D); Window size 3: hyperedges (A,B,C), (B,C,D)",
+        "keyInsight": "Different window sizes capture various contextual scopes. Small windows capture local item transitions, larger windows capture broader contexts."
+      },
+      "code": "# Hypergraph Construction with Sliding Windows\ndef construct_session_hypergraph(session_items, max_window_size=5):\n    \"\"\"\n    Build hypergraph where hyperedges represent contextual windows.\n    Uses sliding windows of varying sizes to capture different contexts.\n    \n    E_s = E_s^2 ∪ E_s^3 ∪ ... ∪ E_s^W\n    \"\"\"\n    # Get unique items in session (nodes)\n    unique_items = list(set(session_items))\n    n_items = len(unique_items)\n    item_to_idx = {item: idx for idx, item in enumerate(unique_items)}\n    \n    # Collect all hyperedges\n    hyperedges = []\n    \n    # Apply sliding windows of different sizes\n    for window_size in range(2, min(max_window_size + 1, len(session_items) + 1)):\n        # Slide window across session\n        for start_idx in range(len(session_items) - window_size + 1):\n            # Get items in current window\n            window_items = session_items[start_idx:start_idx + window_size]\n            \n            # Create hyperedge connecting these items\n            hyperedge = [item_to_idx[item] for item in window_items]\n            hyperedges.append(hyperedge)\n    \n    # Create incidence matrix\n    n_edges = len(hyperedges)\n    H = torch.zeros(n_items, n_edges)\n    \n    for edge_idx, hyperedge in enumerate(hyperedges):\n        for node_idx in hyperedge:\n            H[node_idx, edge_idx] = 1\n    \n    return H, unique_items, hyperedges\n\n# Example usage\nsession = ['item_A', 'item_B', 'item_C', 'item_D']\nH, nodes, edges = construct_session_hypergraph(session, max_window_size=3)\n\n# Window size 2: [A,B], [B,C], [C,D]\n# Window size 3: [A,B,C], [B,C,D]\n# Each creates a hyperedge in the hypergraph",
+      "leftId": "hypergraphConstructionTheory",
+      "rightId": "hypergraphConstructionCode"
+    },
+    {
+      "id": "scaled-dot-product",
+      "title": "Scaled Dot-Product Attention",
+      "leftTitle": "Attention Similarity",
+      "leftContent": {
+        "description": "Similarity function used throughout HGAT",
+        "equation": "S(\\textbf{a}, \\textbf{b}) = \\frac{\\textbf{a}^T\\textbf{b}}{\\sqrt{D}}",
+        "variables": [
+          {"symbol": "\\textbf{a}, \\textbf{b}", "description": "vectors to compare"},
+          {"symbol": "D", "description": "dimension of the vectors"},
+          {"symbol": "\\sqrt{D}", "description": "scaling prevents gradient issues in softmax"}
+        ],
+        "usage": [
+          "Node→Hyperedge: Compare node features with context vector",
+          "Hyperedge→Node: Compare hyperedge features with node features",
+          "Session attention: Compare last item (query) with all items (keys)"
+        ],
+        "technicalNote": "Following Transformer architecture, scaling prevents large dot products from saturating the softmax function, ensuring stable gradients."
+      },
+      "code": "# Equation 3: Scaled Dot-Product Attention\ndef scaled_dot_product_attention(a, b):\n    \"\"\"\n    S(a, b) = (a^T b) / √D\n    \n    Compute similarity between vectors a and b,\n    scaled by square root of dimension for stability.\n    \"\"\"\n    D = a.size(-1)  # Dimension size\n    score = torch.dot(a, b) / math.sqrt(D)\n    return score\n\n# Batched version for efficiency\ndef batched_scaled_dot_product(Q, K):\n    \"\"\"\n    Compute attention scores for multiple queries and keys\n    Q: [batch, d_model]\n    K: [batch, d_model]\n    \"\"\"\n    d_k = Q.size(-1)\n    scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(d_k)\n    return scores\n\n# Usage in HGAT layers\nclass ScaledDotProductSimilarity(nn.Module):\n    def __init__(self, temperature=1.0):\n        super().__init__()\n        self.temperature = temperature\n        \n    def forward(self, q, k):\n        \"\"\"\n        Args:\n            q: query vectors [*, d]\n            k: key vectors [*, d]\n        \"\"\"\n        d = q.size(-1)\n        scores = torch.sum(q * k, dim=-1) / (math.sqrt(d) * self.temperature)\n        return scores",
+      "leftId": "scaledDotProductEq",
+      "rightId": "scaledDotProductCode"
+    },
+    {
+      "id": "node-to-hyperedge",
+      "title": "Node to Hyperedge Attention",
+      "leftTitle": "Node→Hyperedge Aggregation",
+      "leftContent": {
+        "description": "Equation 1: Aggregate node information to hyperedges with attention",
+        "hyperedgeRepresentation": "\\textbf{e}_j^{(l)} = \\sum_{t \\in \\mathcal{N}_j} \\textbf{m}_{t \\sim j}^{(l)}",
+        "message": "\\textbf{m}_{t \\sim j}^{(l)} = \\alpha_{jt} \\textbf{W}_1^{(l)} \\textbf{n}_t^{(l-1)}",
+        "attentionWeights": "\\alpha_{jt} = \\frac{S(\\hat{\\textbf{W}}_1^{(l)}\\textbf{n}_t^{(l-1)}, \\textbf{u}^{(l)})}{\\sum_{f \\in \\mathcal{N}_j} S( \\hat{\\textbf{W}}_1^{(l)}\\textbf{n}_f^{(l-1)}, \\textbf{u}^{(l)})}",
+        "variables": [
+          {"symbol": "\\mathcal{N}_j", "description": "set of nodes connected by hyperedge j"},
+          {"symbol": "\\textbf{n}_t^{(l-1)}", "description": "node t features at layer l-1"},
+          {"symbol": "\\textbf{u}^{(l)}", "description": "trainable context vector for layer l"},
+          {"symbol": "\\textbf{W}_1^{(l)}, \\hat{\\textbf{W}}_1^{(l)}", "description": "transformation matrices"},
+          {"symbol": "S(\\cdot,\\cdot)", "description": "scaled dot-product similarity function"}
+        ],
+        "designPrinciple": "Attention highlights informative items within each contextual window (hyperedge), focusing on items most relevant to user intent."
+      },
+      "code": "# Equation 1: Node to Hyperedge Attention\nclass NodeToHyperedgeAttention(nn.Module):\n    \"\"\"\n    e_j^(l) = Σ_{t ∈ N_j} m_{t~j}^(l)\n    m_{t~j}^(l) = α_{jt} W_1^(l) n_t^(l-1)\n    \n    α_{jt} = softmax(S(Ŵ_1^(l) n_t^(l-1), u^(l)))\n    \n    Aggregate node information to hyperedges with attention.\n    Highlights informative nodes on each hyperedge.\n    \"\"\"\n    def __init__(self, in_dim, out_dim):\n        super().__init__()\n        self.W_1 = nn.Linear(in_dim, out_dim, bias=False)\n        self.W_hat_1 = nn.Linear(in_dim, out_dim, bias=False)\n        self.u = nn.Parameter(torch.randn(out_dim))  # Context vector\n        \n    def forward(self, node_features, H):\n        \"\"\"\n        Args:\n            node_features: [n_nodes, in_dim]\n            H: incidence matrix [n_nodes, n_edges]\n        Returns:\n            edge_features: [n_edges, out_dim]\n        \"\"\"\n        n_nodes, n_edges = H.shape\n        edge_features = []\n        \n        for j in range(n_edges):\n            # Find nodes connected to hyperedge j\n            nodes_in_edge = torch.where(H[:, j] > 0)[0]\n            \n            if len(nodes_in_edge) == 0:\n                edge_features.append(torch.zeros(node_features.size(1)))\n                continue\n            \n            # Transform node features for attention\n            node_feats = node_features[nodes_in_edge]  # [k, in_dim]\n            transformed = self.W_hat_1(node_feats)  # [k, out_dim]\n            \n            # Compute attention scores\n            scores = torch.matmul(transformed, self.u) / math.sqrt(self.u.size(0))\n            alpha = F.softmax(scores, dim=0)  # [k]\n            \n            # Transform for aggregation\n            messages = self.W_1(node_feats)  # [k, out_dim]\n            \n            # Weighted aggregation\n            edge_feat = torch.sum(alpha.unsqueeze(1) * messages, dim=0)\n            edge_features.append(edge_feat)\n        \n        return torch.stack(edge_features)",
+      "leftId": "nodeToHyperedgeEq",
+      "rightId": "nodeToHyperedgeCode"
+    },
+    {
+      "id": "hyperedge-to-node",
+      "title": "Hyperedge to Node Attention",
+      "leftTitle": "Hyperedge→Node Update",
+      "leftContent": {
+        "description": "Equation 2: Update nodes by aggregating hyperedge features with attention",
+        "nodeUpdate": "\\textbf{n}_t^{(l)} = \\sum_{j \\in \\mathcal{Y}_t} \\textbf{m}_{j \\rightarrow t}^{(l)}",
+        "message": "\\textbf{m}_{j \\rightarrow t}^{(l)} = \\beta_{tj} \\textbf{W}_2^{(l)} \\textbf{e}_j^{(l)}",
+        "attentionWeights": "\\beta_{tj} = \\frac{S(\\hat{\\textbf{W}}_2^{(l)}\\textbf{e}_j^{(l)}, \\textbf{W}_3^{(l)}\\textbf{n}_t^{(l-1)})}{\\sum_{f \\in \\mathcal{Y}_t} S(\\hat{\\textbf{W}}_2^{(l)}\\textbf{e}_f^{(l)}, \\textbf{W}_3^{(l)}\\textbf{n}_t^{(l-1)})}",
+        "variables": [
+          {"symbol": "\\mathcal{Y}_t", "description": "set of hyperedges containing node t"},
+          {"symbol": "\\textbf{e}_j^{(l)}", "description": "hyperedge j representation from previous step"},
+          {"symbol": "\\beta_{tj}", "description": "attention weight for hyperedge j's impact on node t"},
+          {"symbol": "\\textbf{W}_2^{(l)}, \\hat{\\textbf{W}}_2^{(l)}, \\textbf{W}_3^{(l)}", "description": "learnable matrices"}
+        ],
+        "keyContribution": "Different contextual windows (hyperedges) have varying importance. Attention mechanism emphasizes evidence from more impactful contexts."
+      },
+      "code": "# Equation 2: Hyperedge to Node Attention\nclass HyperedgeToNodeAttention(nn.Module):\n    \"\"\"\n    n_t^(l) = Σ_{j ∈ Y_t} m_{j→t}^(l)\n    m_{j→t}^(l) = β_{tj} W_2^(l) e_j^(l)\n    \n    β_{tj} = softmax(S(Ŵ_2^(l) e_j^(l), W_3^(l) n_t^(l-1)))\n    \n    Update nodes by aggregating hyperedge features with attention.\n    Emphasizes evidence from hyperedges with larger impacts.\n    \"\"\"\n    def __init__(self, edge_dim, node_dim, out_dim):\n        super().__init__()\n        self.W_2 = nn.Linear(edge_dim, out_dim, bias=False)\n        self.W_hat_2 = nn.Linear(edge_dim, out_dim, bias=False)\n        self.W_3 = nn.Linear(node_dim, out_dim, bias=False)\n        \n    def forward(self, edge_features, node_features, H):\n        \"\"\"\n        Args:\n            edge_features: [n_edges, edge_dim]\n            node_features: [n_nodes, node_dim] (from previous layer)\n            H: incidence matrix [n_nodes, n_edges]\n        Returns:\n            updated_nodes: [n_nodes, out_dim]\n        \"\"\"\n        n_nodes, n_edges = H.shape\n        updated_nodes = []\n        \n        for t in range(n_nodes):\n            # Find hyperedges connected to node t\n            edges_of_node = torch.where(H[t, :] > 0)[0]\n            \n            if len(edges_of_node) == 0:\n                updated_nodes.append(torch.zeros(edge_features.size(1)))\n                continue\n            \n            # Get relevant edge features\n            edge_feats = edge_features[edges_of_node]  # [k, edge_dim]\n            \n            # Transform for attention\n            edge_transformed = self.W_hat_2(edge_feats)  # [k, out_dim]\n            node_transformed = self.W_3(node_features[t])  # [out_dim]\n            \n            # Compute attention scores\n            scores = torch.sum(edge_transformed * node_transformed, dim=1)\n            scores = scores / math.sqrt(node_transformed.size(0))\n            beta = F.softmax(scores, dim=0)  # [k]\n            \n            # Transform edge features for aggregation\n            messages = self.W_2(edge_feats)  # [k, out_dim]\n            \n            # Weighted aggregation\n            node_updated = torch.sum(beta.unsqueeze(1) * messages, dim=0)\n            updated_nodes.append(node_updated)\n        \n        return torch.stack(updated_nodes)",
+      "leftId": "hyperedgeToNodeEq",
+      "rightId": "hyperedgeToNodeCode"
+    },
+    {
+      "id": "self-attention",
+      "title": "Self-Attention for Next-Item Prediction",
+      "leftTitle": "Session Representation",
+      "leftContent": {
+        "description": "Equations 4-5: Last item as query, all items as keys and values",
+        "sessionRepresentation": "\\textbf{h}_s = \\sum_{i \\leq t} \\sigma_{ti} \\textbf{W}_V\\textbf{n}_{s,i}^{(L)}",
+        "attentionWeights": "\\sigma_{ti} = \\frac{S(\\textbf{W}_Q\\textbf{n}_{s,t}^{(L)}, \\textbf{W}_K\\textbf{n}_{s,i}^{(L)})}{\\sum_{j \\leq t} S(\\textbf{W}_Q\\textbf{n}_{s,t}^{(L)}, \\textbf{W}_K\\textbf{n}_{s,j}^{(L)})}",
+        "variables": [
+          {"symbol": "\\textbf{n}_{s,t}^{(L)}", "description": "last item in session (current need)"},
+          {"symbol": "\\textbf{n}_{s,i}^{(L)}", "description": "i-th item embeddings from HGAT"},
+          {"symbol": "\\textbf{W}_Q, \\textbf{W}_K, \\textbf{W}_V", "description": "query, key, value projection matrices"},
+          {"symbol": "t", "description": "length of the session"},
+          {"symbol": "S(\\cdot,\\cdot)", "description": "scaled dot-product from Equation 3"}
+        ],
+        "designRationale": "Combines general interest (all items) with current need (last item focus). No positional encoding as order is less important in short sessions."
+      },
+      "code": "# Equations 4-5: Self-Attention for Next-Item Prediction\nclass NextItemAttention(nn.Module):\n    \"\"\"\n    Treat last item as query, all items as keys and values.\n    Captures both general interest and current need.\n    \n    h_s = Σ_{i≤t} σ_{ti} W_V n_{s,i}^(L)\n    σ_{ti} = softmax(S(W_Q n_{s,t}^(L), W_K n_{s,i}^(L)))\n    \"\"\"\n    def __init__(self, hidden_dim):\n        super().__init__()\n        \n        # Query, Key, Value projections\n        self.W_Q = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.W_K = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        self.W_V = nn.Linear(hidden_dim, hidden_dim, bias=False)\n        \n        # For scaled dot-product\n        self.scale = 1.0 / math.sqrt(hidden_dim)\n        \n    def forward(self, item_sequence):\n        \"\"\"\n        Args:\n            item_sequence: [seq_len, hidden_dim]\n                Session-wise item embeddings from HGAT\n        Returns:\n            h_s: [hidden_dim] - Session representation\n        \"\"\"\n        seq_len = item_sequence.size(0)\n        \n        # Last item as query (current need)\n        last_item = item_sequence[-1]  # [hidden_dim]\n        query = self.W_Q(last_item).unsqueeze(0)  # [1, hidden_dim]\n        \n        # All items as keys and values\n        keys = self.W_K(item_sequence)  # [seq_len, hidden_dim]\n        values = self.W_V(item_sequence)  # [seq_len, hidden_dim]\n        \n        # Compute attention scores\n        # S(W_Q n_t, W_K n_i) for all i\n        scores = torch.matmul(query, keys.transpose(0, 1))  # [1, seq_len]\n        scores = scores * self.scale\n        \n        # Softmax to get attention weights\n        attention_weights = F.softmax(scores, dim=-1)  # [1, seq_len]\n        \n        # Weighted sum of values\n        h_s = torch.matmul(attention_weights, values).squeeze(0)  # [hidden_dim]\n        \n        return h_s, attention_weights",
+      "leftId": "selfAttentionEq",
+      "rightId": "selfAttentionCode"
+    },
+    {
+      "id": "score-loss",
+      "title": "Preference Scoring and Training",
+      "leftTitle": "Scoring and Loss",
+      "leftContent": {
+        "description": "Score computation and loss functions",
+        "preferenceScore": "p_{sv} = \\textbf{h}_s^T\\textbf{i}_v",
+        "probabilityDistribution": "\\hat{\\textbf{y}}_s = \\text{softmax}(\\textbf{p}_s)",
+        "crossEntropyLoss": "\\mathcal{L} = - \\sum_{s \\in S_{train}} \\sum_{v=1}^{N} y_{sv}\\log{\\hat{y}_{sv}}",
+        "variables": [
+          {"symbol": "\\textbf{h}_s", "description": "session representation from self-attention"},
+          {"symbol": "\\textbf{i}_v", "description": "embedding of item v"},
+          {"symbol": "\\textbf{p}_s = [p_{s1}, p_{s2}, ..., p_{sN}]", "description": "scores for all items"},
+          {"symbol": "\\textbf{y}_s", "description": "one-hot ground truth vector"},
+          {"symbol": "S_{train}", "description": "set of training sessions"},
+          {"symbol": "N", "description": "total number of items"}
+        ],
+        "evaluationMetrics": "Paper reports P@20 (Precision) and MRR@20 (Mean Reciprocal Rank) on Yoochoose and Diginetica datasets, showing significant improvements over baselines like SR-GNN and STAMP."
+      },
+      "code": "# Score Computation and Training\nclass SHAREPredictor(nn.Module):\n    \"\"\"\n    Compute preference scores and handle training\n    \n    p_sv = h_s^T i_v\n    ŷ_s = softmax(p_s)\n    L = -Σ_s Σ_v y_sv log(ŷ_sv)\n    \"\"\"\n    def __init__(self, n_items, item_embed_dim):\n        super().__init__()\n        \n        # Item embeddings (shared with HGAT input)\n        self.item_embeddings = nn.Embedding(\n            n_items, item_embed_dim\n        )\n        \n    def compute_scores(self, session_repr, return_all=True):\n        \"\"\"\n        Compute preference scores for all items\n        \n        Args:\n            session_repr: [hidden_dim]\n            return_all: whether to score all items\n        \"\"\"\n        if return_all:\n            # Score against all items\n            all_items = self.item_embeddings.weight  # [n_items, hidden_dim]\n            scores = torch.matmul(session_repr, all_items.t())  # [n_items]\n        else:\n            # Can also score specific items for efficiency\n            scores = None\n            \n        return scores\n    \n    def forward(self, session_repr):\n        \"\"\"\n        Generate probability distribution over items\n        \"\"\"\n        scores = self.compute_scores(session_repr)\n        probs = F.softmax(scores, dim=-1)\n        return probs\n    \n    def compute_loss(self, session_reprs, targets):\n        \"\"\"\n        Cross-entropy loss for next-item prediction\n        \n        Args:\n            session_reprs: [batch_size, hidden_dim]\n            targets: [batch_size] - ground truth item indices\n        \"\"\"\n        batch_size = session_reprs.size(0)\n        \n        # Compute scores for all items\n        all_items = self.item_embeddings.weight\n        scores = torch.matmul(session_reprs, all_items.t())  # [batch, n_items]\n        \n        # Cross-entropy loss\n        loss = F.cross_entropy(scores, targets)\n        \n        return loss\n    \n    def predict(self, session_reprs, k=20):\n        \"\"\"\n        Get top-k recommendations\n        \"\"\"\n        scores = torch.matmul(\n            session_reprs, \n            self.item_embeddings.weight.t()\n        )\n        \n        # Top-k items\n        top_scores, top_indices = torch.topk(scores, k, dim=-1)\n        \n        return top_indices, top_scores",
+      "leftId": "scoreLossEq",
+      "rightId": "scoreLossCode"
+    }
+  ]
+}

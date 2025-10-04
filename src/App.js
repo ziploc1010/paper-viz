@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import MathComparison from "./components/MathComparison";
-import LightGCNComparison from "./components/LightGCNComparison";
-import DeepRLComparison from "./components/DeepRLComparison";
-import LLMHGComparison from "./components/LLMHGComparison";
-import HGNNComparison from "./components/HGNNComparison";
-import SRGNNComparison from "./components/SRGNNComparison";
-import GCHGNNComparison from "./components/GCHGNNComparison";
-import DHCNComparison from "./components/DHCNComparison";
-import SHAREComparison from "./components/SHAREComparison";
+import GenericComparison from "./components/GenericComparison";
 import BertModel from "./components/BertModel";
 import LLMHGModel from "./components/LLMHGModel";
 import LRMComplete from "./components/LRMComplete";
@@ -83,19 +75,20 @@ export default function App() {
 
       {/* Dynamic Rendering */}
       <main className="p-6">
-        {view === "MathComparison" && <MathComparison />}
-        {view === "LightGCNComparison" && <LightGCNComparison />}
-        {view === "DeepRLComparison" && <DeepRLComparison />}
-        {view === "LLMHGComparison" && <LLMHGComparison />}
-        {view === "HGNNComparison" && <HGNNComparison />}
-        {view === "SRGNNComparison" && <SRGNNComparison />}
-        {view === "GCHGNNComparison" && <GCHGNNComparison />}
-        {view === "DHCNComparison" && <DHCNComparison />}
-        {view === "SHAREComparison" && <SHAREComparison />}
+        {view === "MathComparison" && <GenericComparison comparisonId="math" />}
+        {view === "LightGCNComparison" && <GenericComparison comparisonId="lightgcn" />}
+        {view === "DeepRLComparison" && <GenericComparison comparisonId="deeprl" />}
+        {view === "LLMHGComparison" && <GenericComparison comparisonId="llmhg" />}
+        {view === "HGNNComparison" && <GenericComparison comparisonId="hgnn" />}
+        {view === "SRGNNComparison" && <GenericComparison comparisonId="srgnn" />}
+        {view === "GCHGNNComparison" && <GenericComparison comparisonId="gchgnn" />}
+        {view === "DHCNComparison" && <GenericComparison comparisonId="dhcn" />}
+        {view === "SHAREComparison" && <GenericComparison comparisonId="share" />}
         {view === "BertModel" && <BertModel />}
         {view === "LLMHGModel" && <LLMHGModel />}
         {view === "LRMComplete" && <LRMComplete />}
         {view === "DiffusionModels" && <MathDerivation derivationId="diffusion-models" />}
+        {view === "SchrodingerEquation" && <MathDerivation derivationId="schrodinger-equation" />}
       </main>
     </div>
   );
