@@ -44,6 +44,9 @@ const Sidebar = ({ isOpen, onClose, currentView, onNavigate }) => {
     { id: 'BertModel', name: 'BERT Model', category: 'Model Architectures' },
     { id: 'LLMHGModel', name: 'LLMHG Model', category: 'Model Architectures' },
     { id: 'LRMComplete', name: 'LRM Complete Hierarchy', category: 'Model Architectures' },
+    { id: 'QwenModel', name: 'Qwen3 Model', category: 'Model Architectures' },
+    { id: 'DeepseekV3Model', name: 'DeepSeek-V3 Model', category: 'Model Architectures' },
+    { id: 'Llama32Model', name: 'Llama 3.2 Model', category: 'Model Architectures' },
     
     // Mathematical Proofs
     { id: 'DiffusionModels', name: 'Diffusion Models Derivation', category: 'Mathematical Proofs' },

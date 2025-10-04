@@ -1,0 +1,25 @@
+{
+  "componentQuizzes": {},
+  "componentExplanations": {
+    "input": {
+      "title": "Input Tokens",
+      "explanation": "Llama 3 tokenizer with 128,256 vocabulary. Supports extended 131K context."
+    },
+    "embedding": {
+      "title": "Token Embeddings",
+      "explanation": "Maps tokens to 2048-dimensional vectors (1B model). Position info from RoPE."
+    },
+    "gqa": {
+      "title": "Grouped Query Attention",
+      "explanation": "32 query heads, 8 KV groups (4:1 ratio). 64-dim heads with frequency-scaled RoPE."
+    },
+    "rope": {
+      "title": "RoPE with Frequency Scaling",
+      "explanation": "Wavelength-based frequency adjustment for 131K context. Low frequencies scaled 32×."
+    },
+    "swiglu": {
+      "title": "SwiGLU FFN",
+      "explanation": "3-layer FFN with gating. Expands to 8192 dimensions (4× multiplier)."
+    }
+  }
+}

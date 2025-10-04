@@ -1,0 +1,21 @@
+{
+  "componentQuizzes": {},
+  "componentExplanations": {
+    "input": {
+      "title": "Input Tokens",
+      "explanation": "DeepSeek-V3 tokenizer for efficient long-sequence processing."
+    },
+    "mla": {
+      "title": "Multi-Head Latent Attention",
+      "explanation": "Novel attention with KV compression. Dramatically reduces KV cache size."
+    },
+    "moe": {
+      "title": "Mixture of Experts",
+      "explanation": "Sparse MoE with auxiliary-loss-free load balancing. Routes tokens to top-k experts."
+    },
+    "mtp": {
+      "title": "Multi-Token Prediction",
+      "explanation": "Predicts multiple future tokens from single hidden state. Improves training efficiency."
+    }
+  }
+}

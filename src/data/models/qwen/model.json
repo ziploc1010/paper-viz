@@ -1,0 +1,21 @@
+{
+  "componentQuizzes": {},
+  "componentExplanations": {
+    "input": {
+      "title": "Input Tokens",
+      "explanation": "Qwen3 tokenizer with vocabulary size 151,936. Supports contexts up to 40,960 tokens."
+    },
+    "embedding": {
+      "title": "Token Embeddings",
+      "explanation": "Maps tokens to 1024-dimensional vectors (0.6B model). Position info comes from RoPE."
+    },
+    "gqa": {
+      "title": "Grouped Query Attention",
+      "explanation": "16 query heads, 8 KV groups (2:1 ratio). 128-dim heads with RoPE."
+    },
+    "swiglu": {
+      "title": "SwiGLU FFN",
+      "explanation": "3-layer FFN with gated activation. Expands to 3072 dimensions (3× multiplier)."
+    }
+  }
+}

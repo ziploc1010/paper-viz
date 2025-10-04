@@ -3,6 +3,9 @@ import GenericComparison from "./components/GenericComparison";
 import BertModel from "./components/BertModel";
 import LLMHGModel from "./components/LLMHGModel";
 import LRMComplete from "./components/LRMComplete";
+import QwenModel from "./components/QwenModel";
+import DeepseekV3Model from "./components/DeepseekV3Model";
+import Llama32Model from "./components/Llama32Model";
 import MathDerivation from "./components/MathDerivation";
 import Sidebar from "./components/Sidebar";
 
@@ -87,6 +90,9 @@ export default function App() {
         {view === "BertModel" && <BertModel />}
         {view === "LLMHGModel" && <LLMHGModel />}
         {view === "LRMComplete" && <LRMComplete />}
+        {view === "QwenModel" && <QwenModel />}
+        {view === "DeepseekV3Model" && <DeepseekV3Model />}
+        {view === "Llama32Model" && <Llama32Model />}
         {view === "DiffusionModels" && <MathDerivation derivationId="diffusion-models" />}
         {view === "SchrodingerEquation" && <MathDerivation derivationId="schrodinger-equation" />}
       </main>

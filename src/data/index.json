@@ -153,6 +153,45 @@
           "topics": ["recommendation", "machine-learning"],
           "hasInteractiveDiagram": true,
           "hasSVG": true
+        },
+        {
+          "id": "qwen",
+          "title": "Qwen3 Model Architecture",
+          "directory": "models/qwen/",
+          "files": {
+            "model": "model.json",
+            "diagram": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["transformer", "grouped-query-attention", "rope"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
+        },
+        {
+          "id": "deepseekv3",
+          "title": "DeepSeek-V3 Model Architecture",
+          "directory": "models/deepseekv3/",
+          "files": {
+            "model": "model.json",
+            "diagram": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["multi-head-latent-attention", "mixture-of-experts", "mtp"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
+        },
+        {
+          "id": "llama32",
+          "title": "Llama 3.2 Model Architecture",
+          "directory": "models/llama32/",
+          "files": {
+            "model": "model.json",
+            "diagram": "diagram.svg"
+          },
+          "type": "model",
+          "topics": ["transformer", "grouped-query-attention", "extended-context"],
+          "hasInteractiveDiagram": true,
+          "hasSVG": true
         }
       ]
     }

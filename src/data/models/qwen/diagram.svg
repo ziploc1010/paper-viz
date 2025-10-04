@@ -1,0 +1,259 @@
+<svg viewBox="0 0 900 1760" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 6 3, 0 6" fill="#333"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <polygon points="0 0, 6 3, 0 6" fill="#ff4444"/>
+    </marker>
+  </defs>
+  
+  <!-- Main Container -->
+  <rect x="100" y="40" width="700" height="1635" fill="#f0ebff" stroke="#999" stroke-width="1.2" rx="8"/>
+  <text x="450" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold">Qwen3Model</text>
+  <text x="450" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666" font-style="italic">Decoder</text>
+  
+  <!-- Input Tokens -->
+  <rect x="350" y="110" width="200" height="40" fill="#ffb3ba" stroke="#666" stroke-width="1.2" rx="20"/>
+  <text x="450" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500">Input Tokens</text>
+  <text x="450" y="142" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">[B, seq]</text>
+  
+  <line x1="450" y1="150" x2="450" y2="180" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Token Embedding -->
+  <rect x="225" y="180" width="450" height="40" fill="#c9b3ff" stroke="#666" stroke-width="1.2" rx="5"/>
+  <text x="450" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500">Embedding</text>
+  <text x="450" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">tok_emb</text>
+  <text x="340" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">vocab_size × emb_dim</text>
+  
+  <line x1="450" y1="220" x2="450" y2="250" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- TransformerBlock Container -->
+  <rect x="130" y="250" width="640" height="1300" fill="#e6d9ff" stroke="#888" stroke-width="1.5" rx="8"/>
+  <text x="450" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold">TransformerBlock</text>
+  <text x="450" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666" font-style="italic">(× 28 layers)</text>
+  
+  <!-- N-layers iteration marker -->
+  <rect x="60" y="320" width="22" height="1210" fill="#ffd9b3" stroke="#666" stroke-width="1" rx="3"/>
+  <text x="71" y="900" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="600" transform="rotate(-90 71 900)">× n_layers = 28</text>
+  
+  <!-- First residual branch point -->
+  <rect x="300" y="320" width="300" height="30" fill="#ffd9b3" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="11">shortcut = x</text>
+
+  <line x1="450" y1="350" x2="450" y2="380" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- RMSNorm 1 -->
+  <rect x="300" y="380" width="300" height="35" fill="#ffe0b3" stroke="#666" stroke-width="1.5" rx="5"/>
+  <text x="450" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">RMSNorm</text>
+  <text x="450" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">norm1</text>
+  
+  <!-- Single arrow into GroupedQueryAttention container -->
+  <line x1="450" y1="415" x2="450" y2="440" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- GroupedQueryAttention Container -->
+  <rect x="170" y="440" width="560" height="640" fill="#ffd6cc" stroke="#999" stroke-width="1" rx="6" fill-opacity="0.5"/>
+  <text x="450" y="458" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold">GroupedQueryAttention</text>
+  <text x="450" y="472" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666" font-style="italic">att</text>
+  
+  <!-- Three parallel linear projections (properly centered) -->
+  <rect x="220" y="490" width="110" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="275" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="275" y="514" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">W_query</text>
+  <text x="275" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">d_in → n_heads×head_dim</text>
+  
+  <rect x="395" y="490" width="110" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="450" y="514" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">W_key</text>
+  <text x="450" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">d_in → n_kv_groups×head_dim</text>
+  
+  <rect x="570" y="490" width="110" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="625" y="504" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="625" y="514" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">W_value</text>
+  <text x="625" y="522" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">d_in → n_kv_groups×head_dim</text>
+  
+  <!-- View & Transpose -->
+  <rect x="300" y="545" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="558" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">view &amp; transpose</text>
+  <text x="450" y="568" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">(b, seq, heads, head_dim) → (b, heads, seq, head_dim)</text>
+  
+  <!-- Converging connections from Linear layers to view & transpose -->
+  <line x1="275" y1="525" x2="350" y2="545" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="450" y1="525" x2="450" y2="545" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="625" y1="525" x2="550" y2="545" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <line x1="450" y1="575" x2="450" y2="595" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Optional RMSNorm (properly connected in flow) -->
+  <rect x="300" y="595" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" stroke-dasharray="3,2" rx="5" fill-opacity="0.7"/>
+  <text x="450" y="608" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">RMSNorm (optional)</text>
+  <text x="450" y="618" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">q_norm, k_norm on Q, K (if qk_norm=True)</text>
+  
+  <line x1="450" y1="625" x2="450" y2="645" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Apply RoPE -->
+  <rect x="300" y="645" width="300" height="30" fill="#bfffbf" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="658" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">apply_rope</text>
+  <text x="450" y="668" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">queries, keys × (cos, sin)</text>
+  
+  <line x1="450" y1="675" x2="450" y2="695" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Repeat interleave -->
+  <rect x="300" y="695" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="708" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">repeat_interleave</text>
+  <text x="450" y="718" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">expand keys, values for n_heads/n_kv_groups</text>
+  
+  <line x1="450" y1="725" x2="450" y2="745" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Matmul -->
+  <rect x="300" y="745" width="300" height="30" fill="#bfffbf" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="758" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">matmul</text>
+  <text x="450" y="768" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">queries @ keys.transpose(-2, -1)</text>
+  
+  <line x1="450" y1="775" x2="450" y2="795" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Masked fill -->
+  <rect x="300" y="795" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="808" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">masked_fill</text>
+  <text x="450" y="818" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">causal mask → -inf</text>
+  
+  <line x1="450" y1="825" x2="450" y2="845" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Scale -->
+  <rect x="300" y="845" width="300" height="25" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="858" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">scale</text>
+  <text x="450" y="866" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">/ √head_dim</text>
+  
+  <line x1="450" y1="870" x2="450" y2="885" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Softmax -->
+  <rect x="300" y="885" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="898" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">softmax</text>
+  <text x="450" y="908" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">attention weights</text>
+  
+  <line x1="450" y1="915" x2="450" y2="930" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Weighted sum -->
+  <rect x="300" y="930" width="300" height="30" fill="#bfffbf" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="943" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">matmul</text>
+  <text x="450" y="953" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">weights @ values</text>
+  
+  <line x1="450" y1="960" x2="450" y2="975" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Transpose & reshape -->
+  <rect x="300" y="975" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="988" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">transpose &amp; reshape</text>
+  <text x="450" y="998" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">(b, heads, seq, head_dim) → (b, seq, d_out)</text>
+  
+  <!-- Connection to out_proj -->
+  <line x1="450" y1="1005" x2="450" y2="1030" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Output projection -->
+  <rect x="300" y="1030" width="300" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1.2" rx="5"/>
+  <text x="450" y="1048" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500">Linear</text>
+  <text x="450" y="1058" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">out_proj</text>
+
+  <!-- Arrow from GroupedQueryAttention layer to residual -->
+  <line x1="450" y1="1080" x2="450" y2="1087" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- Add residual 1 -->
+  <circle cx="450" cy="1105" r="18" fill="#ffcc99" stroke="#666" stroke-width="1.5"/>
+  <text x="450" y="1111" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">+</text>
+  
+  <!-- First residual connection -->
+  <path d="M 300 335 L 160 335 L 160 1105 L 432 1105" stroke="#ff4444" stroke-width="1" stroke-dasharray="8,4" fill="none" marker-end="url(#arrowhead-red)"/>
+  
+  <line x1="450" y1="1125" x2="450" y2="1150" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Second residual branch point -->
+  <rect x="300" y="1150" width="300" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="1168" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">shortcut = x</text>
+
+  <line x1="450" y1="1180" x2="450" y2="1205" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <!-- RMSNorm 2 -->
+  <rect x="300" y="1205" width="300" height="35" fill="#ffcc99" stroke="#666" stroke-width="1.2" rx="5"/>
+  <text x="450" y="1223" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="500">RMSNorm</text>
+  <text x="450" y="1233" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">norm2</text>
+  
+  <line x1="450" y1="1240" x2="450" y2="1265" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- FeedForward Container -->
+  <rect x="190" y="1265" width="520" height="235" fill="#ffd6cc" stroke="#999" stroke-width="1" rx="6" fill-opacity="0.5"/>
+  <text x="450" y="1283" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold">FeedForward</text>
+  <text x="450" y="1297" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666" font-style="italic">ff</text>
+  
+  <!-- FC1 and FC2 in parallel - properly aligned -->
+  <rect x="270" y="1315" width="130" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="335" y="1328" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="335" y="1338" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">fc1 (gate_proj)</text>
+  <text x="335" y="1346" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">d_in → hidden_dim</text>
+  
+  <rect x="500" y="1315" width="130" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="565" y="1328" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="565" y="1338" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">fc2 (up_proj)</text>
+  <text x="565" y="1346" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">d_in → hidden_dim</text>
+  
+  
+  <!-- SiLU activation -->
+  <rect x="270" y="1365" width="130" height="30" fill="#ffcc99" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="335" y="1382" text-anchor="middle" font-family="Arial, sans-serif" font-size="10">SiLU</text>
+  <text x="335" y="1391" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#666">silu(fc1(x))</text>
+  
+  <line x1="335" y1="1350" x2="335" y2="1365" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Multiplication circle - clean version -->
+  <circle cx="450" cy="1422" r="18" fill="#ffcc99" stroke="#666" stroke-width="1.5"/>
+  <text x="450" y="1428" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="500">×</text>
+  
+  <!-- Connections to multiply -->
+  <line x1="335" y1="1395" x2="335" y2="1422" stroke="#333" stroke-width="1"/>
+  <line x1="335" y1="1422" x2="430" y2="1422" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  <line x1="565" y1="1350" x2="565" y2="1422" stroke="#333" stroke-width="1"/>
+  <line x1="565" y1="1422" x2="470" y2="1422" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+
+  <line x1="450" y1="1440" x2="450" y2="1455" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- FC3 down projection -->
+  <rect x="385" y="1455" width="130" height="35" fill="#b3d9ff" stroke="#666" stroke-width="1" rx="5"/>
+  <text x="450" y="1468" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="500">Linear</text>
+  <text x="450" y="1478" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">fc3 (down_proj)</text>
+  <text x="450" y="1486" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">hidden_dim → d_out</text>
+  
+  
+  <!-- Close FeedForward -->
+  <line x1="450" y1="1500" x2="450" y2="1512" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Add residual 2 -->
+  <circle cx="450" cy="1530" r="18" fill="#ffd9b3" stroke="#666" stroke-width="1.5"/>
+  <text x="450" y="1536" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">+</text>
+  
+  <!-- Second residual connection -->
+  <path d="M 300 1165 L 160 1165 L 160 1530 L 432 1530" stroke="#ff4444" stroke-width="1" stroke-dasharray="8,4" fill="none" marker-end="url(#arrowhead-red)"/>
+  
+  
+  <!-- Arrow from TransformerBlock layer to RMSNorm -->
+  <line x1="450" y1="1550" x2="450" y2="1565" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Final RMSNorm -->
+  <rect x="300" y="1565" width="300" height="35" fill="#ffe0b3" stroke="#666" stroke-width="1.5" rx="5" filter="url(#shadow)"/>
+  <text x="450" y="1585" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">RMSNorm</text>
+  <text x="450" y="1595" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">final_norm</text>
+  
+  <line x1="450" y1="1600" x2="450" y2="1625" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Output Head -->
+  <rect x="275" y="1625" width="350" height="40" fill="#cce5ff" stroke="#666" stroke-width="1.5" rx="5" filter="url(#shadow)"/>
+  <text x="450" y="1645" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">Linear</text>
+  <text x="450" y="1657" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">out_head (lm_head)</text>
+  <text x="540" y="1657" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">emb_dim → vocab_size</text>
+  
+  <!-- Arrow from Qwen3Model layer to Logits -->
+  <line x1="450" y1="1675" x2="450" y2="1690" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
+  
+  <!-- Logits -->
+  <rect x="350" y="1690" width="200" height="40" fill="#c8f5c8" stroke="#666" stroke-width="1.5" rx="20" filter="url(#shadow)"/>
+  <text x="450" y="1712" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">Logits</text>
+  <text x="450" y="1724" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">[batch, seq_len, vocab_size]</text>
+  
+</svg>
