@@ -113,12 +113,12 @@ export default function QwenModel() {
     setDrawingData(prev => ({ ...prev, [canvasId]: data }));
   };
 
-  // Load the BERT model data
+  // Load the Qwen model data
   useEffect(() => {
     const loadData = async () => {
       try {
         // Import SVG as a URL
-        const svgUrl = (await import('../data/models/bert/diagram.svg')).default;
+        const svgUrl = (await import('../data/models/qwen/diagram.svg')).default;
         // Fetch the SVG content from the URL
         const response = await fetch(svgUrl);
         const svgContent = await response.text();
@@ -138,27 +138,63 @@ export default function QwenModel() {
     loadData();
   }, []);
 
-  // Set up click handlers for SVG components
+  // Set up click handlers for SVG components using componentMatchers
   useEffect(() => {
-    if (!quizData || !svgRef.current) return;
+    console.log('=== QWEN CLICK HANDLER SETUP START ===');
+    console.log('useEffect triggered. quizData:', quizData ? 'exists' : 'null');
+    console.log('svgRef.current:', svgRef.current ? 'exists' : 'null');
+    console.log('quizData.componentMatchers:', quizData?.componentMatchers ? 'exists' : 'undefined');
+
+    if (quizData) {
+      console.log('quizData keys:', Object.keys(quizData));
+    }
+
+    if (!quizData || !svgRef.current || !quizData.componentMatchers) {
+      console.log('Early return - missing required data');
+      return;
+    }
 
     // Add style element to the document head for SVG styles
-    const styleId = 'bert-model-styles';
+    const styleId = 'qwen-model-styles';
     let styleElement = document.getElementById(styleId);
     if (!styleElement) {
       styleElement = document.createElement('style');
       styleElement.id = styleId;
       styleElement.innerHTML = `
-        .component-selected rect,
-        .component-selected circle,
-        .component-selected ellipse,
-        .component-selected path {
+        .component-clickable {
+          cursor: pointer !important;
+        }
+
+        rect.component-clickable:hover,
+        circle.component-clickable:hover,
+        ellipse.component-clickable:hover,
+        path.component-clickable:hover {
+          opacity: 0.8 !important;
+          stroke: #4A90E2 !important;
+          stroke-width: 3px !important;
+          transition: all 0.2s ease;
+        }
+
+        g.component-clickable:hover {
+          opacity: 0.8;
+          transition: opacity 0.2s ease;
+        }
+
+        /* Target elements that have .component-selected class directly */
+        rect.component-selected,
+        circle.component-selected,
+        ellipse.component-selected,
+        path.component-selected,
+        g.component-selected rect,
+        g.component-selected circle,
+        g.component-selected ellipse,
+        g.component-selected path {
           stroke: red !important;
           stroke-width: 4px !important;
           filter: drop-shadow(0 0 10px rgba(255,0,0,0.6));
           animation: pulse 1.5s infinite;
         }
-        
+
         @keyframes pulse {
           0% { opacity: 1; }
           50% { opacity: 0.7; }
@@ -168,49 +204,157 @@ export default function QwenModel() {
       document.head.appendChild(styleElement);
     }
 
-    const handleComponentClick = (e) => {
-      // Look for the closest g element with class 'component'
-      const target = e.target.closest('g.component[data-component]');
-      if (!target) return;
-      
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const componentId = target.getAttribute('data-component');
-      
-      // Inline selectComponent logic here
-      
-      // Remove previous selection
-      if (svgRef.current) {
-        svgRef.current.querySelectorAll('.component-selected').forEach(el => {
-          el.classList.remove('component-selected');
-        });
-      }
+    const svg = svgRef.current;
+    const componentMatchers = quizData.componentMatchers;
+    const clickableElements = new Map(); // Map from element to componentId
 
-      // Add new selection
-      if (svgRef.current) {
-        const component = svgRef.current.querySelector(`g.component[data-component="${componentId}"]`);
-        if (component) {
-          component.classList.add('component-selected');
+    console.log('componentMatchers:', componentMatchers);
+    console.log('componentMatchers keys:', Object.keys(componentMatchers || {}));
+
+    // Find all text elements in the SVG and match them to components
+    const textElements = svg.querySelectorAll('text');
+
+    console.log('Total text elements found:', textElements.length);
+    if (textElements.length > 0) {
+      console.log('First 5 text contents:', Array.from(textElements).slice(0, 5).map(el => el.textContent.trim()));
+    }
+
+    // Log the first matcher to see the structure
+    if (componentMatchers) {
+      const firstKey = Object.keys(componentMatchers)[0];
+      console.log('First matcher example:', firstKey, ':', componentMatchers[firstKey]);
+
+      // Manual test: check if "Qwen3Model" matches "main-container"
+      const testText = "Qwen3Model";
+      const testPatterns = componentMatchers["main-container"];
+      console.log('Test: Does "' + testText + '" match main-container patterns?', testPatterns);
+      if (testPatterns) {
+        const testMatch = testPatterns.some(pattern =>
+          testText.includes(pattern) || pattern.includes(testText)
+        );
+        console.log('Test match result:', testMatch);
+      }
+    }
+
+    let matchCount = 0;
+    textElements.forEach(textEl => {
+      const textContent = textEl.textContent.trim();
+
+      // Check each component matcher to see if this text matches
+      for (const [componentId, patterns] of Object.entries(componentMatchers)) {
+        const matches = patterns.some(pattern =>
+          textContent.includes(pattern) || pattern.includes(textContent)
+        );
+
+        if (matches) {
+          matchCount++;
+          console.log(`Match found! Text: "${textContent}" matched component: ${componentId}`);
+
+          // Find the best click target for this text element
+          let clickTargets = [];
+
+          // First, try to find a parent group
+          const parentGroup = textEl.closest('g');
+          if (parentGroup) {
+            clickTargets.push(parentGroup);
+          } else {
+            // If no parent group, find the nearest rect/shape that's positioned near this text
+            const textRect = textEl.getBBox();
+            const textX = parseFloat(textEl.getAttribute('x')) || textRect.x;
+            const textY = parseFloat(textEl.getAttribute('y')) || textRect.y;
+
+            // Find all shapes in the SVG
+            const allShapes = svg.querySelectorAll('rect, circle, ellipse, path, polygon');
+            let nearestShape = null;
+            let minDistance = Infinity;
+
+            allShapes.forEach(shape => {
+              try {
+                const shapeBox = shape.getBBox();
+                // Check if text is inside or very close to this shape
+                const isInside = textX >= shapeBox.x && textX <= (shapeBox.x + shapeBox.width) &&
+                                 textY >= shapeBox.y && textY <= (shapeBox.y + shapeBox.height);
+
+                if (isInside) {
+                  // Calculate distance from text to shape center
+                  const shapeCenterX = shapeBox.x + shapeBox.width / 2;
+                  const shapeCenterY = shapeBox.y + shapeBox.height / 2;
+                  const distance = Math.sqrt(Math.pow(textX - shapeCenterX, 2) + Math.pow(textY - shapeCenterY, 2));
+
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestShape = shape;
+                  }
+                }
+              } catch (e) {
+                // Skip shapes that can't be measured
+              }
+            });
+
+            if (nearestShape) {
+              clickTargets.push(nearestShape);
+            }
+
+            // Also add the text element itself as clickable
+            clickTargets.push(textEl);
+          }
+
+          console.log('Click targets found:', clickTargets.map(t => t.tagName).join(', '), 'for text:', textContent);
+
+          // Make all targets clickable
+          clickTargets.forEach(target => {
+            target.classList.add('component-clickable');
+            target.setAttribute('data-component-id', componentId);
+            clickableElements.set(target, componentId);
+            console.log(`Added clickable element (${target.tagName}) for: ${componentId}`);
+          });
+
+          break; // Found a match, no need to check other patterns
         }
       }
+    });
+
+    console.log('Total matches found:', matchCount);
+
+    const handleComponentClick = (e) => {
+      const target = e.target.closest('[data-component-id]');
+      if (!target) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const componentId = target.getAttribute('data-component-id');
+
+      console.log('Component clicked:', componentId);
+      console.log('Quiz data:', quizData.componentQuizzes?.[componentId]);
+      console.log('Explanation data:', quizData.componentExplanations?.[componentId]);
+
+      // Remove previous selection
+      svg.querySelectorAll('.component-selected').forEach(el => {
+        el.classList.remove('component-selected');
+      });
+
+      // Add new selection
+      target.classList.add('component-selected');
 
       setSelectedComponent(componentId);
       setActiveTab('equations'); // Reset to equations tab
     };
 
-    // Add click listeners to all components
-    const svg = svgRef.current;
-    const components = svg.querySelectorAll('g.component[data-component]');
-    
-    components.forEach(component => {
-      component.addEventListener('click', handleComponentClick);
+    console.log('Found clickable elements:', clickableElements.size);
+    console.log('Component IDs:', Array.from(clickableElements.values()));
+
+    // Add click listeners to all clickable elements
+    clickableElements.forEach((componentId, element) => {
+      element.addEventListener('click', handleComponentClick);
     });
 
     // Cleanup
     return () => {
-      components.forEach(component => {
-        component.removeEventListener('click', handleComponentClick);
+      clickableElements.forEach((componentId, element) => {
+        element.removeEventListener('click', handleComponentClick);
+        element.classList.remove('component-clickable', 'component-selected');
+        element.removeAttribute('data-component-id');
       });
     };
   }, [quizData]);
@@ -480,27 +624,42 @@ export default function QwenModel() {
   };
 
   const getComponentData = () => {
-    if (!selectedComponent || !quizData) return null;
-    
+    if (!selectedComponent || !quizData) {
+      console.log('getComponentData: No selectedComponent or quizData');
+      return null;
+    }
+
     const quiz = quizData.componentQuizzes?.[selectedComponent];
     const explanation = quizData.componentExplanations?.[selectedComponent];
-    
-    if (!quiz || !explanation) return null;
-    
-    return {
-      title: quiz.title || explanation.title || selectedComponent,
-      explanation: explanation.explanation || '',
-      equations: quiz.equations || [],
-      initialization: quiz.initialization || {},
-      forward: quiz.forward || {}
+
+    console.log('getComponentData called for:', selectedComponent);
+    console.log('Quiz:', quiz);
+    console.log('Explanation:', explanation);
+
+    if (!quiz && !explanation) {
+      console.log('getComponentData: No quiz AND no explanation - returning null');
+      return null;
+    }
+
+    const result = {
+      title: quiz?.title || explanation?.title || selectedComponent,
+      explanation: explanation?.explanation || '',
+      equations: quiz?.equations || [],
+      initialization: quiz?.initialization || {},
+      forward: quiz?.forward || {},
+      function: quiz?.function || null,
+      isFunction: !!quiz?.function  // true if this is a function, false if class
     };
+
+    console.log('getComponentData returning:', result);
+    return result;
   };
 
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-          <h1 className="text-3xl font-bold mb-4">Loading BERT Model...</h1>
+          <h1 className="text-3xl font-bold mb-4">Loading Qwen3 Model...</h1>
         </div>
       </div>
     );
@@ -523,7 +682,7 @@ export default function QwenModel() {
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-        <h1 className="text-2xl font-bold">🎯 BERT Model - Interactive Quiz</h1>
+        <h1 className="text-2xl font-bold">🎯 Qwen3 Model - Interactive Quiz</h1>
         <p className="text-gray-600 text-sm mt-1">Click on any component in the diagram to explore its details</p>
       </div>
 
@@ -700,34 +859,49 @@ export default function QwenModel() {
             <div className="flex border-b border-gray-200 mb-6">
               <button
                 className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-                  activeTab === 'equations' 
-                    ? 'text-blue-600 border-blue-600' 
+                  activeTab === 'equations'
+                    ? 'text-blue-600 border-blue-600'
                     : 'text-gray-600 border-transparent hover:text-gray-800'
                 }`}
                 onClick={() => setActiveTab('equations')}
               >
                 📐 Equations
               </button>
-              <button
-                className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-                  activeTab === 'initialization' 
-                    ? 'text-blue-600 border-blue-600' 
-                    : 'text-gray-600 border-transparent hover:text-gray-800'
-                }`}
-                onClick={() => setActiveTab('initialization')}
-              >
-                ⚙️ Initialization
-              </button>
-              <button
-                className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-                  activeTab === 'forward' 
-                    ? 'text-blue-600 border-blue-600' 
-                    : 'text-gray-600 border-transparent hover:text-gray-800'
-                }`}
-                onClick={() => setActiveTab('forward')}
-              >
-                ➡️ Forward Pass
-              </button>
+              {componentData.isFunction ? (
+                <button
+                  className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                    activeTab === 'function'
+                      ? 'text-blue-600 border-blue-600'
+                      : 'text-gray-600 border-transparent hover:text-gray-800'
+                  }`}
+                  onClick={() => setActiveTab('function')}
+                >
+                  ⚡ Function
+                </button>
+              ) : (
+                <>
+                  <button
+                    className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                      activeTab === 'initialization'
+                        ? 'text-blue-600 border-blue-600'
+                        : 'text-gray-600 border-transparent hover:text-gray-800'
+                    }`}
+                    onClick={() => setActiveTab('initialization')}
+                  >
+                    ⚙️ Initialization
+                  </button>
+                  <button
+                    className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+                      activeTab === 'forward'
+                        ? 'text-blue-600 border-blue-600'
+                        : 'text-gray-600 border-transparent hover:text-gray-800'
+                    }`}
+                    onClick={() => setActiveTab('forward')}
+                  >
+                    ➡️ Forward Pass
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Tab Content */}
@@ -852,15 +1026,15 @@ export default function QwenModel() {
                     </p>
                   )}
                   <div className="relative">
-                    <button 
+                    <button
                       onClick={() => toggleVisibility(`${selectedComponent}_forward_code`)}
                       className="absolute top-2 right-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer z-10 bg-white px-2 py-1 rounded border border-gray-300"
                     >
                       {visibility[`${selectedComponent}_forward_code`] === false ? 'Show' : 'Hide'}
                     </button>
                     {visibility[`${selectedComponent}_forward_code`] !== false ? (
-                      <SyntaxHighlighter 
-                        language="python" 
+                      <SyntaxHighlighter
+                        language="python"
                         style={oneLight}
                         customStyle={{
                           fontSize: '14px',
@@ -893,6 +1067,65 @@ export default function QwenModel() {
                           textareaClassName="font-mono"
                           preClassName="font-mono"
                           placeholder="Type the forward pass code here to test your memory..."
+                        />
+                      </React.Suspense>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'function' && componentData.function && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">
+                    {componentData.function.title || 'Function'}
+                  </h3>
+                  {componentData.function.explanation && (
+                    <p className="text-gray-600 italic mb-4">
+                      {componentData.function.explanation}
+                    </p>
+                  )}
+                  <div className="relative">
+                    <button
+                      onClick={() => toggleVisibility(`${selectedComponent}_function_code`)}
+                      className="absolute top-2 right-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer z-10 bg-white px-2 py-1 rounded border border-gray-300"
+                    >
+                      {visibility[`${selectedComponent}_function_code`] === false ? 'Show' : 'Hide'}
+                    </button>
+                    {visibility[`${selectedComponent}_function_code`] !== false ? (
+                      <SyntaxHighlighter
+                        language="python"
+                        style={oneLight}
+                        customStyle={{
+                          fontSize: '14px',
+                          backgroundColor: '#f6f8fa',
+                          padding: '16px',
+                          borderRadius: '6px',
+                          border: '1px solid #e1e4e8',
+                          overflowX: 'auto',
+                          whiteSpace: 'pre'
+                        }}
+                        showLineNumbers={true}
+                      >
+                        {componentData.function.codeAnswer || '# No function code available'}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <React.Suspense fallback={<div className="bg-gray-100 p-4 rounded border border-gray-200 text-center" style={{minHeight: '200px'}}>Loading editor...</div>}>
+                        <Editor
+                          value={userCode[`${selectedComponent}_function_code`] || ''}
+                          onValueChange={code => setUserCode(prev => ({ ...prev, [`${selectedComponent}_function_code`]: code }))}
+                          highlight={code => code}
+                          padding={16}
+                          style={{
+                            fontFamily: '"Fira code", "Fira Mono", monospace',
+                            fontSize: 14,
+                            backgroundColor: '#f6f8fa',
+                            border: '1px solid #e1e4e8',
+                            borderRadius: '6px',
+                            minHeight: '200px'
+                          }}
+                          textareaClassName="font-mono"
+                          preClassName="font-mono"
+                          placeholder="Type the function code here to test your memory..."
                         />
                       </React.Suspense>
                     )}

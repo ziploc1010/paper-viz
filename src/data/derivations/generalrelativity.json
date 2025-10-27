@@ -1,0 +1,935 @@
+{
+  "id": "general-relativity",
+  "title": "Einstein Field Equations",
+  "subtitle": "Complete Step-by-Step Derivation",
+  "description": "Derive Einstein's field equations of general relativity from the principle of equivalence through differential geometry and curvature.",
+  "sections": [
+    {
+      "title": "Part 1: Introduction and Principle of Equivalence",
+      "steps": [
+        {
+          "id": "s1-1",
+          "title": "1.1 Principle of Equivalence",
+          "explanation": "The principle of equivalence states that gravitational and inertial forces are locally indistinguishable. Light bends in a gravitational field, revealing that gravity curves spacetime.",
+          "equation": [
+            "\\text{Gravitational acceleration } g \\equiv \\text{Inertial acceleration } a"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 2: Metric Tensor Foundations",
+      "steps": [
+        {
+          "id": "s2-1",
+          "title": "2.1 Differential of a Scalar Field",
+          "explanation": "The total differential of a scalar field φ in terms of partial derivatives",
+          "equation": [
+            "d\\phi = \\frac{\\partial \\phi}{\\partial x} dx"
+          ]
+        },
+        {
+          "id": "s2-2",
+          "title": "2.2 Example with Small Scale",
+          "explanation": "For a small distance (1 meter over 10 meters)",
+          "equation": [
+            "d\\phi = \\frac{c}{10}s = \\frac{1}{2m}"
+          ]
+        },
+        {
+          "id": "s2-3",
+          "title": "2.3 Partial Derivatives in Multiple Dimensions",
+          "explanation": "Differential in x and y directions",
+          "equation": [
+            "d\\phi_x = \\frac{\\partial \\phi}{\\partial x} dx",
+            "d\\phi_y = \\frac{\\partial \\phi}{\\partial y} dy"
+          ]
+        },
+        {
+          "id": "s2-4",
+          "title": "2.4 Pythagorean Distance Element",
+          "explanation": "The infinitesimal distance in flat space",
+          "equation": [
+            "ds^2 = dx^2 + dy^2"
+          ]
+        },
+        {
+          "id": "s2-5",
+          "title": "2.5 Second Differential Form",
+          "explanation": "Express the differential using second derivatives",
+          "equation": [
+            "d\\phi_s = \\frac{\\partial^2 \\phi}{\\partial x^2} dx + \\frac{\\partial^2 \\phi}{\\partial y^2} dy"
+          ]
+        },
+        {
+          "id": "s2-6",
+          "title": "2.6 General Differential Form",
+          "explanation": "The general form for differential of a scalar field using summation notation",
+          "equation": [
+            "\\boxed{d\\phi = \\sum_n \\frac{\\partial \\phi}{\\partial x^n} dx^n}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 3: Length Contraction and Coordinate Transformations",
+      "steps": [
+        {
+          "id": "s3-1",
+          "title": "3.1 Chain Rule for Coordinate Transformations",
+          "explanation": "How partial derivatives transform between coordinate systems",
+          "equation": [
+            "\\frac{\\partial \\phi}{\\partial y^n} = \\frac{\\partial \\phi}{\\partial x^{m}} \\frac{\\partial x^{m}}{\\partial y^{n}} + \\frac{\\partial \\phi}{\\partial x^{2}} \\frac{\\partial x^{n}}{\\partial y^{r}}"
+          ]
+        },
+        {
+          "id": "s3-2",
+          "title": "3.2 Second Derivative Transformation",
+          "explanation": "General transformation law for second derivatives between coordinate systems",
+          "equation": [
+            "\\boxed{\\frac{\\partial^2 \\phi}{\\partial y^n} = \\sum_m \\frac{\\partial^2 \\phi}{\\partial x^m} \\frac{\\partial x^m}{\\partial y^n}}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 4: Tensor Algebra",
+      "steps": [
+        {
+          "id": "s4-1",
+          "title": "4.1 Types of Tensors",
+          "explanation": "Classification of tensors by rank",
+          "equation": [
+            "\\text{Scalar: magnitude, tensor of rank 0}",
+            "\\text{Vector: length and direction, tensor of rank 1}"
+          ]
+        },
+        {
+          "id": "s4-2",
+          "title": "4.2 Vector Transformation (Contravariant)",
+          "explanation": "How vector components transform between coordinate systems",
+          "equation": [
+            "\\boxed{V^n_y = \\sum_m \\frac{\\partial y^n}{\\partial x^m} V^m_x}"
+          ]
+        },
+        {
+          "id": "s4-3",
+          "title": "4.3 Work as Tensor Contraction",
+          "explanation": "Work is the dot product of force and displacement",
+          "equation": [
+            "W = \\vec{F} \\cdot \\vec{X} = F \\cos\\theta \\cdot X"
+          ]
+        },
+        {
+          "id": "s4-4",
+          "title": "4.4 Rank-2 Tensor Definition",
+          "explanation": "Tensors are fixed relationships between two vectors",
+          "equation": [
+            "T^{mn} = A^m B^n"
+          ]
+        },
+        {
+          "id": "s4-5",
+          "title": "4.5 Tensor Product Transformation",
+          "explanation": "Transform a tensor product from x to y coordinates",
+          "equation": [
+            "A^m_y B^n_y = \\sum_r \\frac{\\partial y^m}{\\partial x^r} A^r_x \\sum_s \\frac{\\partial y^n}{\\partial x^s} B^s_x",
+            "= \\sum_{r,s} \\frac{\\partial y^m}{\\partial x^r} \\frac{\\partial y^n}{\\partial x^s} A^r_x B^s_x"
+          ]
+        },
+        {
+          "id": "s4-6",
+          "title": "4.6 Contravariant Tensor Transformation",
+          "explanation": "General transformation law for contravariant rank-2 tensors",
+          "equation": [
+            "\\boxed{T^{mn}_y = \\sum_{r,s} \\frac{\\partial y^m}{\\partial x^r} \\frac{\\partial y^n}{\\partial x^s} T^{rs}_x}"
+          ]
+        },
+        {
+          "id": "s4-7",
+          "title": "4.7 Covariant Tensor Transformation",
+          "explanation": "Transformation law for covariant (lower index) tensors",
+          "equation": [
+            "\\boxed{T_{mn}(y) = \\sum_{r,s} \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial x^s}{\\partial y^n} T_{rs}(x)}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 5: The Metric Tensor",
+      "steps": [
+        {
+          "id": "s5-1",
+          "title": "5.1 Distance Element in Curved Space",
+          "explanation": "Generalize the Pythagorean theorem using the metric tensor",
+          "equation": [
+            "ds^2 = dx^2 + dy^2 = \\sum_m dx^m dx^m"
+          ]
+        },
+        {
+          "id": "s5-2",
+          "title": "5.2 Metric Tensor Definition",
+          "explanation": "The metric tensor g_mn encodes the geometry of spacetime",
+          "equation": [
+            "ds^2 = \\sum_{mn} dx^n dx^n g_{mn}"
+          ]
+        },
+        {
+          "id": "s5-3",
+          "title": "5.3 Coordinate Transformation of Differentials",
+          "explanation": "How coordinate differentials transform",
+          "equation": [
+            "dx^m = \\frac{\\partial x^m}{\\partial y^r} dy^r"
+          ]
+        },
+        {
+          "id": "s5-4",
+          "title": "5.4 Transformed Distance Element",
+          "explanation": "Substituting the transformation into the metric",
+          "equation": [
+            "ds^2 = g_{mn} \\sum_{r,s} \\frac{\\partial x^m}{\\partial y^r} dy^r \\frac{\\partial x^n}{\\partial y^s} dy^s",
+            "= \\sum_{r,s} \\left[ g_{mn} \\frac{\\partial x^m}{\\partial y^r} \\frac{\\partial x^n}{\\partial y^s} \\right] dy^r dy_s"
+          ]
+        },
+        {
+          "id": "s5-5",
+          "title": "5.5 Metric in New Coordinates",
+          "explanation": "The metric in flat space transforms covariantly",
+          "equation": [
+            "ds^2 = g_{mn} dy^r dy^s",
+            "\\text{Note: } g_{mn} \\text{ for flat space}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 6: Christoffel Symbols and Covariant Derivatives",
+      "steps": [
+        {
+          "id": "s6-1",
+          "title": "6.1 Problem with Ordinary Derivatives",
+          "explanation": "Derivatives of tensors do not necessarily transform between frames of reference",
+          "equation": [
+            "\\omega_{nm}(x) = V_{nm}(x)"
+          ]
+        },
+        {
+          "id": "s6-2",
+          "title": "6.2 Naive Tensor Derivative",
+          "explanation": "Attempting to define a tensor from the derivative",
+          "equation": [
+            "T_{nm}(x) = \\frac{\\partial V_m}{\\partial x^n}(x) \\quad \\text{[not good]}",
+            "T_{nm}(y) = \\frac{\\partial V_m}{\\partial y^n}(y)"
+          ]
+        },
+        {
+          "id": "s6-3",
+          "title": "6.3 Expected Transformation",
+          "explanation": "What we would expect from a covariant tensor",
+          "equation": [
+            "T_{mn}(y) = \\sum_{r,s} \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial x^s}{\\partial y^n} T_{rs}(x)"
+          ]
+        },
+        {
+          "id": "s6-4",
+          "title": "6.4 Actual Derivative Transformation",
+          "explanation": "Apply chain rule to the derivative",
+          "equation": [
+            "T_m(y) = \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial x^s}{\\partial y^r} T_{rs}(x)",
+            "= \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial x^s}{\\partial y^r} \\frac{\\partial V_r(x)}{\\partial x^s}"
+          ]
+        },
+        {
+          "id": "s6-5",
+          "title": "6.5 Problematic Transformation",
+          "explanation": "The derivative doesn't transform as expected",
+          "equation": [
+            "T_m(y) = \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial V_r(x)}{\\partial y^n} \\neq \\frac{\\partial V_m(y)}{\\partial y^n}"
+          ]
+        },
+        {
+          "id": "s6-6",
+          "title": "6.6 Product Rule Application",
+          "explanation": "Apply product rule to the transformation, only one index transforms correctly",
+          "equation": [
+            "\\frac{\\partial V_m(y)}{\\partial y^n} = \\frac{\\partial}{\\partial y^n} \\left( \\frac{\\partial x^r}{\\partial y^m} V_r(x) \\right)"
+          ]
+        },
+        {
+          "id": "s6-7",
+          "title": "6.7 Expanded Product Rule",
+          "explanation": "Using the product rule dAB = AdB + BdA",
+          "equation": [
+            "dAB = A dB + B dA",
+            "\\frac{\\partial V_m(y)}{\\partial y^n} = \\frac{\\partial x^r}{\\partial y^m} \\frac{\\partial V_r(x)}{\\partial y^n} + \\frac{\\partial}{\\partial y^n} \\left( \\frac{\\partial x^r}{\\partial y^m} \\right) V_r(x)"
+          ]
+        },
+        {
+          "id": "s6-8",
+          "title": "6.8 Introducing the Christoffel Symbol",
+          "explanation": "Define the Christoffel symbol to correct the transformation",
+          "equation": [
+            "\\Gamma^r_{nm} \\equiv \\text{Christoffel symbol}",
+            "T_{mn}(y) \\neq \\frac{\\partial V_m}{\\partial y^n}"
+          ]
+        },
+        {
+          "id": "s6-9",
+          "title": "6.9 Covariant Derivative Definition",
+          "explanation": "The covariant derivative properly transforms as a tensor",
+          "equation": [
+            "\\boxed{T_{mn}(y) = \\nabla_n V_m = \\frac{\\partial V_m}{\\partial y^n} + \\Gamma^r_{nm} V_r(x)}"
+          ]
+        },
+        {
+          "id": "s6-10",
+          "title": "6.10 Covariant Derivative of Rank-2 Tensor",
+          "explanation": "Extend to higher rank tensors with one Christoffel symbol per index",
+          "equation": [
+            "\\boxed{\\nabla_p T_{mn} = \\frac{\\partial T_{mn}}{\\partial y^p} + \\Gamma^r_{pm} T_{rn} + \\Gamma^r_{pn} T_{mr}}"
+          ]
+        },
+        {
+          "id": "s6-11",
+          "title": "6.11 Metric Compatibility",
+          "explanation": "The covariant derivative of the metric vanishes in flat space",
+          "equation": [
+            "\\nabla_r g_{mn}(x) = 0 \\quad \\text{``flat space''}"
+          ]
+        },
+        {
+          "id": "s6-12",
+          "title": "6.12 Metric Covariant Derivative Expanded",
+          "explanation": "Apply the covariant derivative formula to the metric",
+          "equation": [
+            "\\nabla_p g_{mn} = \\frac{\\partial g_{mn}}{\\partial y^p} + \\Gamma^r_{pm} g_{rn} + \\Gamma^r_{pn} g_{mr} = 0"
+          ]
+        },
+        {
+          "id": "s6-13",
+          "title": "6.13 Christoffel Symbol Formula",
+          "explanation": "Solve for the Christoffel symbols in terms of metric derivatives",
+          "equation": [
+            "\\boxed{\\Gamma^a_{bc}(x) = \\frac{1}{2} g^{ad} \\left( \\frac{\\partial g_{bd}}{\\partial x^c} + \\frac{\\partial g_{ab}}{\\partial x^c} - \\frac{\\partial g_{ba}}{\\partial x^d} \\right)}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 7: Curvature and the Riemann Tensor",
+      "steps": [
+        {
+          "id": "s7-1",
+          "title": "7.1 Parallel Transport",
+          "explanation": "Vectors transported around closed loops in curved space return rotated",
+          "equation": [
+            "\\text{Parallel transport measures curvature}"
+          ]
+        },
+        {
+          "id": "s7-2",
+          "title": "7.2 Commutator Definition",
+          "explanation": "The commutator measures non-commutativity",
+          "equation": [
+            "[A, B] = AB - BA"
+          ]
+        },
+        {
+          "id": "s7-3",
+          "title": "7.3 Derivative Commutator with Function",
+          "explanation": "Commutator of derivative with a function",
+          "equation": [
+            "\\left[ \\frac{\\partial}{\\partial x}, f(x) \\right] = \\frac{\\partial f(x)}{\\partial x}"
+          ]
+        },
+        {
+          "id": "s7-4",
+          "title": "7.4 Expanded Commutator",
+          "explanation": "Expand the commutator using the product rule",
+          "equation": [
+            "\\frac{\\partial}{\\partial x} f(x) V - f(x) \\frac{\\partial V}{\\partial x}",
+            "= \\frac{\\partial f(x)}{\\partial x} V + f(x) \\frac{\\partial V}{\\partial x} - f(x) \\frac{\\partial V}{\\partial x}",
+            "= \\frac{\\partial f(x)}{\\partial x} V"
+          ]
+        },
+        {
+          "id": "s7-5",
+          "title": "7.5 Parallel Transport Around Loop",
+          "explanation": "Transport a vector around an infinitesimal parallelogram",
+          "equation": [
+            "(V_C - V_D) - (V_B - V_A) \\text{ diff } dx_n",
+            "[(V_C - V_B) - (V_D - V_A)] \\text{ diff } dx_v"
+          ]
+        },
+        {
+          "id": "s7-6",
+          "title": "7.6 Infinitesimal Vector Change",
+          "explanation": "Relate vector change to covariant derivative (must use covariant derivatives for curves)",
+          "equation": [
+            "V_A - V_{A'} = dV",
+            "V_C - V_D = \\frac{\\partial V}{\\partial x^m} dx^m V \\Rightarrow \\nabla_m dx^m V"
+          ]
+        },
+        {
+          "id": "s7-7",
+          "title": "7.7 Path Differences",
+          "explanation": "Calculate the difference between two paths",
+          "equation": [
+            "(V_C - V_D) - (V_B - V_A) = \\nabla_v dx^v \\nabla_\\mu dx^u V",
+            "(V_C - V_B) - (V_D - V_{A'}) = \\nabla_\\mu dx^\\mu \\nabla_v dx^v V"
+          ]
+        },
+        {
+          "id": "s7-8",
+          "title": "7.8 Total Change from Loop",
+          "explanation": "The net change reveals the commutator of covariant derivatives",
+          "equation": [
+            "dV = \\nabla_v dx^v \\nabla_\\mu dx^u V - \\nabla_\\mu dx^\\mu \\nabla_v dx^v V",
+            "= dx^\\mu dx^v V [ \\nabla_v \\nabla_r - \\nabla_r \\nabla_v ]"
+          ]
+        },
+        {
+          "id": "s7-9",
+          "title": "7.9 Covariant Derivative Commutator",
+          "explanation": "Expand the commutator of covariant derivatives",
+          "equation": [
+            "[\\nabla_v, \\nabla_\\mu] = \\nabla_v \\nabla_r - \\nabla_r \\nabla_v",
+            "= (\\partial_v + \\Gamma_v)(\\partial_\\mu + \\Gamma_\\mu) - (\\partial_\\mu + \\Gamma_\\mu)(\\partial_v + \\Gamma_v)"
+          ]
+        },
+        {
+          "id": "s7-10",
+          "title": "7.10 Expanded Products",
+          "explanation": "Multiply out the covariant derivative operators",
+          "equation": [
+            "\\partial_v \\partial_\\mu + \\partial_v \\Gamma_\\mu + \\Gamma_v \\partial_\\mu + \\Gamma_v \\Gamma_\\mu",
+            "- \\partial_\\mu \\partial_v - \\partial_\\mu \\Gamma_v - \\Gamma_\\mu \\partial_v - \\Gamma_\\mu \\Gamma_v"
+          ]
+        },
+        {
+          "id": "s7-11",
+          "title": "7.11 Commutator Simplification",
+          "explanation": "Partial derivatives commute, leaving only Christoffel symbol terms",
+          "equation": [
+            "0 = [\\partial_\\mu, \\Gamma_v] + [\\partial_v, \\Gamma_\\mu] + [\\Gamma_v, \\Gamma_\\mu]",
+            "\\frac{\\partial \\Gamma_r}{\\partial x^m} - \\frac{\\partial \\Gamma_\\mu}{\\partial x^v}"
+          ]
+        },
+        {
+          "id": "s7-12",
+          "title": "7.12 Ricci Tensor Introduction",
+          "explanation": "The result defines the Ricci tensor, a measure of curvature",
+          "equation": [
+            "dV = dx^\\mu dx^v V [\\nabla_v, \\nabla_\\mu]",
+            "R_{\\mu v} \\sim \\text{``Ricci Tensor''}"
+          ]
+        },
+        {
+          "id": "s7-13",
+          "title": "7.13 Ricci Scalar",
+          "explanation": "Contract the Ricci tensor to get the curvature scalar. If R≠0, surface is not flat",
+          "equation": [
+            "R_{\\mu v} \\rightarrow R \\text{ (curvature scalar from Ricci tensor)}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 8: Variational Principle and Geodesic Equation",
+      "steps": [
+        {
+          "id": "s8-1",
+          "title": "8.1 Action Functional",
+          "explanation": "The path a particle takes through spacetime extremizes the action integral",
+          "equation": [
+            "S = \\int_a^b L(x, y, y') \\, dx"
+          ]
+        },
+        {
+          "id": "s8-2",
+          "title": "8.2 Variations in the Path",
+          "explanation": "Consider small variations of the path: perturb y(x) by εη(x)",
+          "equation": [
+            "y' = \\frac{dy}{dx}",
+            "y(x) \\rightarrow y(x) + \\epsilon \\eta(x)",
+            "y' \\rightarrow y' + \\epsilon \\eta'"
+          ]
+        },
+        {
+          "id": "s8-3",
+          "title": "8.3 Variation of Action",
+          "explanation": "Compute how the action changes under path variations",
+          "equation": [
+            "S = \\int_a^b L(x, y + \\epsilon \\eta, y' + \\epsilon \\eta') \\, dx"
+          ]
+        },
+        {
+          "id": "s8-4",
+          "title": "8.4 Taylor Expansion",
+          "explanation": "Expand the Lagrangian to first order in ε",
+          "equation": [
+            "f(z) \\approx f(a) + f'(a)(z-a) + \\frac{f''(a)}{2}(z-a)^2",
+            "u = y + \\epsilon \\eta",
+            "v = y' + \\epsilon \\eta'",
+            "L(x, u, v) \\approx L(x, y, y') + \\frac{\\partial L}{\\partial y}(u-y) + \\frac{\\partial L}{\\partial y'}(v-y')",
+            "= L(x, y, y') + \\frac{\\partial L}{\\partial y} \\epsilon \\eta + \\frac{\\partial L}{\\partial y'} \\epsilon \\eta'"
+          ]
+        },
+        {
+          "id": "s8-5",
+          "title": "8.5 First-Order Variation",
+          "explanation": "The action variation to first order in ε",
+          "equation": [
+            "S(\\epsilon) = \\int L(x, y, y') \\, dx + \\frac{\\partial L}{\\partial y} \\epsilon \\eta + \\frac{\\partial L}{\\partial y'} \\epsilon \\eta'",
+            "\\frac{\\partial S(\\epsilon)}{\\partial \\epsilon} = \\int \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta' \\, dx"
+          ]
+        },
+        {
+          "id": "s8-6",
+          "title": "8.6 Integration by Parts",
+          "explanation": "Apply integration by parts to the second term",
+          "equation": [
+            "u = \\frac{\\partial L}{\\partial y'}, \\quad dv = \\eta' dx",
+            "v = \\eta",
+            "\\int \\frac{\\partial L}{\\partial y'} \\eta' \\, dx = \\eta \\frac{\\partial L}{\\partial y'} - \\int \\eta \\frac{d}{dx}\\left( \\frac{\\partial L}{\\partial y'} \\right) dx"
+          ]
+        },
+        {
+          "id": "s8-7",
+          "title": "8.7 Stationary Action Condition",
+          "explanation": "For extremal paths, the variation must vanish. Since η is arbitrary, the coefficient must be zero",
+          "equation": [
+            "\\eta \\int^b_a \\frac{\\partial L}{\\partial y'} \\, dx = \\frac{\\partial L}{\\partial y} \\eta - \\int_a^b \\eta \\frac{d}{dx}\\left( \\frac{\\partial L}{\\partial y'} \\right) dx",
+            "\\frac{\\partial L}{\\partial y} - \\frac{d}{dx}\\left( \\frac{\\partial L}{\\partial y'} \\right) = 0",
+            "\\boxed{\\frac{d}{dx}\\left( \\frac{\\partial L}{\\partial \\dot{x}^\\sigma} \\right) - \\frac{\\partial L}{\\partial x^\\sigma} = 0}"
+          ]
+        },
+        {
+          "id": "s8-8",
+          "title": "8.8 Lagrangian for Geodesics",
+          "explanation": "The Lagrangian for a free particle in curved spacetime using proper time τ as parameter",
+          "equation": [
+            "dx^m = \\frac{dx^m}{d\\lambda} d\\lambda, \\quad \\dot{x} = \\frac{dx}{d\\lambda}",
+            "dV = \\sqrt{-g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu} \\, d\\lambda",
+            "L = \\frac{1}{2} g_{\\mu\\nu}(x) \\dot{x}^m \\dot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-9",
+          "title": "8.9 Action for Particle Trajectory",
+          "explanation": "The action is the integral of the Lagrangian along the worldline",
+          "equation": [
+            "S = \\int L \\, d\\lambda",
+            "= \\int \\frac{1}{2} g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu \\, d\\lambda"
+          ]
+        },
+        {
+          "id": "s8-10",
+          "title": "8.10 Compute ∂L/∂ẋ^σ",
+          "explanation": "Calculate the partial derivative with respect to velocity",
+          "equation": [
+            "\\frac{\\partial L}{\\partial \\dot{x}^\\sigma} = \\frac{\\partial}{\\partial \\dot{x}^\\sigma} \\left( \\frac{1}{2} g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu \\right)",
+            "= \\frac{1}{2} g_{\\mu\\nu} \\left( \\delta^m_\\sigma \\dot{x}^\\nu + \\dot{x}^m \\delta^\\nu_\\sigma \\right)",
+            "= \\frac{1}{2} \\left( g_{\\sigma\\nu} \\dot{x}^\\nu + g_{\\mu\\sigma} \\dot{x}^m \\right)",
+            "= g_{\\sigma\\nu} \\dot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-11",
+          "title": "8.11 Compute d/dλ(∂L/∂ẋ^σ)",
+          "explanation": "Take the total derivative with respect to the parameter λ",
+          "equation": [
+            "\\frac{d}{d\\lambda} \\left( \\frac{\\partial L}{\\partial \\dot{x}^\\sigma} \\right) = \\frac{d}{d\\lambda}(g_{\\sigma\\nu} \\dot{x}^\\nu)",
+            "= \\partial_m g_{\\sigma\\nu} \\dot{x}^m \\dot{x}^\\nu + g_{\\sigma\\nu} \\ddot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-12",
+          "title": "8.12 Compute ∂L/∂x^σ",
+          "explanation": "Calculate the partial derivative with respect to position",
+          "equation": [
+            "\\frac{\\partial L}{\\partial x^\\sigma} = \\frac{\\partial}{\\partial x^\\sigma} \\left( \\frac{1}{2} g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu \\right)",
+            "= \\frac{1}{2} \\partial_\\sigma g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-13",
+          "title": "8.13 Substitute into Euler-Lagrange",
+          "explanation": "Combine the terms to form the Euler-Lagrange equation",
+          "equation": [
+            "\\partial_m g_{\\sigma\\nu} \\dot{x}^m \\dot{x}^\\nu + g_{\\sigma\\nu} \\ddot{x}^\\nu = \\frac{1}{2} \\partial_\\sigma g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu",
+            "g_{\\sigma\\nu} \\ddot{x}^\\nu = \\frac{1}{2} \\partial_\\sigma g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu - \\partial_m g_{\\sigma\\nu} \\dot{x}^m \\dot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-14",
+          "title": "8.14 Multiply by Inverse Metric",
+          "explanation": "Contract with g^λσ to raise the index",
+          "equation": [
+            "g^{\\lambda\\sigma} g_{\\sigma\\nu} \\ddot{x}^\\nu = g^{\\lambda\\sigma} \\left( \\frac{1}{2} \\partial_\\sigma g_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu - \\partial_m g_{\\sigma\\nu} \\dot{x}^m \\dot{x}^\\nu \\right)",
+            "\\delta^\\lambda_\\nu \\ddot{x}^\\nu = \\ddot{x}^\\lambda"
+          ]
+        },
+        {
+          "id": "s8-15",
+          "title": "8.15 Rearrange Terms",
+          "explanation": "Manipulate indices to recognize the Christoffel symbol pattern",
+          "equation": [
+            "\\ddot{x}^\\lambda = \\frac{1}{2} g^{\\lambda\\sigma} \\left( \\partial_\\sigma g_{\\mu\\nu} + \\partial_\\nu g_{\\sigma\\mu} - 2 \\partial_m g_{\\sigma\\nu} \\right) \\dot{x}^m \\dot{x}^\\nu"
+          ]
+        },
+        {
+          "id": "s8-16",
+          "title": "8.16 Recognize Christoffel Symbols",
+          "explanation": "The coefficient is precisely the Christoffel symbol",
+          "equation": [
+            "\\Gamma^\\lambda_{\\mu\\nu} = \\frac{1}{2} g^{\\lambda\\sigma} \\left( \\partial_\\mu g_{\\sigma\\nu} + \\partial_\\nu g_{\\sigma\\mu} - \\partial_\\sigma g_{\\mu\\nu} \\right)"
+          ]
+        },
+        {
+          "id": "s8-17",
+          "title": "8.17 Geodesic Equation",
+          "explanation": "The final equation describing how free particles move in curved spacetime",
+          "equation": [
+            "\\boxed{\\ddot{x}^\\lambda + \\Gamma^\\lambda_{\\mu\\nu} \\dot{x}^m \\dot{x}^\\nu = 0}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 9: Newtonian Limit and Weak Field Approximation",
+      "steps": [
+        {
+          "id": "s9-1",
+          "title": "9.1 Connection to Newtonian Gravity",
+          "explanation": "Shortest distance on a curved surface (geodesic) satisfies this equation",
+          "equation": [
+            "\\frac{dx^\\mu}{dy} = 0 \\quad \\text{(to find minimum distance on curved surface)}"
+          ]
+        },
+        {
+          "id": "s9-2",
+          "title": "9.2 Covariant Geodesic Equation",
+          "explanation": "Apply covariant derivative to get the geodesic equation",
+          "equation": [
+            "\\nabla \\frac{dx^m}{dy} = \\frac{\\partial}{\\partial y} \\frac{\\partial x^n}{\\partial y} + \\Gamma^r() = 0"
+          ]
+        },
+        {
+          "id": "s9-3",
+          "title": "9.3 Geodesic as Acceleration",
+          "explanation": "The geodesic equation resembles Newton's second law",
+          "equation": [
+            "\\frac{\\partial^2 x^m}{\\partial y^2} = -\\Gamma^r()"
+          ]
+        },
+        {
+          "id": "s9-4",
+          "title": "9.4 Newton's Second Law",
+          "explanation": "Force equals mass times acceleration",
+          "equation": [
+            "F = ma",
+            "a = \\frac{F}{m}"
+          ]
+        },
+        {
+          "id": "s9-5",
+          "title": "9.5 Christoffel Symbol as Force",
+          "explanation": "Identify the Christoffel symbol with gravitational force",
+          "equation": [
+            "\\Gamma \\equiv F"
+          ]
+        },
+        {
+          "id": "s9-6",
+          "title": "9.6 Christoffel in Terms of Metric",
+          "explanation": "Substitute the metric formula for Christoffel symbols",
+          "equation": [
+            "\\Gamma = \\frac{1}{2} g^{ad} \\left( \\frac{\\partial g_{dc}}{\\partial x^b} + \\frac{\\partial g_{db}}{\\partial x^c} + \\frac{\\partial g_{bc}}{\\partial x^d} \\right)"
+          ]
+        },
+        {
+          "id": "s9-7",
+          "title": "9.7 Low Velocity Approximation",
+          "explanation": "At small speeds, only the time component g_00 matters",
+          "equation": [
+            "\\text{At small speeds: } g^{00}_i \\frac{\\partial g_{00}}{\\partial x} \\text{ (``time'')}"
+          ]
+        },
+        {
+          "id": "s9-8",
+          "title": "9.8 Simplified Christoffel Symbol",
+          "explanation": "In the weak field limit",
+          "equation": [
+            "\\Gamma = \\frac{1}{2} \\frac{\\partial g_{00}}{\\partial x} \\equiv F"
+          ]
+        },
+        {
+          "id": "s9-9",
+          "title": "9.9 Newtonian Gravitational Force",
+          "explanation": "Force as negative gradient of potential",
+          "equation": [
+            "F = -\\frac{\\partial \\phi}{\\partial x} \\quad \\phi = m g_x",
+            "F = -\\frac{\\partial \\phi}{\\partial x} = -m_g"
+          ]
+        },
+        {
+          "id": "s9-10",
+          "title": "9.10 Relating Christoffel to Potential",
+          "explanation": "Connect the Christoffel symbol to the Newtonian potential",
+          "equation": [
+            "\\Gamma = \\frac{1}{2} \\frac{\\partial g_{00}}{\\partial x} = F = -\\frac{\\partial \\phi}{\\partial x}"
+          ]
+        },
+        {
+          "id": "s9-11",
+          "title": "9.11 Metric from Potential",
+          "explanation": "Integrate to find the metric in terms of gravitational potential",
+          "equation": [
+            "g_{00} = 2\\phi + \\text{const}"
+          ]
+        },
+        {
+          "id": "s9-12",
+          "title": "9.12 Gradient Operator",
+          "explanation": "Force as gradient in three dimensions",
+          "equation": [
+            "F = -\\frac{\\partial \\phi}{\\partial x} \\Rightarrow -\\nabla \\phi",
+            "\\nabla = \\frac{\\partial}{\\partial x} + \\frac{\\partial}{\\partial y} + \\frac{\\partial}{\\partial z}"
+          ]
+        },
+        {
+          "id": "s9-13",
+          "title": "9.13 Newton's Law of Gravitation",
+          "explanation": "Gravitational force between two masses",
+          "equation": [
+            "F = \\frac{GMm}{r^2}"
+          ]
+        },
+        {
+          "id": "s9-14",
+          "title": "9.14 Gravitational Force Field",
+          "explanation": "Force per unit mass",
+          "equation": [
+            "F = -\\frac{Gm}{r^2}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 10: Divergence Theorem and Poisson's Equation",
+      "steps": [
+        {
+          "id": "s10-1",
+          "title": "10.1 Surface Integral of Force",
+          "explanation": "Integrate force over a closed surface (Gauss's law)",
+          "equation": [
+            "\\oint \\vec{F} \\cdot d\\vec{A}",
+            "S = \\frac{Gm}{r^2} dA = -\\frac{Gm}{r^2} 4\\pi r^2 = -Gm \\cdot 4\\pi"
+          ]
+        },
+        {
+          "id": "s10-2",
+          "title": "10.2 Divergence Theorem",
+          "explanation": "Relate surface integral to volume integral",
+          "equation": [
+            "\\oint \\vec{F} \\cdot d\\vec{A} = \\int_{\\text{vol}} \\nabla \\cdot \\vec{F} \\, dV"
+          ]
+        },
+        {
+          "id": "s10-3",
+          "title": "10.3 Mass Density",
+          "explanation": "Define density and express mass as integral",
+          "equation": [
+            "\\rho = \\frac{m}{V}, \\quad m = \\int \\rho \\, dV"
+          ]
+        },
+        {
+          "id": "s10-4",
+          "title": "10.4 Applying Divergence Theorem",
+          "explanation": "Equate the two forms of the integral",
+          "equation": [
+            "\\oint \\vec{F} \\cdot d\\vec{A} = -4\\pi G \\int \\rho \\, dV = \\int_{\\text{vol}} \\nabla \\cdot \\vec{F} \\, dV"
+          ]
+        },
+        {
+          "id": "s10-5",
+          "title": "10.5 Divergence of Force Field",
+          "explanation": "The divergence of the gravitational field",
+          "equation": [
+            "\\nabla \\cdot \\vec{F} = 4\\pi G \\rho"
+          ]
+        },
+        {
+          "id": "s10-6",
+          "title": "10.6 Force as Gradient",
+          "explanation": "Substitute force in terms of potential",
+          "equation": [
+            "\\vec{F} = -\\nabla \\phi"
+          ]
+        },
+        {
+          "id": "s10-7",
+          "title": "10.7 Divergence of Gradient",
+          "explanation": "Apply divergence to both sides",
+          "equation": [
+            "\\nabla \\cdot \\vec{F} = -4\\pi G \\rho"
+          ]
+        },
+        {
+          "id": "s10-8",
+          "title": "10.8 Laplacian Operator",
+          "explanation": "The divergence of gradient is the Laplacian",
+          "equation": [
+            "\\nabla \\cdot \\nabla \\phi = -4\\pi G \\rho"
+          ]
+        },
+        {
+          "id": "s10-9",
+          "title": "10.9 Poisson's Equation",
+          "explanation": "The fundamental equation relating potential to mass density",
+          "equation": [
+            "\\boxed{\\nabla^2 \\phi = 4\\pi G \\rho}"
+          ]
+        },
+        {
+          "id": "s10-10",
+          "title": "10.10 Metric Component from Potential",
+          "explanation": "Recall the relationship between metric and potential",
+          "equation": [
+            "g_{00} = 2\\phi + \\text{const}",
+            "\\phi = \\frac{1}{2} g_{00}"
+          ]
+        },
+        {
+          "id": "s10-11",
+          "title": "10.11 Substitute into Poisson Equation",
+          "explanation": "Express Poisson's equation in terms of the metric",
+          "equation": [
+            "\\nabla^2 \\left( \\frac{1}{2} g_{00} \\right) = 4\\pi G \\rho"
+          ]
+        },
+        {
+          "id": "s10-12",
+          "title": "10.12 Metric Poisson Equation",
+          "explanation": "Simplified form relating metric to density",
+          "equation": [
+            "\\boxed{\\nabla^2 g_{00} = 8\\pi G \\rho}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 11: Stress-Energy-Momentum Tensor",
+      "steps": [
+        {
+          "id": "s11-1",
+          "title": "11.1 Generalizing Mass Density",
+          "explanation": "In relativity, energy and momentum also curve spacetime",
+          "equation": [
+            "S_{\\mu\\nu} = 8\\pi G T_{\\mu\\nu}"
+          ]
+        },
+        {
+          "id": "s11-2",
+          "title": "11.2 Four-Momentum Density",
+          "explanation": "Density as a four-vector incorporating energy and momentum",
+          "equation": [
+            "\\rho = m \\left( \\frac{x_0}{t}, \\frac{x_1}{t}, \\frac{x_2}{t}, \\frac{x_3}{t} \\right)",
+            "= mc^2 (n_{v_x}, n_{v_y}, n_{v_z})"
+          ]
+        },
+        {
+          "id": "s11-3",
+          "title": "11.3 Stress-Energy Tensor Structure",
+          "explanation": "T_μν is a 4×4 tensor encoding energy density, momentum density, stress, and pressure",
+          "equation": [
+            "T_{\\mu\\nu} = \\begin{pmatrix} T_{00} & T_{01} & T_{02} & T_{03} \\\\ T_{10} & T_{11} & T_{12} & T_{13} \\\\ T_{20} & T_{21} & T_{22} & T_{23} \\\\ T_{30} & T_{31} & T_{32} & T_{33} \\end{pmatrix}"
+          ]
+        },
+        {
+          "id": "s11-4",
+          "title": "11.4 Physical Interpretation",
+          "explanation": "Components represent different physical quantities",
+          "equation": [
+            "T_{00} \\text{: time component (energy density)}",
+            "T_{0i} \\text{: energy flow (momentum density)}",
+            "T_{i0} \\text{: momentum density}",
+            "T_{ij} \\text{: stress flux (pressure)}"
+          ]
+        },
+        {
+          "id": "s11-5",
+          "title": "11.5 Energy-Pressure Relation",
+          "explanation": "Relating energy density to pressure",
+          "equation": [
+            "\\frac{E}{v_I} = \\frac{wk}{|w|} = \\frac{F \\times L}{L^3} = \\frac{T}{c^2} = \\frac{F}{A}"
+          ]
+        },
+        {
+          "id": "s11-6",
+          "title": "11.6 Ricci Tensor Equation",
+          "explanation": "Initial form relating Ricci tensor to stress-energy",
+          "equation": [
+            "R_{\\mu\\nu} = 8\\pi G T_{\\mu\\nu}"
+          ]
+        },
+        {
+          "id": "s11-7",
+          "title": "11.7 Conservation Laws",
+          "explanation": "Stress-energy is conserved, but Ricci tensor is not (in this form)",
+          "equation": [
+            "\\partial T_{\\mu\\nu} = 0",
+            "\\partial R_{\\mu\\nu} \\neq 0"
+          ]
+        },
+        {
+          "id": "s11-8",
+          "title": "11.8 Covariant Conservation",
+          "explanation": "Use covariant derivatives for proper conservation",
+          "equation": [
+            "\\nabla T_{\\mu\\nu} = 0",
+            "\\nabla R_{\\mu\\nu} = \\frac{1}{2} \\nabla g_{\\mu\\nu} R"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 12: Einstein Field Equations",
+      "steps": [
+        {
+          "id": "s12-1",
+          "title": "12.1 Modified Ricci Tensor Divergence",
+          "explanation": "The covariant derivative constraint",
+          "equation": [
+            "\\nabla \\left( R_{\\mu\\nu} - \\frac{1}{2} g_{\\mu\\nu} R \\right) = 0"
+          ]
+        },
+        {
+          "id": "s12-2",
+          "title": "12.2 Einstein Tensor",
+          "explanation": "Define the Einstein tensor which is automatically conserved",
+          "equation": [
+            "R_{\\mu\\nu} - \\frac{1}{2} g_{\\mu\\nu} R = 8\\pi G T_{\\mu\\nu}/c^4"
+          ]
+        },
+        {
+          "id": "s12-3",
+          "title": "12.3 Metric Compatibility",
+          "explanation": "The covariant derivative of the metric vanishes",
+          "equation": [
+            "\\nabla g_{\\mu\\nu} = 0"
+          ]
+        },
+        {
+          "id": "s12-4",
+          "title": "12.4 Einstein Field Equations with Cosmological Constant",
+          "explanation": "The complete Einstein field equations describing how matter and energy curve spacetime",
+          "equation": [
+            "\\boxed{R_{\\mu\\nu} - \\frac{1}{2} g_{\\mu\\nu} R + \\Lambda g_{\\mu\\nu} = \\frac{8\\pi G}{c^4} T_{\\mu\\nu}}"
+          ]
+        }
+      ]
+    }
+  ]
+}

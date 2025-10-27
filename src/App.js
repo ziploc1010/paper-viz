@@ -95,6 +95,8 @@ export default function App() {
         {view === "Llama32Model" && <Llama32Model />}
         {view === "DiffusionModels" && <MathDerivation derivationId="diffusion-models" />}
         {view === "SchrodingerEquation" && <MathDerivation derivationId="schrodinger-equation" />}
+        {view === "EulerLagrange" && <MathDerivation derivationId="euler-lagrange" />}
+        {view === "GeneralRelativity" && <MathDerivation derivationId="general-relativity" />}
       </main>
     </div>
   );

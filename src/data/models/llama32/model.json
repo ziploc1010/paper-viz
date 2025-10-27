@@ -1,25 +1,754 @@
 {
-  "componentQuizzes": {},
+  "id": "llama32-architecture-model",
+  "title": "Llama 3.2 Model Architecture",
+  "subtitle": "Complete Interactive Learning Experience",
+  "description": "Learn about the Llama 3.2 architecture through interactive diagrams and coding exercises",
+  "componentMatchers": {
+    "input-tokens": [
+      "Input Tokens"
+    ],
+    "main-container": [
+      "Llama3Model",
+      "Decoder"
+    ],
+    "token-embedding": [
+      "Embedding",
+      "tok_emb"
+    ],
+    "transformerblock-container": [
+      "TransformerBlock"
+    ],
+    "rmsnorm-1": [
+      "RMSNorm",
+      "norm1"
+    ],
+    "groupedqueryattention-container": [
+      "GroupedQueryAttention"
+    ],
+    "linear-qkv": [
+      "W_query",
+      "W_key",
+      "W_value",
+      "Linear"
+    ],
+    "apply-rope": [
+      "apply_rope"
+    ],
+    "repeat-interleave": [
+      "repeat_interleave"
+    ],
+    "attention-scores": [
+      "scaled_dot_product",
+      "attn"
+    ],
+    "feedforward-swiglu-container": [
+      "FeedForward",
+      "SwiGLU",
+      "ff"
+    ],
+    "silu": [
+      "SiLU",
+      "swish"
+    ],
+    "final-norm": [
+      "final_norm",
+      "Final RMSNorm"
+    ],
+    "language-model-head": [
+      "out_head",
+      "Output"
+    ],
+    "output-logits": [
+      "Output Logits",
+      "logits"
+    ]
+  },
   "componentExplanations": {
-    "input": {
+    "input-tokens": {
       "title": "Input Tokens",
-      "explanation": "Llama 3 tokenizer with 128,256 vocabulary. Supports extended 131K context."
+      "explanation": "The starting point of Llama 3.2. Input tokens are numerical indices representing words or subwords from the vocabulary. The model uses a BPE tokenizer with 128,256 tokens, supporting an extended context length of 131,072 tokens for the 1B model."
     },
-    "embedding": {
+    "main-container": {
+      "title": "Llama 3.2 Model",
+      "explanation": "The main decoder-only transformer model. Llama 3.2 is an auto-regressive language model that generates text by predicting the next token given previous tokens. The 1B model has 16 transformer layers with 2048 embedding dimensions."
+    },
+    "token-embedding": {
       "title": "Token Embeddings",
-      "explanation": "Maps tokens to 2048-dimensional vectors (1B model). Position info from RoPE."
+      "explanation": "Maps each token ID to a 2048-dimensional dense vector (for the 1B model). Unlike traditional transformers, Llama doesn't use learned positional embeddings - instead, position information is injected through RoPE (Rotary Position Embedding) applied in the attention layers."
     },
-    "gqa": {
+    "transformerblock-container": {
+      "title": "Transformer Block",
+      "explanation": "A single transformer decoder layer containing GroupedQueryAttention and SwiGLU feed-forward network. Llama 3.2 1B has 16 of these stacked layers. Each layer uses RMSNorm for normalization and includes residual connections for stable gradient flow."
+    },
+    "rmsnorm-1": {
+      "title": "RMS Normalization",
+      "explanation": "Root Mean Square Layer Normalization, a simplified version of LayerNorm that normalizes using only the root mean square (no mean centering). It's computationally more efficient while maintaining similar performance: RMS(x) = sqrt(mean(x\u00b2) + \u03b5), then multiply by learnable weight."
+    },
+    "groupedqueryattention-container": {
       "title": "Grouped Query Attention",
-      "explanation": "32 query heads, 8 KV groups (4:1 ratio). 64-dim heads with frequency-scaled RoPE."
+      "explanation": "An efficient attention mechanism where multiple query heads share the same key-value pairs. Llama 3.2 1B uses 32 query heads with 8 KV groups (4:1 ratio), reducing memory and compute requirements while maintaining model quality. Each head has 64 dimensions (2048 / 32)."
     },
-    "rope": {
+    "linear-qkv": {
+      "title": "QKV Projections",
+      "explanation": "Three separate linear transformations that project the input into Query, Key, and Value representations. For GQA, queries project to full dimension (2048), while keys and values project to num_kv_groups \u00d7 head_dim (8 \u00d7 64 = 512)."
+    },
+    "apply-rope": {
+      "title": "Apply RoPE",
+      "explanation": "Applies the precomputed sine and cosine rotations to query and key tensors. Splits each head dimension in half, rotates the two halves, and recombines them. This injects relative position information without learned parameters."
+    },
+    "repeat-interleave": {
+      "title": "Repeat Interleave for GQA",
+      "explanation": "Expands key and value tensors from 8 KV groups to match 32 query heads by repeating each group 4 times (group_size = 32/8 = 4). This allows the attention computation to proceed as if it were standard multi-head attention."
+    },
+    "attention-scores": {
+      "title": "Attention Computation",
+      "explanation": "Computes scaled dot-product attention: softmax(Q @ K^T / sqrt(head_dim)) @ V. Uses a causal mask to prevent attending to future tokens (autoregressive generation). The scaling factor sqrt(64) = 8 normalizes the dot products."
+    },
+    "feedforward-swiglu-container": {
+      "title": "SwiGLU Feed-Forward Network",
+      "explanation": "A gated feed-forward network using the SwiGLU activation. Instead of the typical FFN(x) = W2\u00b7GELU(W1\u00b7x), SwiGLU computes FFN(x) = W3\u00b7(SiLU(W1\u00b7x) \u2297 W2\u00b7x). The model expands from 2048 to 8192 dimensions (4\u00d7 multiplier), then projects back."
+    },
+    "silu": {
+      "title": "SiLU Activation",
+      "explanation": "Sigmoid Linear Unit activation function: SiLU(x) = x \u00b7 \u03c3(x) = x / (1 + e^(-x)). Also known as Swish, it's a smooth, non-monotonic activation function that works well for language models. Used in the gating mechanism of SwiGLU."
+    },
+    "final-norm": {
+      "title": "Final RMSNorm",
+      "explanation": "The final RMSNorm layer applied after all transformer blocks and before the output projection. Ensures the hidden states are well-normalized before projecting to the large vocabulary size."
+    },
+    "language-model-head": {
+      "title": "Language Model Head",
+      "explanation": "The final linear projection from embedding dimension (2048) to vocabulary size (128,256). Often shares weights with the input embeddings (weight tying) to reduce parameters. Produces logits for each token in the vocabulary."
+    },
+    "output-logits": {
+      "title": "Output Logits",
+      "explanation": "Raw unnormalized scores for each token in the vocabulary at each sequence position. Shape: [batch, seq_len, 128256]. During inference, softmax is applied and the next token is sampled. During training, cross-entropy loss is computed against true tokens."
+    }
+  },
+  "componentQuizzes": {
+    "token-embedding": {
+      "id": "token-embedding",
+      "title": "Token Embeddings",
+      "equations": [
+        {
+          "id": "embed-1",
+          "title": "Embedding Lookup",
+          "explanation": "Convert token indices to dense vectors using an embedding matrix.",
+          "equation": "\\mathbf{E} = \\text{Embed}(\\mathbf{x}) \\in \\mathbb{R}^{B \\times L \\times d}, \\quad d = 2048",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-2",
+          "title": "Embedding Parameters",
+          "explanation": "The embedding matrix has vocab_size rows and emb_dim columns.",
+          "equation": "W_{\\text{embed}} \\in \\mathbb{R}^{V \\times d}, \\quad V = 128256, \\; d = 2048",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-init",
+        "title": "Token Embedding Initialization",
+        "explanation": "Initialize the token embedding layer with vocabulary size and embedding dimension.",
+        "codeAnswer": "import torch.nn as nn\n\nclass Llama3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        \n        # Token embedding layer\n        self.tok_emb = nn.Embedding(\n            cfg[\"vocab_size\"],  # 128,256 tokens\n            cfg[\"emb_dim\"],     # 2048 dimensions\n            dtype=cfg[\"dtype\"]  # bfloat16 for efficiency\n        )\n        # ... rest of initialization",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-forward",
+        "title": "Token Embedding Forward Pass",
+        "explanation": "Convert input token IDs to dense embeddings.",
+        "codeAnswer": "def forward(self, in_idx):\n    # in_idx shape: (batch_size, seq_len)\n    # Output shape: (batch_size, seq_len, emb_dim)\n    tok_embeds = self.tok_emb(in_idx)\n    x = tok_embeds\n    \n    # Continue processing through transformer blocks...\n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "rmsnorm-1": {
+      "id": "rmsnorm-1",
+      "title": "RMS Normalization",
+      "equations": [
+        {
+          "id": "rms-1",
+          "title": "RMS Calculation",
+          "explanation": "Compute root mean square of the input along the last dimension.",
+          "equation": "\\text{RMS}(\\mathbf{x}) = \\sqrt{\\frac{1}{d}\\sum_{i=1}^{d} x_i^2 + \\epsilon}, \\quad \\epsilon = 10^{-5}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rms-2",
+          "title": "RMSNorm Output",
+          "explanation": "Normalize by RMS and apply learnable scale parameter.",
+          "equation": "\\text{RMSNorm}(\\mathbf{x}) = \\frac{\\mathbf{x}}{\\text{RMS}(\\mathbf{x})} \\odot \\boldsymbol{\\gamma}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "rms-init",
+        "title": "RMSNorm Initialization",
+        "explanation": "PyTorch provides nn.RMSNorm, which is simpler than LayerNorm.",
+        "codeAnswer": "import torch.nn as nn\n\nclass TransformerBlock(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        \n        # RMSNorm for pre-attention normalization\n        self.norm1 = nn.RMSNorm(\n            cfg[\"emb_dim\"],     # 2048\n            eps=1e-5,           # Epsilon for numerical stability\n            dtype=cfg[\"dtype\"]\n        )\n        \n        # RMSNorm for pre-FFN normalization\n        self.norm2 = nn.RMSNorm(\n            cfg[\"emb_dim\"],\n            eps=1e-5,\n            dtype=cfg[\"dtype\"]\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "rms-forward",
+        "title": "RMSNorm Forward Pass",
+        "explanation": "Apply RMSNorm before attention and feed-forward layers.",
+        "codeAnswer": "def forward(self, x, mask, cos, sin):\n    # Pre-attention normalization\n    shortcut = x\n    x = self.norm1(x)  # Normalize before attention\n    x = self.att(x, mask, cos, sin)\n    x = x + shortcut   # Add residual\n    \n    # Pre-FFN normalization\n    shortcut = x\n    x = self.norm2(x)  # Normalize before FFN\n    x = self.ff(x)\n    x = x + shortcut   # Add residual\n    \n    return x",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "apply-rope": {
+      "id": "apply-rope",
       "title": "RoPE with Frequency Scaling",
-      "explanation": "Wavelength-based frequency adjustment for 131K context. Low frequencies scaled 32×."
+      "equations": [
+        {
+          "id": "rope-1",
+          "title": "Base Frequencies",
+          "explanation": "Compute inverse frequencies for each dimension pair.",
+          "equation": "\\theta_i = \\theta_{\\text{base}}^{-2i/d}, \\quad i \\in \\{0, 1, ..., d/2-1\\}, \\; \\theta_{\\text{base}} = 500000",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-2",
+          "title": "Frequency Scaling",
+          "explanation": "Scale low-frequency components for extended context.",
+          "equation": "\\theta_i' = \\begin{cases} \\theta_i / 32 & \\text{if } \\lambda_i > 8192 \\\\ \\text{smooth}(\\theta_i) & \\text{if } 8192/4 \\leq \\lambda_i \\leq 8192 \\\\ \\theta_i & \\text{otherwise} \\end{cases}",
+          "canvasHeight": 180
+        },
+        {
+          "id": "rope-3",
+          "title": "Position Angles",
+          "explanation": "Compute rotation angles for each position and frequency.",
+          "equation": "\\Theta_{m,i} = m \\cdot \\theta_i', \\quad m \\in \\{0, 1, ..., L-1\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-4",
+          "title": "Sine and Cosine Cache",
+          "explanation": "Precompute and cache rotation matrices for efficiency.",
+          "equation": "\\cos\\Theta \\in \\mathbb{R}^{L \\times d}, \\quad \\sin\\Theta \\in \\mathbb{R}^{L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "rope-init",
+        "title": "RoPE Parameter Computation",
+        "explanation": "Precompute RoPE parameters with frequency scaling for extended context.",
+        "codeAnswer": "def compute_rope_params(head_dim, theta_base=10_000, context_length=4096, freq_config=None, dtype=torch.float32):\n    assert head_dim % 2 == 0, \"Embedding dimension must be even\"\n    \n    # Compute the inverse frequencies\n    inv_freq = 1.0 / (theta_base ** (\n        torch.arange(0, head_dim, 2, dtype=dtype)[:(head_dim // 2)].float() / head_dim\n    ))\n    \n    # Frequency adjustments for extended context\n    if freq_config is not None:\n        low_freq_wavelen = freq_config[\"original_context_length\"] / freq_config[\"low_freq_factor\"]\n        high_freq_wavelen = freq_config[\"original_context_length\"] / freq_config[\"high_freq_factor\"]\n        \n        wavelen = 2 * torch.pi / inv_freq\n        \n        # Scale low frequencies (long wavelengths)\n        inv_freq_llama = torch.where(\n            wavelen > low_freq_wavelen, \n            inv_freq / freq_config[\"factor\"], \n            inv_freq\n        )\n        \n        # Smooth transition for medium frequencies\n        smooth_factor = (\n            (freq_config[\"original_context_length\"] / wavelen - freq_config[\"low_freq_factor\"]) /\n            (freq_config[\"high_freq_factor\"] - freq_config[\"low_freq_factor\"])\n        )\n        \n        smoothed_inv_freq = (\n            (1 - smooth_factor) * (inv_freq / freq_config[\"factor\"]) + \n            smooth_factor * inv_freq\n        )\n        \n        is_medium_freq = (wavelen <= low_freq_wavelen) & (wavelen >= high_freq_wavelen)\n        inv_freq_llama = torch.where(is_medium_freq, smoothed_inv_freq, inv_freq_llama)\n        inv_freq = inv_freq_llama\n    \n    # Generate position indices\n    positions = torch.arange(context_length, dtype=dtype)\n    \n    # Compute the angles\n    angles = positions[:, None] * inv_freq[None, :]\n    \n    # Expand angles to match the head_dim\n    angles = torch.cat([angles, angles], dim=1)\n    \n    # Precompute sine and cosine\n    cos = torch.cos(angles)\n    sin = torch.sin(angles)\n    \n    return cos, sin",
+        "language": "python"
+      },
+      "forward": {
+        "id": "rope-forward",
+        "title": "Applying RoPE to Queries and Keys",
+        "explanation": "Apply rotary embeddings to inject position information.",
+        "codeAnswer": "def apply_rope(x, cos, sin):\n    batch_size, num_heads, seq_len, head_dim = x.shape\n    assert head_dim % 2 == 0, \"Head dimension must be even\"\n    \n    # Split x into first half and second half\n    x1 = x[..., :head_dim // 2]\n    x2 = x[..., head_dim // 2:]\n    \n    # Adjust sin and cos shapes\n    cos = cos[:seq_len, :].unsqueeze(0).unsqueeze(0)\n    sin = sin[:seq_len, :].unsqueeze(0).unsqueeze(0)\n    \n    # Apply the rotary transformation\n    # This implements: x_rotated = x * cos + rotate_half(x) * sin\n    rotated = torch.cat((-x2, x1), dim=-1)\n    x_rotated = (x * cos) + (rotated * sin)\n    \n    return x_rotated.to(dtype=x.dtype)",
+        "language": "python"
+      },
+      "type": "custom"
     },
-    "swiglu": {
-      "title": "SwiGLU FFN",
-      "explanation": "3-layer FFN with gating. Expands to 8192 dimensions (4× multiplier)."
+    "groupedqueryattention-container": {
+      "id": "groupedqueryattention-container",
+      "title": "Grouped Query Attention",
+      "equations": [
+        {
+          "id": "gqa-1",
+          "title": "Query Projection",
+          "explanation": "Project to full number of query heads.",
+          "equation": "\\mathbf{Q} = \\mathbf{X}W_Q \\in \\mathbb{R}^{B \\times L \\times (n_h \\times d_h)}, \\quad n_h = 32, \\; d_h = 64",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gqa-2",
+          "title": "Key-Value Projections",
+          "explanation": "Project to fewer KV groups for efficiency.",
+          "equation": "\\mathbf{K} = \\mathbf{X}W_K, \\; \\mathbf{V} = \\mathbf{X}W_V \\in \\mathbb{R}^{B \\times L \\times (n_{kv} \\times d_h)}, \\quad n_{kv} = 8",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gqa-3",
+          "title": "Reshape for Multi-Head",
+          "explanation": "Reshape tensors to separate head dimension.",
+          "equation": "\\mathbf{Q} \\rightarrow (B, n_h, L, d_h), \\quad \\mathbf{K}, \\mathbf{V} \\rightarrow (B, n_{kv}, L, d_h)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gqa-4",
+          "title": "Expand KV Groups",
+          "explanation": "Repeat each KV group to match number of query heads.",
+          "equation": "\\mathbf{K}, \\mathbf{V} \\rightarrow (B, n_h, L, d_h) \\quad \\text{via repeat\\_interleave}(g), \\; g = n_h / n_{kv} = 4",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gqa-5",
+          "title": "Scaled Dot-Product Attention",
+          "explanation": "Compute attention scores with causal masking and scaling.",
+          "equation": "\\text{Attn} = \\text{softmax}\\left(\\frac{\\mathbf{Q}\\mathbf{K}^T}{\\sqrt{d_h}} + \\mathbf{M}\\right)\\mathbf{V}, \\quad \\mathbf{M}_{ij} = \\begin{cases} 0 & i \\geq j \\\\ -\\infty & i < j \\end{cases}",
+          "canvasHeight": 180
+        },
+        {
+          "id": "gqa-6",
+          "title": "Output Projection",
+          "explanation": "Combine heads and project back to model dimension.",
+          "equation": "\\text{Output} = \\text{Concat}(\\text{Attn})W_O \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "gqa-init",
+        "title": "Grouped Query Attention Initialization",
+        "explanation": "Initialize GQA with separate projections for queries and key-value groups.",
+        "codeAnswer": "class GroupedQueryAttention(nn.Module):\n    def __init__(self, d_in, d_out, num_heads, num_kv_groups, dtype=None):\n        super().__init__()\n        assert d_out % num_heads == 0, \"d_out must be divisible by num_heads\"\n        assert num_heads % num_kv_groups == 0, \"num_heads must be divisible by num_kv_groups\"\n        \n        self.d_out = d_out\n        self.num_heads = num_heads              # 32 query heads\n        self.head_dim = d_out // num_heads      # 64 dimensions per head\n        \n        # Key and value use fewer groups for efficiency\n        self.num_kv_groups = num_kv_groups      # 8 KV groups\n        self.group_size = num_heads // num_kv_groups  # 4 queries per KV group\n        \n        # Query projection: full size\n        self.W_query = nn.Linear(d_in, d_out, bias=False, dtype=dtype)\n        \n        # Key and value projections: reduced size\n        self.W_key = nn.Linear(\n            d_in, num_kv_groups * self.head_dim, bias=False, dtype=dtype\n        )\n        self.W_value = nn.Linear(\n            d_in, num_kv_groups * self.head_dim, bias=False, dtype=dtype\n        )\n        \n        # Output projection\n        self.out_proj = nn.Linear(d_out, d_out, bias=False, dtype=dtype)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "gqa-forward",
+        "title": "GQA Forward Pass",
+        "explanation": "Compute grouped query attention with RoPE and causal masking.",
+        "codeAnswer": "def forward(self, x, mask, cos, sin):\n    b, num_tokens, d_in = x.shape\n    \n    # Project to Q, K, V\n    queries = self.W_query(x)  # (b, num_tokens, d_out)\n    keys = self.W_key(x)       # (b, num_tokens, num_kv_groups * head_dim)\n    values = self.W_value(x)   # (b, num_tokens, num_kv_groups * head_dim)\n    \n    # Reshape queries, keys, and values\n    queries = queries.view(b, num_tokens, self.num_heads, self.head_dim)\n    keys = keys.view(b, num_tokens, self.num_kv_groups, self.head_dim)\n    values = values.view(b, num_tokens, self.num_kv_groups, self.head_dim)\n    \n    # Transpose: (b, num_tokens, heads, head_dim) -> (b, heads, num_tokens, head_dim)\n    queries = queries.transpose(1, 2)\n    keys = keys.transpose(1, 2)\n    values = values.transpose(1, 2)\n    \n    # Apply RoPE to queries and keys\n    queries = apply_rope(queries, cos, sin)\n    keys = apply_rope(keys, cos, sin)\n    \n    # Expand keys and values to match the number of query heads\n    # Each KV group is repeated group_size times\n    keys = keys.repeat_interleave(self.group_size, dim=1)\n    values = values.repeat_interleave(self.group_size, dim=1)\n    \n    # Compute scaled dot-product attention\n    attn_scores = queries @ keys.transpose(2, 3)  # (b, num_heads, num_tokens, num_tokens)\n    \n    # Apply causal mask (prevent attending to future tokens)\n    attn_scores = attn_scores.masked_fill(mask, -torch.inf)\n    \n    # Scale and softmax\n    attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)\n    \n    # Apply attention weights to values\n    context_vec = (attn_weights @ values).transpose(1, 2)\n    \n    # Reshape: (b, num_tokens, num_heads, head_dim) -> (b, num_tokens, d_out)\n    context_vec = context_vec.reshape(b, num_tokens, self.d_out)\n    \n    # Final output projection\n    context_vec = self.out_proj(context_vec)\n    \n    return context_vec",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "feedforward-swiglu-container": {
+      "id": "feedforward-swiglu-container",
+      "title": "SwiGLU Feed-Forward Network",
+      "equations": [
+        {
+          "id": "swiglu-1",
+          "title": "Gate and Up Projections",
+          "explanation": "Two parallel projections expand to hidden dimension.",
+          "equation": "\\mathbf{h}_{\\text{gate}} = \\mathbf{X}W_1, \\quad \\mathbf{h}_{\\text{up}} = \\mathbf{X}W_2 \\in \\mathbb{R}^{B \\times L \\times h}, \\; h = 8192",
+          "canvasHeight": 150
+        },
+        {
+          "id": "swiglu-2",
+          "title": "SiLU Activation",
+          "explanation": "Apply SiLU (Swish) activation to the gate projection.",
+          "equation": "\\text{SiLU}(x) = x \\cdot \\sigma(x) = \\frac{x}{1 + e^{-x}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "swiglu-3",
+          "title": "Gated Activation",
+          "explanation": "Element-wise multiply activated gate with up projection.",
+          "equation": "\\mathbf{h}_{\\text{gated}} = \\text{SiLU}(\\mathbf{h}_{\\text{gate}}) \\odot \\mathbf{h}_{\\text{up}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "swiglu-4",
+          "title": "Down Projection",
+          "explanation": "Project back to model dimension.",
+          "equation": "\\text{FFN}(\\mathbf{X}) = \\mathbf{h}_{\\text{gated}} W_3 \\in \\mathbb{R}^{B \\times L \\times d}, \\; d = 2048",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "swiglu-init",
+        "title": "SwiGLU Initialization",
+        "explanation": "Initialize three linear layers for the gated feed-forward network.",
+        "codeAnswer": "class FeedForward(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        \n        # Gate projection (for SiLU activation)\n        self.fc1 = nn.Linear(\n            cfg[\"emb_dim\"],      # 2048\n            cfg[\"hidden_dim\"],   # 8192 (4x expansion)\n            dtype=cfg[\"dtype\"],\n            bias=False\n        )\n        \n        # Up projection (multiplied with gated output)\n        self.fc2 = nn.Linear(\n            cfg[\"emb_dim\"],      # 2048\n            cfg[\"hidden_dim\"],   # 8192\n            dtype=cfg[\"dtype\"],\n            bias=False\n        )\n        \n        # Down projection (back to model dimension)\n        self.fc3 = nn.Linear(\n            cfg[\"hidden_dim\"],   # 8192\n            cfg[\"emb_dim\"],      # 2048\n            dtype=cfg[\"dtype\"],\n            bias=False\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "swiglu-forward",
+        "title": "SwiGLU Forward Pass",
+        "explanation": "Implement the SwiGLU gating mechanism.",
+        "codeAnswer": "def forward(self, x):\n    # Two parallel projections\n    x_fc1 = self.fc1(x)  # Gate projection\n    x_fc2 = self.fc2(x)  # Up projection\n    \n    # SwiGLU: SiLU(gate) * up\n    # SiLU is also known as Swish activation\n    x = nn.functional.silu(x_fc1) * x_fc2\n    \n    # Project back down to model dimension\n    return self.fc3(x)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "transformerblock-container": {
+      "id": "transformerblock-container",
+      "title": "Llama Transformer Block",
+      "equations": [
+        {
+          "id": "block-1",
+          "title": "Pre-Norm Architecture",
+          "explanation": "Llama uses pre-normalization: normalize before each sub-layer.",
+          "equation": "\\mathbf{H}^{(l)} = \\mathbf{H}^{(l-1)} \\quad \\text{for} \\quad l \\in \\{1, 2, ..., 16\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "block-2",
+          "title": "Attention Sub-Layer",
+          "explanation": "Apply RMSNorm, then attention, then add residual.",
+          "equation": "\\mathbf{H}_{\\text{attn}}^{(l)} = \\mathbf{H}^{(l-1)} + \\text{GQA}(\\text{RMSNorm}(\\mathbf{H}^{(l-1)}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "block-3",
+          "title": "Feed-Forward Sub-Layer",
+          "explanation": "Apply RMSNorm, then SwiGLU FFN, then add residual.",
+          "equation": "\\mathbf{H}^{(l)} = \\mathbf{H}_{\\text{attn}}^{(l)} + \\text{SwiGLU}(\\text{RMSNorm}(\\mathbf{H}_{\\text{attn}}^{(l)}))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "block-init",
+        "title": "Transformer Block Initialization",
+        "explanation": "Initialize attention, feed-forward, and normalization layers.",
+        "codeAnswer": "class TransformerBlock(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        \n        # Grouped Query Attention\n        self.att = GroupedQueryAttention(\n            d_in=cfg[\"emb_dim\"],\n            d_out=cfg[\"emb_dim\"],\n            num_heads=cfg[\"n_heads\"],        # 32 heads\n            num_kv_groups=cfg[\"n_kv_groups\"], # 8 KV groups\n            dtype=cfg[\"dtype\"]\n        )\n        \n        # SwiGLU Feed-Forward Network\n        self.ff = FeedForward(cfg)\n        \n        # RMSNorm layers (pre-normalization)\n        self.norm1 = nn.RMSNorm(cfg[\"emb_dim\"], eps=1e-5, dtype=cfg[\"dtype\"])\n        self.norm2 = nn.RMSNorm(cfg[\"emb_dim\"], eps=1e-5, dtype=cfg[\"dtype\"])",
+        "language": "python"
+      },
+      "forward": {
+        "id": "block-forward",
+        "title": "Transformer Block Forward Pass",
+        "explanation": "Process input through attention and FFN with residual connections.",
+        "codeAnswer": "def forward(self, x, mask, cos, sin):\n    # Attention sub-layer with pre-norm\n    shortcut = x\n    x = self.norm1(x)              # Pre-normalization\n    x = self.att(x, mask, cos, sin) # Grouped query attention\n    x = x + shortcut               # Residual connection\n    \n    # Feed-forward sub-layer with pre-norm\n    shortcut = x\n    x = self.norm2(x)              # Pre-normalization\n    x = self.ff(x)                 # SwiGLU FFN\n    x = x + shortcut               # Residual connection\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "main-container": {
+      "id": "main-container",
+      "title": "Complete Llama 3.2 Model",
+      "equations": [
+        {
+          "id": "model-1",
+          "title": "Model Configuration",
+          "explanation": "Key hyperparameters for Llama 3.2 1B model.",
+          "equation": "V = 128256, \\; L_{\\text{max}} = 131072, \\; d = 2048, \\; n_h = 32, \\; n_{kv} = 8, \\; h = 8192, \\; N = 16",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-2",
+          "title": "Embedding to Transformer Stack",
+          "explanation": "Convert tokens to embeddings, process through layers.",
+          "equation": "\\mathbf{H}^{(0)} = \\text{Embed}(\\mathbf{x}), \\quad \\mathbf{H}^{(N)} = \\text{TransformerBlock}_N(...\\text{TransformerBlock}_1(\\mathbf{H}^{(0)}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-3",
+          "title": "Output Projection",
+          "explanation": "Apply final norm and project to vocabulary logits.",
+          "equation": "\\text{logits} = \\text{RMSNorm}(\\mathbf{H}^{(N)}) W_{\\text{out}} \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-4",
+          "title": "Autoregressive Generation",
+          "explanation": "Next token prediction with causal masking.",
+          "equation": "P(x_t | x_{<t}) = \\text{softmax}(\\text{logits}_t), \\quad \\hat{x}_t = \\arg\\max_i P(x_t = i | x_{<t})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "model-init",
+        "title": "Llama 3.2 Model Initialization",
+        "explanation": "Initialize the complete model with all components.",
+        "codeAnswer": "class Llama3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        \n        # Token embeddings\n        self.tok_emb = nn.Embedding(\n            cfg[\"vocab_size\"], cfg[\"emb_dim\"], dtype=cfg[\"dtype\"]\n        )\n        \n        # Stack of transformer blocks\n        self.trf_blocks = nn.ModuleList([\n            TransformerBlock(cfg) for _ in range(cfg[\"n_layers\"])\n        ])\n        \n        # Final normalization\n        self.final_norm = nn.RMSNorm(\n            cfg[\"emb_dim\"], eps=1e-5, dtype=cfg[\"dtype\"]\n        )\n        \n        # Output projection (language modeling head)\n        self.out_head = nn.Linear(\n            cfg[\"emb_dim\"], cfg[\"vocab_size\"], bias=False, dtype=cfg[\"dtype\"]\n        )\n        \n        # Precompute RoPE parameters\n        cos, sin = compute_rope_params(\n            head_dim=cfg[\"emb_dim\"] // cfg[\"n_heads\"],\n            theta_base=cfg[\"rope_base\"],\n            context_length=cfg[\"context_length\"],\n            freq_config=cfg[\"rope_freq\"]\n        )\n        self.register_buffer(\"cos\", cos, persistent=False)\n        self.register_buffer(\"sin\", sin, persistent=False)\n        self.cfg = cfg",
+        "language": "python"
+      },
+      "forward": {
+        "id": "model-forward",
+        "title": "Llama 3.2 Forward Pass",
+        "explanation": "Complete forward pass from tokens to logits.",
+        "codeAnswer": "def forward(self, in_idx):\n    # Embed tokens\n    tok_embeds = self.tok_emb(in_idx)\n    x = tok_embeds\n    \n    # Create causal attention mask\n    num_tokens = x.shape[1]\n    mask = torch.triu(\n        torch.ones(num_tokens, num_tokens, device=x.device, dtype=torch.bool),\n        diagonal=1\n    )\n    \n    # Process through transformer blocks\n    for block in self.trf_blocks:\n        x = block(x, mask, self.cos, self.sin)\n    \n    # Final normalization\n    x = self.final_norm(x)\n    \n    # Project to vocabulary\n    logits = self.out_head(x.to(self.cfg[\"dtype\"]))\n    \n    return logits",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "silu": {
+      "id": "silu",
+      "title": "SiLU (Swish) Activation",
+      "equations": [
+        {
+          "id": "silu-1",
+          "title": "SiLU Definition",
+          "explanation": "Sigmoid Linear Unit, also known as Swish activation.",
+          "equation": "\\text{SiLU}(x) = x \\cdot \\sigma(x) = \\frac{x}{1 + e^{-x}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "silu-2",
+          "title": "SiLU Properties",
+          "explanation": "Smooth, non-monotonic, unbounded above, bounded below by \u2248-0.28.",
+          "equation": "\\lim_{x \\to -\\infty} \\text{SiLU}(x) \\approx -0.28, \\quad \\lim_{x \\to \\infty} \\text{SiLU}(x) = \\infty",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "silu-init",
+        "title": "SiLU Activation",
+        "explanation": "PyTorch provides nn.functional.silu as a built-in function.",
+        "codeAnswer": "import torch.nn.functional as F\n\n# SiLU is available as a functional operation\n# No initialization needed - it's stateless\n\n# Usage in forward pass:\nactivated = F.silu(x)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "silu-forward",
+        "title": "SiLU Forward Pass",
+        "explanation": "Apply SiLU activation in the SwiGLU gating mechanism.",
+        "codeAnswer": "def forward(self, x):\n    # In SwiGLU, SiLU is applied to the gate projection\n    x_fc1 = self.fc1(x)  # Gate projection\n    x_fc2 = self.fc2(x)  # Up projection\n    \n    # Apply SiLU to gate, then multiply with up projection\n    # This is the \"Swish-Gated Linear Unit\"\n    x = nn.functional.silu(x_fc1) * x_fc2\n    \n    # Project back down\n    return self.fc3(x)",
+        "language": "python"
+      },
+      "type": "library"
+    },
+    "language-model-head": {
+      "id": "language-model-head",
+      "title": "Language Model Head",
+      "equations": [
+        {
+          "id": "head-1",
+          "title": "Vocabulary Projection",
+          "explanation": "Project from embedding dimension to vocabulary size.",
+          "equation": "\\text{logits} = \\mathbf{H}^{(\\text{final})} W_{\\text{out}} \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "head-2",
+          "title": "Weight Tying",
+          "explanation": "Often shares weights with input embeddings to reduce parameters.",
+          "equation": "W_{\\text{out}} = W_{\\text{embed}}^T \\in \\mathbb{R}^{d \\times V}, \\quad d = 2048, \\; V = 128256",
+          "canvasHeight": 150
+        },
+        {
+          "id": "head-3",
+          "title": "Next Token Prediction",
+          "explanation": "Convert logits to probabilities and sample next token.",
+          "equation": "P(x_{t+1} | x_{\\leq t}) = \\text{softmax}(\\text{logits}_t / T), \\quad T = \\text{temperature}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "head-init",
+        "title": "Output Head Initialization",
+        "explanation": "Initialize the final linear projection to vocabulary.",
+        "codeAnswer": "class Llama3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        # ... other initialization ...\n        \n        # Output projection (language modeling head)\n        self.out_head = nn.Linear(\n            cfg[\"emb_dim\"],      # 2048\n            cfg[\"vocab_size\"],   # 128,256\n            bias=False,          # No bias in Llama models\n            dtype=cfg[\"dtype\"]   # bfloat16\n        )\n        \n        # Note: Weight tying can be applied after loading weights\n        # by setting: self.out_head.weight = self.tok_emb.weight",
+        "language": "python"
+      },
+      "forward": {
+        "id": "head-forward",
+        "title": "Output Head Forward Pass",
+        "explanation": "Project final hidden states to vocabulary logits.",
+        "codeAnswer": "def forward(self, in_idx):\n    # ... process through embeddings and transformer blocks ...\n    \n    # Apply final normalization\n    x = self.final_norm(x)\n    \n    # Project to vocabulary size\n    # Ensure correct dtype for numerical stability\n    logits = self.out_head(x.to(self.cfg[\"dtype\"]))\n    \n    # Shape: (batch_size, seq_len, vocab_size)\n    return logits",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "input-tokens": {
+      "id": "input-tokens",
+      "title": "Input Tokens",
+      "equations": [
+        {
+          "id": "input-1",
+          "title": "Token Sequence",
+          "explanation": "Input is a batch of token sequences, where each token is an integer index from 0 to vocab_size-1.",
+          "equation": "\\mathbf{x} \\in \\mathbb{Z}^{B \\times L}, \\quad 0 \\leq x_{ij} < V, \\quad V = 128256",
+          "canvasHeight": 150
+        },
+        {
+          "id": "input-2",
+          "title": "Sequence Length",
+          "explanation": "Llama 3.2 supports sequences up to 131,072 tokens (128K context window).",
+          "equation": "L \\leq 131072",
+          "canvasHeight": 100
+        }
+      ],
+      "initialization": {
+        "id": "input-init",
+        "title": "Input Tokens (No Initialization)",
+        "explanation": "Input tokens come from the tokenizer - no trainable parameters.",
+        "codeAnswer": "# Input tokens are provided by the tokenizer\n# No initialization needed - just integer indices\n# Example:\nimport torch\n\n# Tokenize input text\ntokens = tokenizer.encode(\"Hello, world!\")  # e.g., [15339, 11, 1917, 0]\ninput_ids = torch.tensor([tokens])  # Shape: [batch=1, seq_len=4]",
+        "language": "python"
+      },
+      "forward": {
+        "id": "input-forward",
+        "title": "Input Tokens (No Forward Pass)",
+        "explanation": "Input tokens are just passed directly to the embedding layer.",
+        "codeAnswer": "# Input tokens are simply passed to the model\ndef forward(self, input_ids):\n    # input_ids shape: [batch, seq_len]\n    # Just validate and pass through\n    assert input_ids.dim() == 2, \"Expected 2D input [batch, seq_len]\"\n    assert (input_ids >= 0).all() and (input_ids < self.vocab_size).all()\n    \n    # Pass to embedding layer\n    x = self.tok_emb(input_ids)  # [batch, seq_len, emb_dim]\n    return x",
+        "language": "python"
+      }
+    },
+    "linear-qkv": {
+      "id": "linear-qkv",
+      "title": "QKV Projection Layers",
+      "equations": [
+        {
+          "id": "qkv-1",
+          "title": "Query Projection",
+          "explanation": "Project input to query space. For GQA with 32 heads, each with 64 dims.",
+          "equation": "\\mathbf{Q} = \\mathbf{X} W_Q, \\quad W_Q \\in \\mathbb{R}^{d \\times (n_h \\cdot d_h)}, \\quad d=2048, n_h=32, d_h=64",
+          "canvasHeight": 150
+        },
+        {
+          "id": "qkv-2",
+          "title": "Key Projection",
+          "explanation": "Project input to key space. For GQA, keys use fewer groups (8 groups for Llama 3.2).",
+          "equation": "\\mathbf{K} = \\mathbf{X} W_K, \\quad W_K \\in \\mathbb{R}^{d \\times (n_g \\cdot d_h)}, \\quad n_g=8",
+          "canvasHeight": 150
+        },
+        {
+          "id": "qkv-3",
+          "title": "Value Projection",
+          "explanation": "Project input to value space, using same dimension as keys.",
+          "equation": "\\mathbf{V} = \\mathbf{X} W_V, \\quad W_V \\in \\mathbb{R}^{d \\times (n_g \\cdot d_h)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "qkv-init",
+        "title": "QKV Linear Layers Initialization",
+        "explanation": "Initialize three separate linear projection layers for Q, K, V. GQA uses different dimensions for queries vs keys/values.",
+        "codeAnswer": "import torch.nn as nn\n\nclass GroupedQueryAttention(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        self.d_model = cfg[\"emb_dim\"]  # 2048\n        self.n_heads = cfg[\"n_heads\"]  # 32 query heads\n        self.n_kv_groups = cfg[\"n_kv_groups\"]  # 8 kv groups\n        self.head_dim = self.d_model // self.n_heads  # 64\n        \n        # Q projection: full dimension for all heads\n        self.W_query = nn.Linear(\n            self.d_model,\n            self.n_heads * self.head_dim,\n            bias=False\n        )\n        \n        # K, V projections: reduced dimension for KV groups\n        self.W_key = nn.Linear(\n            self.d_model,\n            self.n_kv_groups * self.head_dim,\n            bias=False\n        )\n        \n        self.W_value = nn.Linear(\n            self.d_model,\n            self.n_kv_groups * self.head_dim,\n            bias=False\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "qkv-forward",
+        "title": "QKV Projection Forward Pass",
+        "explanation": "Project input through Q, K, V linear layers and reshape for multi-head attention.",
+        "codeAnswer": "def forward(self, x):\n    # x shape: [batch, seq_len, d_model]\n    batch, seq_len, d_model = x.shape\n    \n    # Project to Q, K, V\n    Q = self.W_query(x)  # [batch, seq_len, n_heads * head_dim]\n    K = self.W_key(x)    # [batch, seq_len, n_kv_groups * head_dim]\n    V = self.W_value(x)  # [batch, seq_len, n_kv_groups * head_dim]\n    \n    # Reshape for multi-head attention\n    Q = Q.view(batch, seq_len, self.n_heads, self.head_dim)\n    K = K.view(batch, seq_len, self.n_kv_groups, self.head_dim)\n    V = V.view(batch, seq_len, self.n_kv_groups, self.head_dim)\n    \n    # Transpose to [batch, heads, seq_len, head_dim]\n    Q = Q.transpose(1, 2)\n    K = K.transpose(1, 2)\n    V = V.transpose(1, 2)\n    \n    return Q, K, V",
+        "language": "python"
+      }
+    },
+    "repeat-interleave": {
+      "id": "repeat-interleave",
+      "title": "Repeat Keys/Values for GQA",
+      "equations": [
+        {
+          "id": "repeat-1",
+          "title": "GQA Key/Value Expansion",
+          "explanation": "In GQA, each key-value group is shared across multiple query heads. Expand K and V to match number of query heads.",
+          "equation": "\\text{repeat\\_factor} = \\frac{n_h}{n_g} = \\frac{32}{8} = 4",
+          "canvasHeight": 120
+        },
+        {
+          "id": "repeat-2",
+          "title": "Repeat Interleave Operation",
+          "explanation": "Repeat each KV group 4 times along the head dimension to match 32 query heads.",
+          "equation": "\\mathbf{K}' = \\text{repeat\\_interleave}(\\mathbf{K}, 4, \\text{dim}=1) \\in \\mathbb{R}^{B \\times 32 \\times L \\times d_h}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "repeat-init",
+        "title": "Repeat Interleave (No Class)",
+        "explanation": "This is a functional operation, not a class, so no initialization needed.",
+        "codeAnswer": "# repeat_interleave is a PyTorch function, not a class\n# No initialization required\n\nimport torch\n\n# Calculate repeat factor based on architecture\nrepeat_factor = n_heads // n_kv_groups  # 32 // 8 = 4",
+        "language": "python"
+      },
+      "forward": {
+        "id": "repeat-forward",
+        "title": "Repeat Interleave Implementation",
+        "explanation": "Expand K and V tensors from n_kv_groups to n_heads by repeating each group.",
+        "codeAnswer": "import torch\n\ndef expand_kv_for_gqa(K, V, n_heads, n_kv_groups):\n    \"\"\"\n    Expand keys and values from GQA groups to match query heads.\n    \n    Args:\n        K, V: [batch, n_kv_groups, seq_len, head_dim]\n        n_heads: Number of query heads (32)\n        n_kv_groups: Number of KV groups (8)\n    \n    Returns:\n        K', V': [batch, n_heads, seq_len, head_dim]\n    \"\"\"\n    repeat_factor = n_heads // n_kv_groups  # 4\n    \n    # Repeat each KV group along head dimension\n    K_expanded = torch.repeat_interleave(K, repeat_factor, dim=1)\n    V_expanded = torch.repeat_interleave(V, repeat_factor, dim=1)\n    \n    # Now K_expanded, V_expanded: [batch, 32, seq_len, head_dim]\n    return K_expanded, V_expanded",
+        "language": "python"
+      }
+    },
+    "attention-scores": {
+      "id": "attention-scores",
+      "title": "Attention Score Computation",
+      "equations": [
+        {
+          "id": "attn-scores-1",
+          "title": "Scaled Dot-Product",
+          "explanation": "Compute attention scores by taking dot product of queries and keys, scaled by square root of head dimension.",
+          "equation": "\\text{scores} = \\frac{\\mathbf{Q} \\mathbf{K}^T}{\\sqrt{d_h}}, \\quad d_h = 64",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-scores-2",
+          "title": "Attention Matrix Shape",
+          "explanation": "Scores matrix has shape [batch, heads, seq_len, seq_len], representing attention from each query to each key.",
+          "equation": "\\text{scores} \\in \\mathbb{R}^{B \\times n_h \\times L \\times L}",
+          "canvasHeight": 120
+        },
+        {
+          "id": "attn-scores-3",
+          "title": "Causal Masking",
+          "explanation": "Apply causal mask to prevent attention to future tokens. Masked positions get -inf.",
+          "equation": "\\text{scores}_{\\text{masked}} = \\text{masked\\_fill}(\\text{scores}, \\text{mask}, -\\infty)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-scores-4",
+          "title": "Softmax Normalization",
+          "explanation": "Apply softmax to convert scores to probabilities summing to 1.",
+          "equation": "\\text{attn\\_weights} = \\text{softmax}(\\text{scores}_{\\text{masked}}, \\text{dim}=-1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-scores-init",
+        "title": "Attention Scores (No Class)",
+        "explanation": "Attention score computation is a functional operation using matrix multiplication and softmax.",
+        "codeAnswer": "# Attention scores use functional operations, no class initialization\nimport torch\nimport torch.nn.functional as F\n\n# Only need to precompute causal mask once\ndef create_causal_mask(seq_len, device):\n    # Upper triangular matrix of True values (including diagonal)\n    mask = torch.triu(torch.ones(seq_len, seq_len, device=device), diagonal=1)\n    return mask.bool()  # [seq_len, seq_len]",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-scores-forward",
+        "title": "Attention Scores from Scratch",
+        "explanation": "Complete implementation of scaled dot-product attention with causal masking.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\nimport math\n\ndef compute_attention_scores(Q, K, V, causal=True):\n    \"\"\"\n    Compute scaled dot-product attention scores.\n    \n    Args:\n        Q: [batch, n_heads, seq_len, head_dim]\n        K: [batch, n_heads, seq_len, head_dim]\n        V: [batch, n_heads, seq_len, head_dim]\n        causal: Whether to apply causal masking\n    \n    Returns:\n        output: [batch, n_heads, seq_len, head_dim]\n        attn_weights: [batch, n_heads, seq_len, seq_len]\n    \"\"\"\n    batch, n_heads, seq_len, head_dim = Q.shape\n    \n    # 1. Compute attention scores: Q @ K^T\n    scores = torch.matmul(Q, K.transpose(-2, -1))  # [B, heads, L, L]\n    \n    # 2. Scale by sqrt(head_dim)\n    scores = scores / math.sqrt(head_dim)\n    \n    # 3. Apply causal mask (if autoregressive)\n    if causal:\n        # Create causal mask: upper triangle is True\n        mask = torch.triu(\n            torch.ones(seq_len, seq_len, device=Q.device),\n            diagonal=1\n        ).bool()\n        # Mask future positions with -inf\n        scores = scores.masked_fill(mask, float('-inf'))\n    \n    # 4. Apply softmax to get attention weights\n    attn_weights = F.softmax(scores, dim=-1)  # [B, heads, L, L]\n    \n    # 5. Apply attention weights to values\n    output = torch.matmul(attn_weights, V)  # [B, heads, L, head_dim]\n    \n    return output, attn_weights",
+        "language": "python"
+      }
+    },
+    "final-norm": {
+      "id": "final-norm",
+      "title": "Final RMSNorm",
+      "equations": [
+        {
+          "id": "final-norm-1",
+          "title": "RMS Normalization",
+          "explanation": "Final normalization before output projection. Uses RMSNorm instead of LayerNorm.",
+          "equation": "\\text{RMS}(\\mathbf{x}) = \\sqrt{\\frac{1}{d}\\sum_{i=1}^d x_i^2 + \\epsilon}, \\quad \\epsilon = 10^{-6}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "final-norm-2",
+          "title": "Normalized Output",
+          "explanation": "Scale normalized values by learnable weight parameter.",
+          "equation": "\\mathbf{y} = \\frac{\\mathbf{x}}{\\text{RMS}(\\mathbf{x})} \\odot \\mathbf{w}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "final-norm-init",
+        "title": "Final RMSNorm Initialization",
+        "explanation": "Initialize learnable scale parameters for final normalization layer.",
+        "codeAnswer": "import torch.nn as nn\nimport torch\n\nclass RMSNorm(nn.Module):\n    def __init__(self, dim, eps=1e-6):\n        super().__init__()\n        self.eps = eps\n        # Learnable scale parameter\n        self.weight = nn.Parameter(torch.ones(dim))\n    \nclass Llama3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        # ... other layers ...\n        \n        # Final normalization before output\n        self.final_norm = RMSNorm(cfg[\"emb_dim\"], eps=cfg.get(\"norm_eps\", 1e-6))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "final-norm-forward",
+        "title": "Final RMSNorm Forward Pass",
+        "explanation": "Apply RMS normalization to final hidden states before language modeling head.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\n\nclass RMSNorm(nn.Module):\n    def __init__(self, dim, eps=1e-6):\n        super().__init__()\n        self.eps = eps\n        self.weight = nn.Parameter(torch.ones(dim))\n    \n    def forward(self, x):\n        \"\"\"\n        Args:\n            x: [batch, seq_len, dim]\n        Returns:\n            normed: [batch, seq_len, dim]\n        \"\"\"\n        # Compute RMS: sqrt(mean(x^2) + eps)\n        rms = torch.sqrt(torch.mean(x ** 2, dim=-1, keepdim=True) + self.eps)\n        \n        # Normalize and scale\n        x_normed = x / rms\n        output = x_normed * self.weight\n        \n        return output\n\n# Usage in Llama3Model:\ndef forward(self, input_ids):\n    # ... transformer layers ...\n    \n    # Final normalization\n    x = self.final_norm(x)  # [batch, seq_len, emb_dim]\n    \n    # Output projection\n    logits = self.lm_head(x)\n    return logits",
+        "language": "python"
+      }
+    },
+    "output-logits": {
+      "id": "output-logits",
+      "title": "Output Logits",
+      "equations": [
+        {
+          "id": "logits-1",
+          "title": "Language Modeling Head",
+          "explanation": "Project final hidden states to vocabulary size to get logits for each token.",
+          "equation": "\\text{logits} = \\mathbf{h} W_{out}^T, \\quad W_{out} \\in \\mathbb{R}^{V \\times d}, \\quad V=128256, d=2048",
+          "canvasHeight": 150
+        },
+        {
+          "id": "logits-2",
+          "title": "Next Token Prediction",
+          "explanation": "Logits represent unnormalized probabilities for the next token. Apply softmax to get probabilities.",
+          "equation": "P(x_{t+1} | x_{\\leq t}) = \\text{softmax}(\\text{logits}_t)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "logits-init",
+        "title": "Output Projection Initialization",
+        "explanation": "Initialize linear layer projecting from embedding dimension to vocabulary size. Often tied with input embeddings.",
+        "codeAnswer": "import torch.nn as nn\n\nclass Llama3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        # ... other layers ...\n        \n        # Language modeling head (output projection)\n        self.lm_head = nn.Linear(\n            cfg[\"emb_dim\"],     # 2048\n            cfg[\"vocab_size\"],  # 128256\n            bias=False          # Llama doesn't use bias\n        )\n        \n        # Optional: weight tying with input embeddings\n        if cfg.get(\"tie_weights\", False):\n            self.lm_head.weight = self.tok_emb.weight",
+        "language": "python"
+      },
+      "forward": {
+        "id": "logits-forward",
+        "title": "Output Logits Forward Pass",
+        "explanation": "Project normalized hidden states to vocabulary logits for next token prediction.",
+        "codeAnswer": "def forward(self, input_ids):\n    # 1. Token embedding\n    x = self.tok_emb(input_ids)  # [batch, seq_len, emb_dim]\n    \n    # 2. Apply all transformer blocks\n    for block in self.transformer_blocks:\n        x = block(x)\n    \n    # 3. Final normalization\n    x = self.final_norm(x)  # [batch, seq_len, emb_dim]\n    \n    # 4. Project to vocabulary\n    logits = self.lm_head(x)  # [batch, seq_len, vocab_size]\n    \n    return logits\n\n# For generation, take logits at last position:\ndef generate_next_token(self, input_ids):\n    logits = self.forward(input_ids)  # [batch, seq_len, vocab_size]\n    next_token_logits = logits[:, -1, :]  # [batch, vocab_size]\n    \n    # Sample from distribution\n    probs = F.softmax(next_token_logits, dim=-1)\n    next_token = torch.multinomial(probs, num_samples=1)\n    return next_token",
+        "language": "python"
+      }
     }
   }
 }

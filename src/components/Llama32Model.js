@@ -113,12 +113,12 @@ export default function Llama32Model() {
     setDrawingData(prev => ({ ...prev, [canvasId]: data }));
   };
 
-  // Load the BERT model data
+  // Load the Llama 3.2 model data
   useEffect(() => {
     const loadData = async () => {
       try {
         // Import SVG as a URL
-        const svgUrl = (await import('../data/models/bert/diagram.svg')).default;
+        const svgUrl = (await import('../data/models/llama32/diagram.svg')).default;
         // Fetch the SVG content from the URL
         const response = await fetch(svgUrl);
         const svgContent = await response.text();
@@ -138,27 +138,51 @@ export default function Llama32Model() {
     loadData();
   }, []);
 
-  // Set up click handlers for SVG components
+  // Set up click handlers for SVG components using componentMatchers
   useEffect(() => {
-    if (!quizData || !svgRef.current) return;
+    if (!quizData || !svgRef.current || !quizData.componentMatchers) return;
 
     // Add style element to the document head for SVG styles
-    const styleId = 'bert-model-styles';
+    const styleId = 'llama-model-styles';
     let styleElement = document.getElementById(styleId);
     if (!styleElement) {
       styleElement = document.createElement('style');
       styleElement.id = styleId;
       styleElement.innerHTML = `
-        .component-selected rect,
-        .component-selected circle,
-        .component-selected ellipse,
-        .component-selected path {
+        .component-clickable {
+          cursor: pointer;
+        }
+
+        rect.component-clickable:hover,
+        circle.component-clickable:hover,
+        ellipse.component-clickable:hover,
+        path.component-clickable:hover {
+          opacity: 0.8;
+          stroke: #4A90E2 !important;
+          stroke-width: 3px !important;
+          transition: all 0.2s ease;
+        }
+
+        g.component-clickable:hover {
+          opacity: 0.8;
+          transition: opacity 0.2s ease;
+        }
+
+        /* Target elements that have .component-selected class directly */
+        rect.component-selected,
+        circle.component-selected,
+        ellipse.component-selected,
+        path.component-selected,
+        g.component-selected rect,
+        g.component-selected circle,
+        g.component-selected ellipse,
+        g.component-selected path {
           stroke: red !important;
           stroke-width: 4px !important;
           filter: drop-shadow(0 0 10px rgba(255,0,0,0.6));
           animation: pulse 1.5s infinite;
         }
-        
+
         @keyframes pulse {
           0% { opacity: 1; }
           50% { opacity: 0.7; }
@@ -168,49 +192,116 @@ export default function Llama32Model() {
       document.head.appendChild(styleElement);
     }
 
-    const handleComponentClick = (e) => {
-      // Look for the closest g element with class 'component'
-      const target = e.target.closest('g.component[data-component]');
-      if (!target) return;
-      
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const componentId = target.getAttribute('data-component');
-      
-      // Inline selectComponent logic here
-      
-      // Remove previous selection
-      if (svgRef.current) {
-        svgRef.current.querySelectorAll('.component-selected').forEach(el => {
-          el.classList.remove('component-selected');
-        });
-      }
+    const svg = svgRef.current;
+    const componentMatchers = quizData.componentMatchers;
+    const clickableElements = new Map(); // Map from element to componentId
 
-      // Add new selection
-      if (svgRef.current) {
-        const component = svgRef.current.querySelector(`g.component[data-component="${componentId}"]`);
-        if (component) {
-          component.classList.add('component-selected');
+    // Find all text elements in the SVG and match them to components
+    const textElements = svg.querySelectorAll('text');
+
+    textElements.forEach(textEl => {
+      const textContent = textEl.textContent.trim();
+
+      // Check each component matcher to see if this text matches
+      for (const [componentId, patterns] of Object.entries(componentMatchers)) {
+        const matches = patterns.some(pattern =>
+          textContent.includes(pattern) || pattern.includes(textContent)
+        );
+
+        if (matches) {
+          // Find the best click target for this text element
+          let clickTargets = [];
+
+          // First, try to find a parent group
+          const parentGroup = textEl.closest('g');
+          if (parentGroup) {
+            clickTargets.push(parentGroup);
+          } else {
+            // If no parent group, find the nearest rect/shape that's positioned near this text
+            const textRect = textEl.getBBox();
+            const textX = parseFloat(textEl.getAttribute('x')) || textRect.x;
+            const textY = parseFloat(textEl.getAttribute('y')) || textRect.y;
+
+            // Find all shapes in the SVG
+            const allShapes = svg.querySelectorAll('rect, circle, ellipse, path, polygon');
+            let nearestShape = null;
+            let minDistance = Infinity;
+
+            allShapes.forEach(shape => {
+              try {
+                const shapeBox = shape.getBBox();
+                // Check if text is inside or very close to this shape
+                const isInside = textX >= shapeBox.x && textX <= (shapeBox.x + shapeBox.width) &&
+                                 textY >= shapeBox.y && textY <= (shapeBox.y + shapeBox.height);
+
+                if (isInside) {
+                  // Calculate distance from text to shape center
+                  const shapeCenterX = shapeBox.x + shapeBox.width / 2;
+                  const shapeCenterY = shapeBox.y + shapeBox.height / 2;
+                  const distance = Math.sqrt(Math.pow(textX - shapeCenterX, 2) + Math.pow(textY - shapeCenterY, 2));
+
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestShape = shape;
+                  }
+                }
+              } catch (e) {
+                // Skip shapes that can't be measured
+              }
+            });
+
+            if (nearestShape) {
+              clickTargets.push(nearestShape);
+            }
+
+            // Also add the text element itself as clickable
+            clickTargets.push(textEl);
+          }
+
+          // Make all targets clickable
+          clickTargets.forEach(target => {
+            target.classList.add('component-clickable');
+            target.setAttribute('data-component-id', componentId);
+            clickableElements.set(target, componentId);
+          });
+
+          break; // Found a match, no need to check other patterns
         }
       }
+    });
+
+    const handleComponentClick = (e) => {
+      const target = e.target.closest('[data-component-id]');
+      if (!target) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const componentId = target.getAttribute('data-component-id');
+
+      // Remove previous selection
+      svg.querySelectorAll('.component-selected').forEach(el => {
+        el.classList.remove('component-selected');
+      });
+
+      // Add new selection
+      target.classList.add('component-selected');
 
       setSelectedComponent(componentId);
       setActiveTab('equations'); // Reset to equations tab
     };
 
-    // Add click listeners to all components
-    const svg = svgRef.current;
-    const components = svg.querySelectorAll('g.component[data-component]');
-    
-    components.forEach(component => {
-      component.addEventListener('click', handleComponentClick);
+    // Add click listeners to all clickable elements
+    clickableElements.forEach((componentId, element) => {
+      element.addEventListener('click', handleComponentClick);
     });
 
     // Cleanup
     return () => {
-      components.forEach(component => {
-        component.removeEventListener('click', handleComponentClick);
+      clickableElements.forEach((componentId, element) => {
+        element.removeEventListener('click', handleComponentClick);
+        element.classList.remove('component-clickable', 'component-selected');
+        element.removeAttribute('data-component-id');
       });
     };
   }, [quizData]);
@@ -481,18 +572,18 @@ export default function Llama32Model() {
 
   const getComponentData = () => {
     if (!selectedComponent || !quizData) return null;
-    
+
     const quiz = quizData.componentQuizzes?.[selectedComponent];
     const explanation = quizData.componentExplanations?.[selectedComponent];
-    
-    if (!quiz || !explanation) return null;
-    
+
+    if (!quiz && !explanation) return null;
+
     return {
-      title: quiz.title || explanation.title || selectedComponent,
-      explanation: explanation.explanation || '',
-      equations: quiz.equations || [],
-      initialization: quiz.initialization || {},
-      forward: quiz.forward || {}
+      title: quiz?.title || explanation?.title || selectedComponent,
+      explanation: explanation?.explanation || '',
+      equations: quiz?.equations || [],
+      initialization: quiz?.initialization || {},
+      forward: quiz?.forward || {}
     };
   };
 
@@ -500,7 +591,7 @@ export default function Llama32Model() {
     return (
       <div className="max-w-7xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-          <h1 className="text-3xl font-bold mb-4">Loading BERT Model...</h1>
+          <h1 className="text-3xl font-bold mb-4">Loading Llama 3.2 Model...</h1>
         </div>
       </div>
     );
@@ -523,7 +614,7 @@ export default function Llama32Model() {
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-        <h1 className="text-2xl font-bold">🎯 BERT Model - Interactive Quiz</h1>
+        <h1 className="text-2xl font-bold">🎯 Llama 3.2 Model - Interactive Quiz</h1>
         <p className="text-gray-600 text-sm mt-1">Click on any component in the diagram to explore its details</p>
       </div>
 

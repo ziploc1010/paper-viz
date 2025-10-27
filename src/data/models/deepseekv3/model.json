@@ -1,21 +1,1855 @@
 {
-  "componentQuizzes": {},
+  "id": "deepseekv3-architecture-model",
+  "title": "DeepSeek-V3 Model Architecture",
+  "subtitle": "Complete Interactive Learning Experience",
+  "description": "Learn about the DeepSeek-V3 MoE Transformer architecture with Multi-head Latent Attention and Multi-Token Prediction",
+  "componentMatchers": {
+    "input-tokens": [
+      "Input Tokens"
+    ],
+    "token-embedding": [
+      "Embedding",
+      "embedding"
+    ],
+    "embedding-dropout": [
+      "dropout",
+      "embedding_dropout"
+    ],
+    "transformer-layer-container": [
+      "Transformer Layer"
+    ],
+    "attn-norm": [
+      "LayerNorm",
+      "attn_norm"
+    ],
+    "center-shift": [
+      "center",
+      "shift",
+      "mean"
+    ],
+    "multiheadlatentattention-container": [
+      "MultiHeadLatentAttention",
+      "MLA"
+    ],
+    "kv-compression": [
+      "kv_down",
+      "kv_compression"
+    ],
+    "query-compression": [
+      "query_down",
+      "query_compression"
+    ],
+    "key-up": [
+      "key_up"
+    ],
+    "value-up": [
+      "value_up"
+    ],
+    "key-rope": [
+      "key_rope"
+    ],
+    "query-up": [
+      "query_up"
+    ],
+    "query-rope": [
+      "query_rope"
+    ],
+    "apply-rope": [
+      "apply RoPE",
+      "RoPE"
+    ],
+    "concatenate": [
+      "concatenate",
+      "cat"
+    ],
+    "attention-matmul": [
+      "matmul"
+    ],
+    "masked-fill": [
+      "masked_fill"
+    ],
+    "scale": [
+      "scale"
+    ],
+    "softmax": [
+      "softmax"
+    ],
+    "attention-dropout": [
+      "dropout"
+    ],
+    "context-matmul": [
+      "matmul"
+    ],
+    "transpose-reshape": [
+      "transpose",
+      "reshape"
+    ],
+    "output-proj": [
+      "output",
+      "proj"
+    ],
+    "output-dropout": [
+      "dropout"
+    ],
+    "residual-1": [
+      "shortcut",
+      "residual"
+    ],
+    "moe-norm": [
+      "LayerNorm",
+      "moe_norm"
+    ],
+    "deepseekmoe-mixture-of-experts-container": [
+      "DeepSeekMoE",
+      "Mixture of Experts",
+      "MoE"
+    ],
+    "gate": [
+      "gate"
+    ],
+    "sigmoid-bias": [
+      "sigmoid",
+      "bias"
+    ],
+    "topk": [
+      "topk",
+      "top_k"
+    ],
+    "normalize-scores": [
+      "normalize"
+    ],
+    "routed-expert": [
+      "Expert",
+      "FFN"
+    ],
+    "shared-expert": [
+      "Shared Expert"
+    ],
+    "expert-combine": [
+      "combine"
+    ],
+    "moe-dropout": [
+      "dropout"
+    ],
+    "residual-2": [
+      "residual"
+    ],
+    "final-norm": [
+      "LayerNorm",
+      "final_norm"
+    ],
+    "final-dropout": [
+      "dropout"
+    ],
+    "language-model-head": [
+      "output_head",
+      "lm_head"
+    ],
+    "multitokenprediction-container": [
+      "MultiTokenPrediction",
+      "MTP"
+    ],
+    "logits": [
+      "logits"
+    ],
+    "mtp-outputs": [
+      "mtp",
+      "MTP"
+    ]
+  },
   "componentExplanations": {
-    "input": {
+    "input-tokens": {
       "title": "Input Tokens",
-      "explanation": "DeepSeek-V3 tokenizer for efficient long-sequence processing."
+      "explanation": "The starting point of DeepSeek-V3. Input tokens are numerical indices representing words or subwords from the vocabulary. They're organized in batches of sequences for efficient processing on long sequences."
     },
-    "mla": {
+    "token-embedding": {
+      "title": "Token Embedding",
+      "explanation": "Maps each token ID to a high-dimensional vector (hidden_dim). This embedding layer converts discrete token indices into continuous representations that the model can process."
+    },
+    "embedding-dropout": {
+      "title": "Embedding Dropout",
+      "explanation": "Applies dropout to embeddings during training to prevent overfitting. This regularization technique randomly zeros out embedding values with probability 0.1."
+    },
+    "transformer-layer-container": {
+      "title": "Transformer Layer",
+      "explanation": "A complete DeepSeek-V3 transformer layer consisting of Multi-head Latent Attention (MLA) and Mixture of Experts (MoE). The model stacks multiple such layers with residual connections."
+    },
+    "attn-norm": {
+      "title": "Attention Layer Normalization",
+      "explanation": "Normalizes the input before attention computation to stabilize training. DeepSeek-V3 uses layer normalization with a small epsilon for numerical stability."
+    },
+    "center-shift": {
+      "title": "Center and Shift Normalization",
+      "explanation": "A custom normalization that centers the input by subtracting the mean and adds 1.0. This technique helps with gradient flow and numerical stability in deep networks."
+    },
+    "multiheadlatentattention-container": {
+      "title": "Multi-Head Latent Attention (MLA)",
+      "explanation": "Novel attention mechanism that dramatically reduces KV cache size by compressing keys and values into a low-dimensional latent space before expanding to multi-head representations. This enables efficient long-context inference."
+    },
+    "kv-compression": {
+      "title": "Key-Value Compression",
+      "explanation": "Compresses the input from hidden_dim to a smaller kv_compression_dim. This bottleneck drastically reduces memory usage in the KV cache while maintaining model quality."
+    },
+    "query-compression": {
+      "title": "Query Compression",
+      "explanation": "Compresses the input from hidden_dim to query_compression_dim. Similar to KV compression but for queries, creating a more efficient attention computation."
+    },
+    "key-up": {
+      "title": "Key Up-Projection",
+      "explanation": "Projects compressed KV representation to multi-head key space (num_heads × head_dim). This expansion happens after compression, reducing the KV cache size."
+    },
+    "value-up": {
+      "title": "Value Up-Projection",
+      "explanation": "Projects compressed KV representation to multi-head value space (num_heads × head_dim). Values are stored in full dimension for accurate attention computation."
+    },
+    "key-rope": {
+      "title": "Key RoPE Projection",
+      "explanation": "Projects compressed KV to rotary position embedding space (num_heads × rope_dim). These dimensions will be rotated based on position, adding positional information."
+    },
+    "query-up": {
+      "title": "Query Up-Projection",
+      "explanation": "Projects compressed query to multi-head query space (num_heads × head_dim). Creates the main query vectors for attention computation."
+    },
+    "query-rope": {
+      "title": "Query RoPE Projection",
+      "explanation": "Projects compressed query to rotary position embedding space (num_heads × rope_dim). These dimensions receive rotary positional encoding."
+    },
+    "apply-rope": {
+      "title": "Rotary Positional Embedding (RoPE)",
+      "explanation": "Applies rotary positional embeddings to enhance positional awareness. RoPE rotates pairs of dimensions based on position, encoding relative positions into the attention mechanism without absolute position embeddings."
+    },
+    "concatenate": {
+      "title": "Concatenate Query/Key Parts",
+      "explanation": "Concatenates the non-rotary parts (queries_c, keys_c) with rotary parts (queries_r, keys_r) along the head dimension to form complete query and key tensors."
+    },
+    "attention-matmul": {
+      "title": "Attention Matrix Multiplication",
+      "explanation": "Computes attention scores by multiplying queries with transposed keys: Q @ K^T. This produces a matrix of similarity scores between all pairs of tokens."
+    },
+    "masked-fill": {
+      "title": "Masked Fill",
+      "explanation": "Applies causal mask and optional attention mask to prevent attending to future positions and padding tokens. Masked positions are set to -1e9 before softmax."
+    },
+    "scale": {
+      "title": "Attention Scaling",
+      "explanation": "Scales attention scores by 1/√(head_dim + rope_dim) to prevent extremely large values that would cause vanishing gradients in softmax."
+    },
+    "softmax": {
+      "title": "Attention Softmax",
+      "explanation": "Converts scaled attention scores to probabilities using softmax. Each row sums to 1, representing how much each position should attend to others."
+    },
+    "attention-dropout": {
+      "title": "Attention Dropout",
+      "explanation": "Applies dropout to attention probabilities to prevent overfitting. This encourages the model to use diverse attention patterns."
+    },
+    "context-matmul": {
+      "title": "Context Matrix Multiplication",
+      "explanation": "Multiplies attention probabilities with values to compute weighted sum: attn_probs @ V. This produces the context vector for each position."
+    },
+    "transpose-reshape": {
+      "title": "Transpose and Reshape",
+      "explanation": "Reshapes multi-head attention output from (batch, heads, seq_len, head_dim) to (batch, seq_len, num_heads * head_dim) for output projection."
+    },
+    "output-proj": {
+      "title": "Attention Output Projection",
+      "explanation": "Projects concatenated multi-head attention output back to hidden_dim. This linear layer combines information from all attention heads."
+    },
+    "output-dropout": {
+      "title": "Output Dropout",
+      "explanation": "Applies dropout to the attention output before adding residual connection. Provides regularization after the attention block."
+    },
+    "residual-1": {
+      "title": "First Residual Connection",
+      "explanation": "Adds the original input to the attention output (x + attention(x)). Residual connections help gradients flow through deep networks and preserve information."
+    },
+    "moe-norm": {
+      "title": "MoE Layer Normalization",
+      "explanation": "Normalizes the input before the MoE layer. This ensures stable inputs to the expert routing and feed-forward networks."
+    },
+    "deepseekmoe-mixture-of-experts-container": {
+      "title": "DeepSeek Mixture of Experts (MoE)",
+      "explanation": "Sparse MoE layer with auxiliary-loss-free load balancing. Routes each token to top-k experts while maintaining balanced expert utilization without auxiliary losses."
+    },
+    "gate": {
+      "title": "Expert Gate",
+      "explanation": "Linear layer that scores each token for every expert (hidden_dim → num_experts). These scores are used to route tokens to the most relevant experts."
+    },
+    "sigmoid-bias": {
+      "title": "Sigmoid with Load Balancing Bias",
+      "explanation": "Applies sigmoid activation to gate scores and adds a learnable bias for load balancing. The bias is updated dynamically to encourage balanced expert usage without auxiliary losses."
+    },
+    "topk": {
+      "title": "Top-K Expert Selection",
+      "explanation": "Selects the top-k experts with highest routing scores for each token. Only these k experts will process the token, enabling sparse computation."
+    },
+    "normalize-scores": {
+      "title": "Normalize Routing Scores",
+      "explanation": "Normalizes the top-k routing scores to sum to 1. These normalized scores weight the contributions of different experts for each token."
+    },
+    "routed-expert": {
+      "title": "Routed Expert FFN",
+      "explanation": "Feed-forward network for routed experts. Each expert has its own FFN: up-projection → GELU → dropout → down-projection. Outputs are weighted by routing scores."
+    },
+    "shared-expert": {
+      "title": "Shared Expert FFN",
+      "explanation": "A shared expert that processes all tokens, providing a dense baseline. Its output is scaled by 0.1 and added to the routed expert outputs for stability."
+    },
+    "expert-combine": {
+      "title": "Combine Expert Outputs",
+      "explanation": "Sums the weighted outputs from routed experts and the scaled shared expert output. This produces the final MoE output for each token."
+    },
+    "moe-dropout": {
+      "title": "MoE Dropout",
+      "explanation": "Applies dropout to the combined MoE output before the residual connection. Provides regularization for the expert layer."
+    },
+    "residual-2": {
+      "title": "Second Residual Connection",
+      "explanation": "Adds the attention output to the MoE output (attn_out + moe(attn_out)). Completes the transformer layer with another residual connection."
+    },
+    "final-norm": {
+      "title": "Final Layer Normalization",
+      "explanation": "Normalizes the output from the last transformer layer before the prediction heads. Ensures well-scaled inputs for the output layers."
+    },
+    "final-dropout": {
+      "title": "Final Dropout",
+      "explanation": "Applies dropout to the final normalized hidden states before splitting to output heads. Final regularization before predictions."
+    },
+    "language-model-head": {
+      "title": "Output Head",
+      "explanation": "Linear layer that projects hidden states to vocabulary logits (hidden_dim → vocab_size). Produces next-token predictions for standard language modeling."
+    },
+    "multitokenprediction-container": {
+      "title": "Multi-Token Prediction (MTP)",
+      "explanation": "Predicts multiple future tokens from a single hidden state. Uses depth projection layers to predict tokens at different future positions, improving training efficiency and sample quality."
+    },
+    "logits": {
+      "title": "Next-Token Logits",
+      "explanation": "Main output logits for next token prediction. Shape: [batch, seq_len, vocab_size]. Used for standard autoregressive language modeling loss."
+    },
+    "mtp-outputs": {
+      "title": "Multi-Token Prediction Outputs",
+      "explanation": "Additional predictions for future tokens. Shape: [batch, depth, seq_len, vocab_size]. Each depth predicts a different future position, enabling multi-token prediction loss."
+    }
+  },
+  "componentQuizzes": {
+    "token-embedding": {
+      "id": "token-embedding",
+      "title": "Token Embedding",
+      "equations": [
+        {
+          "id": "embed-1",
+          "title": "Embedding Lookup",
+          "explanation": "Convert token indices to dense vectors.",
+          "equation": "E = \\text{Embedding}(\\text{input\\_ids}) \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "embed-2",
+          "title": "Embedding Dropout",
+          "explanation": "Apply dropout for regularization.",
+          "equation": "E_{\\text{out}} = \\text{Dropout}(E, p=0.1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-init",
+        "title": "Embedding Initialization",
+        "explanation": "Initialize token embedding and dropout layers.",
+        "codeAnswer": "self.embedding = nn.Embedding(config[\"vocab_size\"], config[\"hidden_dim\"])\nself.embedding_dropout = nn.Dropout(dropout_rate)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-forward",
+        "title": "Embedding Forward Pass",
+        "explanation": "Convert token IDs to embeddings and apply dropout.",
+        "codeAnswer": "def forward(self, input_ids):\n    # Embedding layer\n    x = self.embedding(input_ids)\n    # Apply embedding dropout\n    x = self.embedding_dropout(x)\n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "apply-rope": {
+      "id": "apply-rope",
+      "title": "Rotary Positional Embedding",
+      "equations": [
+        {
+          "id": "rope-1",
+          "title": "Inverse Frequencies",
+          "explanation": "Precompute inverse frequencies for rotary embeddings.",
+          "equation": "\\theta_i = 10000^{-2i/d}, \\quad i \\in \\{0, 1, ..., d/2-1\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-2",
+          "title": "Sinusoidal Components",
+          "explanation": "Compute position-dependent sine and cosine values.",
+          "equation": "\\text{sinusoid} = \\text{pos} \\cdot \\theta, \\quad \\sin(\\text{sinusoid}), \\cos(\\text{sinusoid})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-3",
+          "title": "Rotary Transformation",
+          "explanation": "Rotate pairs of dimensions based on position.",
+          "equation": "x_{\\text{rot}}[2i] = x[2i] \\cos(\\text{pos} \\cdot \\theta_i) - x[2i+1] \\sin(\\text{pos} \\cdot \\theta_i)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-4",
+          "title": "Rotary Transformation (continued)",
+          "explanation": "Second component of the rotation.",
+          "equation": "x_{\\text{rot}}[2i+1] = x[2i] \\sin(\\text{pos} \\cdot \\theta_i) + x[2i+1] \\cos(\\text{pos} \\cdot \\theta_i)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "rope-init",
+        "title": "RoPE Initialization",
+        "explanation": "Precompute inverse frequencies for efficiency.",
+        "codeAnswer": "class RotaryPositionalEmbedding(nn.Module):\n    def __init__(self, dim: int):\n        super().__init__()\n        self.dim = dim\n        # Precompute inverse frequencies for efficiency\n        self.register_buffer(\n            \"inv_freq\", \n            1.0 / (10000 ** (torch.arange(0, dim, 2, dtype=torch.float32) / dim))\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "rope-forward",
+        "title": "RoPE Forward Pass",
+        "explanation": "Apply rotary positional embeddings to input tensor.",
+        "codeAnswer": "def forward(self, x: torch.Tensor) -> torch.Tensor:\n    batch_size, num_heads, seq_len, head_dim = x.shape\n    positions = torch.arange(seq_len, dtype=torch.float32, device=x.device)\n    sinusoid = positions[:, None] * self.inv_freq[None, :]  # [seq_len, dim/2]\n    sin, cos = torch.sin(sinusoid), torch.cos(sinusoid)\n    sin = sin[None, None, :, :].expand(batch_size, num_heads, -1, -1)\n    cos = cos[None, None, :, :].expand(batch_size, num_heads, -1, -1)\n\n    # Rotate pairs of dimensions\n    x_rot = x.view(batch_size, num_heads, seq_len, head_dim // 2, 2)\n    x1, x2 = x_rot.unbind(dim=-1)\n    rotated = torch.stack([x1 * cos - x2 * sin, x1 * sin + x2 * cos], dim=-1)\n    return rotated.view(batch_size, num_heads, seq_len, head_dim)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "multiheadlatentattention-container": {
+      "id": "multiheadlatentattention-container",
       "title": "Multi-Head Latent Attention",
-      "explanation": "Novel attention with KV compression. Dramatically reduces KV cache size."
+      "equations": [
+        {
+          "id": "mla-1",
+          "title": "KV Compression",
+          "explanation": "Compress input to low-dimensional latent space for keys/values.",
+          "equation": "C_{KV} = xW_{\\text{down}}^{KV} \\in \\mathbb{R}^{B \\times L \\times d_{c}^{KV}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-2",
+          "title": "Query Compression",
+          "explanation": "Compress input to low-dimensional latent space for queries.",
+          "equation": "C_Q = xW_{\\text{down}}^{Q} \\in \\mathbb{R}^{B \\times L \\times d_{c}^{Q}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-3",
+          "title": "Multi-Head Expansion",
+          "explanation": "Expand compressed representations to multi-head space.",
+          "equation": "K_c = C_{KV}W_{\\text{up}}^{K}, \\quad V = C_{KV}W_{\\text{up}}^{V}, \\quad Q_c = C_Q W_{\\text{up}}^{Q}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-4",
+          "title": "RoPE Components",
+          "explanation": "Project compressed representations for rotary embeddings.",
+          "equation": "K_r = \\text{RoPE}(C_{KV}W_{\\text{rope}}^{K}), \\quad Q_r = \\text{RoPE}(C_Q W_{\\text{rope}}^{Q})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-5",
+          "title": "Concatenate Q, K",
+          "explanation": "Concatenate non-rotary and rotary parts.",
+          "equation": "Q = [Q_c; Q_r], \\quad K = [K_c; K_r] \\in \\mathbb{R}^{B \\times H \\times L \\times (d_h + d_r)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-6",
+          "title": "Attention Computation",
+          "explanation": "Compute scaled dot-product attention with masking.",
+          "equation": "\\text{scores} = \\frac{QK^T}{\\sqrt{d_h + d_r}}, \\quad \\text{Attn} = \\text{softmax}(\\text{masked\\_fill}(\\text{scores}))V",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mla-7",
+          "title": "Output Projection",
+          "explanation": "Project multi-head output back to hidden dimension.",
+          "equation": "\\text{out} = \\text{Dropout}(\\text{Attn} \\cdot W_O)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "mla-init",
+        "title": "MLA Initialization",
+        "explanation": "Initialize compression and projection layers for latent attention.",
+        "codeAnswer": "class MultiHeadLatentAttention(nn.Module):\n    def __init__(self, hidden_dim: int, num_heads: int, head_dim: int,\n                 kv_compression_dim: int, query_compression_dim: int, \n                 rope_dim: int = 64, dropout_rate: float = 0.1):\n        super().__init__()\n        self.num_heads = num_heads\n        self.head_dim = head_dim\n        self.rope_dim = rope_dim\n        self.dropout = nn.Dropout(dropout_rate)\n\n        # Key/Value compression layers\n        self.kv_down = nn.Linear(hidden_dim, kv_compression_dim)\n        self.key_up = nn.Linear(kv_compression_dim, num_heads * head_dim)\n        self.value_up = nn.Linear(kv_compression_dim, num_heads * head_dim)\n        self.key_rope = nn.Linear(kv_compression_dim, num_heads * rope_dim)\n\n        # Query compression layers\n        self.query_down = nn.Linear(hidden_dim, query_compression_dim)\n        self.query_up = nn.Linear(query_compression_dim, num_heads * head_dim)\n        self.query_rope = nn.Linear(query_compression_dim, num_heads * rope_dim)\n\n        self.rope = RotaryPositionalEmbedding(rope_dim)\n        self.output_proj = nn.Linear(num_heads * head_dim, hidden_dim)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "mla-forward",
+        "title": "MLA Forward Pass",
+        "explanation": "Compress, expand, apply RoPE, compute attention, and project output.",
+        "codeAnswer": "def forward(self, x: torch.Tensor, attention_mask: Optional[torch.Tensor] = None):\n    batch_size, seq_len, _ = x.shape\n\n    # Compress and project keys/values\n    kv_compressed = self.kv_down(x)\n    keys_c = self.key_up(kv_compressed).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)\n    values = self.value_up(kv_compressed).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)\n    keys_r = self.key_rope(kv_compressed).view(batch_size, seq_len, self.num_heads, self.rope_dim).transpose(1, 2)\n    keys_r = self.rope(keys_r)\n    \n    # Compress and project queries\n    query_compressed = self.query_down(x)\n    queries_c = self.query_up(query_compressed).view(batch_size, seq_len, self.num_heads, self.head_dim).transpose(1, 2)\n    queries_r = self.query_rope(query_compressed).view(batch_size, seq_len, self.num_heads, self.rope_dim).transpose(1, 2)\n    queries_r = self.rope(queries_r)\n    \n    # Concatenate rotary and non-rotary parts\n    queries = torch.cat([queries_c, queries_r], dim=-1)\n    keys = torch.cat([keys_c, keys_r], dim=-1)\n\n    # Compute attention scores\n    attn_scores = torch.matmul(queries, keys.transpose(-1, -2)) / math.sqrt(self.head_dim + self.rope_dim)\n    \n    # Apply causal and attention masks\n    causal_mask = torch.triu(torch.ones(seq_len, seq_len, device=x.device, dtype=torch.bool), diagonal=1)\n    attn_scores = attn_scores.masked_fill(causal_mask.unsqueeze(0).unsqueeze(1), float(\"-1e9\"))\n    \n    # Softmax and dropout\n    attn_probs = F.softmax(attn_scores, dim=-1)\n    attn_probs = self.dropout(attn_probs)\n    \n    # Apply attention to values\n    context = torch.matmul(attn_probs, values)\n    context = context.transpose(1, 2).contiguous().view(batch_size, seq_len, -1)\n    \n    # Output projection\n    output = self.dropout(self.output_proj(context))\n    return output",
+        "language": "python"
+      },
+      "type": "custom"
     },
-    "moe": {
+    "expert-ffn": {
+      "id": "expert-ffn",
+      "title": "Expert Feed-Forward Network",
+      "equations": [
+        {
+          "id": "expert-1",
+          "title": "Up Projection",
+          "explanation": "Expand hidden dimension by expansion factor (typically 4x).",
+          "equation": "h_{\\text{up}} = xW_{\\text{up}} \\in \\mathbb{R}^{B \\times L \\times (4 \\cdot d)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "expert-2",
+          "title": "GELU Activation",
+          "explanation": "Apply Gaussian Error Linear Unit activation.",
+          "equation": "h_{\\text{act}} = \\text{GELU}(h_{\\text{up}})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "expert-3",
+          "title": "Dropout and Down Projection",
+          "explanation": "Apply dropout and project back to hidden dimension.",
+          "equation": "h_{\\text{out}} = \\text{Dropout}(h_{\\text{act}}) \\cdot W_{\\text{down}} \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "expert-init",
+        "title": "Expert FFN Initialization",
+        "explanation": "Initialize up and down projections with GELU activation.",
+        "codeAnswer": "class ExpertFFN(nn.Module):\n    def __init__(self, hidden_dim: int, expansion_factor: int = 4, dropout_rate: float = 0.1):\n        super().__init__()\n        intermediate_dim = hidden_dim * expansion_factor\n        self.up = nn.Linear(hidden_dim, intermediate_dim)\n        self.gelu = nn.GELU()\n        self.dropout = nn.Dropout(dropout_rate)\n        self.down = nn.Linear(intermediate_dim, hidden_dim)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "expert-forward",
+        "title": "Expert FFN Forward Pass",
+        "explanation": "Up-project, activate, dropout, and down-project.",
+        "codeAnswer": "def forward(self, x: torch.Tensor) -> torch.Tensor:\n    return self.down(self.dropout(self.gelu(self.up(x))))",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "deepseekmoe-mixture-of-experts-container": {
+      "id": "deepseekmoe-mixture-of-experts-container",
       "title": "Mixture of Experts",
-      "explanation": "Sparse MoE with auxiliary-loss-free load balancing. Routes tokens to top-k experts."
+      "equations": [
+        {
+          "id": "moe-1",
+          "title": "Gating Scores",
+          "explanation": "Compute routing scores with load balancing bias.",
+          "equation": "s = \\sigma(xW_g + b_{\\text{balance}}) \\in \\mathbb{R}^{B \\times L \\times E}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "moe-2",
+          "title": "Top-k Selection",
+          "explanation": "Select top-k experts and normalize their scores.",
+          "equation": "s_{\\text{top}}, i_{\\text{top}} = \\text{topk}(s, k), \\quad w = \\frac{s_{\\text{top}}}{\\sum s_{\\text{top}}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "moe-3",
+          "title": "Load Balancing",
+          "explanation": "Update bias to encourage balanced expert usage (auxiliary-loss-free).",
+          "equation": "b_{\\text{balance}} \\leftarrow b_{\\text{balance}} + \\alpha (\\text{load}_{\\text{current}} - \\text{load}_{\\text{ema}})",
+          "canvasHeight": 150
+        },
+        {
+          "id": "moe-4",
+          "title": "Expert Combination",
+          "explanation": "Combine routed and shared expert outputs.",
+          "equation": "y = \\sum_{i=1}^{k} w_i \\cdot \\text{Expert}_{i_{\\text{top}}}(x) + 0.1 \\cdot \\text{Expert}_{\\text{shared}}(x)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "moe-5",
+          "title": "Output with Dropout",
+          "explanation": "Apply dropout to combined expert output.",
+          "equation": "y_{\\text{out}} = \\text{Dropout}(y)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "moe-init",
+        "title": "MoE Initialization",
+        "explanation": "Initialize gate, experts, and load balancing mechanism.",
+        "codeAnswer": "class DeepSeekMoE(nn.Module):\n    def __init__(self, hidden_dim: int, num_experts: int, top_k: int, dropout_rate: float = 0.1):\n        super().__init__()\n        self.num_experts = num_experts\n        self.top_k = top_k\n        self.dropout = nn.Dropout(dropout_rate)\n\n        self.shared_expert = ExpertFFN(hidden_dim, dropout_rate=dropout_rate)\n        self.experts = nn.ModuleList([ExpertFFN(hidden_dim, dropout_rate=dropout_rate) for _ in range(num_experts)])\n        self.gate = nn.Linear(hidden_dim, num_experts, bias=False)\n        self.bias = nn.Parameter(torch.zeros(num_experts))  # For load balancing\n        self.bias_update_speed = 0.001\n        self.register_buffer(\"expert_load\", torch.zeros(num_experts))\n\n        # Initialize gate with smaller variance\n        nn.init.normal_(self.gate.weight, mean=0.0, std=0.02 / math.sqrt(hidden_dim))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "moe-forward",
+        "title": "MoE Forward Pass",
+        "explanation": "Route tokens to experts, combine outputs with load balancing.",
+        "codeAnswer": "def forward(self, x: torch.Tensor) -> torch.Tensor:\n    batch_size, seq_len, hidden_dim = x.shape\n    x_flat = x.view(-1, hidden_dim)\n\n    # Compute gating scores with bias for routing\n    scores = F.sigmoid(self.gate(x_flat) + self.bias)\n    top_scores, top_indices = scores.topk(self.top_k, dim=-1)\n    top_scores = top_scores / (top_scores.sum(dim=-1, keepdim=True) + 1e-6)\n    \n    # Update load balancing bias\n    mask = F.one_hot(top_indices, self.num_experts).sum(dim=1).float()\n    expert_load = mask.sum(dim=0)\n    self.bias.data += self.bias_update_speed * (expert_load - self.expert_load)\n    self.expert_load.lerp_(expert_load, 0.1)\n\n    # Apply experts with proper weighting\n    combined = torch.zeros_like(x_flat)\n    for i in range(self.top_k):\n        expert_indices = top_indices[:, i]\n        coefficient = top_scores[:, i].unsqueeze(-1)\n        for expert_idx, expert in enumerate(self.experts):\n            mask = (expert_indices == expert_idx)\n            if mask.any():\n                expert_inputs = x_flat[mask]\n                expert_outputs = expert(expert_inputs) * coefficient[mask]\n                combined.index_add_(0, torch.where(mask)[0], expert_outputs)\n\n    # Add shared expert output\n    shared_out = self.shared_expert(x_flat) * 0.1\n    combined = combined + shared_out\n    combined = self.dropout(combined)\n    \n    return combined.view(batch_size, seq_len, hidden_dim)",
+        "language": "python"
+      },
+      "type": "custom"
     },
-    "mtp": {
+    "multitokenprediction-container": {
+      "id": "multitokenprediction-container",
       "title": "Multi-Token Prediction",
-      "explanation": "Predicts multiple future tokens from single hidden state. Improves training efficiency."
+      "equations": [
+        {
+          "id": "mtp-1",
+          "title": "Iterative Projection",
+          "explanation": "Project hidden states at each depth for future token prediction.",
+          "equation": "h^{(d)} = \\text{Proj}_d(h^{(d-1)}), \\quad d \\in \\{1, ..., D\\}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mtp-2",
+          "title": "Layer Normalization",
+          "explanation": "Normalize projected hidden states before output.",
+          "equation": "\\tilde{h}^{(d)} = \\text{LayerNorm}(\\text{Dropout}(h^{(d)}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mtp-3",
+          "title": "Vocabulary Projection",
+          "explanation": "Project to vocabulary for each depth's prediction.",
+          "equation": "\\text{logits}^{(d)} = \\tilde{h}^{(d)} W_{\\text{vocab}} \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "mtp-4",
+          "title": "Stacked Predictions",
+          "explanation": "Stack predictions from all depths for multi-token loss.",
+          "equation": "\\text{MTP\\_out} = [\\text{logits}^{(1)}, ..., \\text{logits}^{(D)}] \\in \\mathbb{R}^{B \\times D \\times L \\times V}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "mtp-init",
+        "title": "MTP Initialization",
+        "explanation": "Initialize projection layers, normalization, and output head.",
+        "codeAnswer": "class MultiTokenPrediction(nn.Module):\n    def __init__(self, hidden_dim: int, vocab_size: int, depth: int = 1, dropout_rate: float = 0.1):\n        super().__init__()\n        self.depth = depth\n        self.proj_layers = nn.ModuleList([nn.Linear(hidden_dim, hidden_dim) for _ in range(depth)])\n        self.norm = nn.LayerNorm(hidden_dim)\n        self.dropout = nn.Dropout(dropout_rate)\n        self.output_head = nn.Linear(hidden_dim, vocab_size)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "mtp-forward",
+        "title": "MTP Forward Pass",
+        "explanation": "Project at each depth and predict vocabulary logits.",
+        "codeAnswer": "def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:\n    predictions = []\n    current_hidden = hidden_states\n    \n    for d in range(self.depth):\n        # Project the hidden states\n        projected = self.proj_layers[d](current_hidden)\n        # Apply dropout and normalization\n        projected = self.dropout(projected)\n        normalized = self.norm(projected)\n        # Apply output head\n        logits = self.output_head(normalized)\n        predictions.append(logits)\n        current_hidden = projected\n        \n    return torch.stack(predictions, dim=1)",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "main-container": {
+      "id": "main-container",
+      "title": "DeepSeek-V3 Complete Model",
+      "equations": [
+        {
+          "id": "model-1",
+          "title": "Embedding Layer",
+          "explanation": "Convert input tokens to embeddings with dropout.",
+          "equation": "x^{(0)} = \\text{Dropout}(\\text{Embedding}(\\text{input\\_ids}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-2",
+          "title": "Transformer Layers",
+          "explanation": "Process through num_layers transformer layers with attention and MoE.",
+          "equation": "x^{(l)} = x^{(l-1)} + \\text{MoE}(x^{(l-1)} + \\text{MLA}(\\text{Norm}(x^{(l-1)})))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-3",
+          "title": "Final Processing",
+          "explanation": "Apply final normalization and dropout.",
+          "equation": "h_{\\text{final}} = \\text{Dropout}(\\text{LayerNorm}(x^{(L)}))",
+          "canvasHeight": 150
+        },
+        {
+          "id": "model-4",
+          "title": "Dual Output Heads",
+          "explanation": "Generate both standard and multi-token predictions.",
+          "equation": "\\text{logits} = h_{\\text{final}} W_{\\text{out}}, \\quad \\text{mtp} = \\text{MTP}(h_{\\text{final}})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "model-init",
+        "title": "DeepSeek-V3 Initialization",
+        "explanation": "Initialize embedding, transformer layers, and output heads.",
+        "codeAnswer": "class DeepSeekV3(nn.Module):\n    def __init__(self, config: dict):\n        super().__init__()\n        self.config = config\n        dropout_rate = config.get(\"dropout_rate\", 0.1)\n        \n        self.embedding = nn.Embedding(config[\"vocab_size\"], config[\"hidden_dim\"])\n        self.embedding_dropout = nn.Dropout(dropout_rate)\n        \n        self.layers = nn.ModuleList([\n            nn.ModuleDict({\n                \"attn_norm\": nn.LayerNorm(config[\"hidden_dim\"]),\n                \"attention\": MultiHeadLatentAttention(\n                    hidden_dim=config[\"hidden_dim\"],\n                    num_heads=config[\"num_heads\"],\n                    head_dim=config[\"head_dim\"],\n                    kv_compression_dim=config[\"kv_compression_dim\"],\n                    query_compression_dim=config[\"query_compression_dim\"],\n                    rope_dim=config[\"rope_dim\"],\n                    dropout_rate=dropout_rate\n                ),\n                \"moe_norm\": nn.LayerNorm(config[\"hidden_dim\"]),\n                \"moe\": DeepSeekMoE(\n                    hidden_dim=config[\"hidden_dim\"],\n                    num_experts=config[\"num_experts\"],\n                    top_k=config[\"activated_experts\"],\n                    dropout_rate=dropout_rate\n                )\n            }) for _ in range(config[\"num_layers\"])\n        ])\n        \n        self.final_norm = nn.LayerNorm(config[\"hidden_dim\"])\n        self.final_dropout = nn.Dropout(dropout_rate)\n        self.output_head = nn.Linear(config[\"hidden_dim\"], config[\"vocab_size\"])\n        self.mtp = MultiTokenPrediction(\n            config[\"hidden_dim\"], config[\"vocab_size\"], \n            depth=1, dropout_rate=dropout_rate\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "model-forward",
+        "title": "DeepSeek-V3 Forward Pass",
+        "explanation": "Complete forward pass through embedding, layers, and output heads.",
+        "codeAnswer": "def forward(self, input_ids: torch.Tensor, attention_mask: Optional[torch.Tensor] = None,\n            target_ids: Optional[torch.Tensor] = None):\n    # Embedding layer\n    x = self.embedding(input_ids)\n    x = self.embedding_dropout(x)\n    \n    # Process through transformer layers\n    for layer in self.layers:\n        # Attention block\n        attn_input = layer[\"attn_norm\"](x)\n        # Center and shift normalization\n        attn_input = attn_input - attn_input.mean(dim=-1, keepdim=True) + 1.0\n        attn_output = layer[\"attention\"](attn_input, attention_mask)\n        x = x + attn_output\n        \n        # MoE block\n        moe_input = layer[\"moe_norm\"](x)\n        moe_output = layer[\"moe\"](moe_input)\n        x = x + moe_output\n    \n    # Final normalization\n    x = self.final_norm(x)\n    x = self.final_dropout(x)\n    \n    # Main logits from final hidden state\n    logits = self.output_head(x)\n    \n    # Multi-token predictions\n    if (self.training and target_ids is not None) or not self.training:\n        mtp_outputs = self.mtp(x)\n        return logits, mtp_outputs\n    \n    return logits",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "input-tokens": {
+      "id": "input-tokens",
+      "title": "Input Tokens",
+      "equations": [
+        {
+          "id": "input-1",
+          "title": "Token Sequence",
+          "explanation": "Input is a batch of token sequences, where each token is an integer index.",
+          "equation": "\\mathbf{x} \\in \\mathbb{Z}^{B \\times L}, \\quad 0 \\leq x_{ij} < V",
+          "canvasHeight": 150
+        },
+        {
+          "id": "input-2",
+          "title": "DeepSeek-V3 Vocabulary",
+          "explanation": "DeepSeek-V3 uses a large vocabulary for multilingual support.",
+          "equation": "V = 128000, \\quad L_{\\text{max}} = 64000",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "input-init",
+        "title": "Input Tokens Processing",
+        "explanation": "Tokenize input text using DeepSeek tokenizer.",
+        "codeAnswer": "# Input tokens are provided by the tokenizer\nfrom transformers import AutoTokenizer\n\ntokenizer = AutoTokenizer.from_pretrained('deepseek-ai/DeepSeek-V3')\ntext = \"Hello, world!\"\n\n# Encode to token IDs\ninput_ids = tokenizer.encode(text)\n# Returns list of integer token IDs",
+        "language": "python"
+      },
+      "forward": {
+        "id": "input-forward",
+        "title": "Batch Input Preparation",
+        "explanation": "Prepare batched inputs as tensors.",
+        "codeAnswer": "import torch\n\ndef prepare_batch(texts, tokenizer, max_length=4096):\n    encodings = tokenizer(texts, padding=True, truncation=True, \n                         max_length=max_length, return_tensors='pt')\n    return encodings['input_ids']  # Shape: [batch, seq_len]",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "embedding-dropout": {
+      "id": "embedding-dropout",
+      "title": "Embedding Dropout",
+      "equations": [
+        {
+          "id": "emb-dropout-1",
+          "title": "Dropout Operation",
+          "explanation": "Apply dropout to embeddings for regularization.",
+          "equation": "\\text{Dropout}(x, p) = \\begin{cases} \\frac{x}{1-p} & \\text{with prob } 1-p \\\\ 0 & \\text{with prob } p \\end{cases}",
+          "canvasHeight": 180
+        },
+        {
+          "id": "emb-dropout-2",
+          "title": "Applied to Embeddings",
+          "explanation": "DeepSeek-V3 uses dropout rate of 0.1 on embeddings.",
+          "equation": "E_{\\text{out}} = \\text{Dropout}(E, p=0.1)",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "emb-dropout-init",
+        "title": "Dropout Layer Initialization",
+        "explanation": "Initialize dropout layer with dropout probability.",
+        "codeAnswer": "import torch.nn as nn\n\nclass EmbeddingWithDropout(nn.Module):\n    def __init__(self, vocab_size, hidden_dim, dropout_rate=0.1):\n        super().__init__()\n        self.embedding = nn.Embedding(vocab_size, hidden_dim)\n        self.dropout = nn.Dropout(dropout_rate)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "emb-dropout-forward",
+        "title": "Dropout Forward Pass",
+        "explanation": "Apply dropout during training, pass through during inference.",
+        "codeAnswer": "def forward(self, input_ids):\n    # Lookup embeddings\n    x = self.embedding(input_ids)  # [batch, seq_len, hidden_dim]\n    \n    # Apply dropout (only active during training)\n    x = self.dropout(x)\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "attention-dropout": {
+      "id": "attention-dropout",
+      "title": "Attention Dropout",
+      "equations": [
+        {
+          "id": "attn-dropout-1",
+          "title": "Attention Probability Dropout",
+          "explanation": "Apply dropout to attention probabilities to prevent overfitting.",
+          "equation": "\\text{attn\\_probs}' = \\text{Dropout}(\\text{softmax}(\\text{scores}), p=0.1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-dropout-init",
+        "title": "Attention Dropout Initialization",
+        "explanation": "Dropout layer for attention probabilities.",
+        "codeAnswer": "import torch.nn as nn\n\nclass MultiHeadLatentAttention(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # ... other layers ...\n        self.dropout = nn.Dropout(config.get('dropout_rate', 0.1))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-dropout-forward",
+        "title": "Apply Dropout to Attention",
+        "explanation": "Dropout attention probabilities before applying to values.",
+        "codeAnswer": "def forward(self, attn_scores):\n    # Compute attention probabilities\n    attn_probs = F.softmax(attn_scores, dim=-1)\n    \n    # Apply dropout to attention probabilities\n    attn_probs = self.dropout(attn_probs)\n    \n    return attn_probs",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "attention-matmul": {
+      "id": "attention-matmul",
+      "title": "Attention Score Matrix Multiplication",
+      "equations": [
+        {
+          "id": "attn-matmul-1",
+          "title": "Query-Key Dot Product",
+          "explanation": "Compute attention scores by multiplying queries with transposed keys.",
+          "equation": "\\text{scores} = QK^T \\in \\mathbb{R}^{B \\times H \\times L \\times L}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-matmul-init",
+        "title": "Attention MatMul (Functional)",
+        "explanation": "Matrix multiplication is a functional operation.",
+        "codeAnswer": "import torch\n\n# No initialization needed for matrix multiplication\n# It's a pure functional operation",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-matmul-forward",
+        "title": "Compute Attention Scores",
+        "explanation": "Multiply queries with transposed keys.",
+        "codeAnswer": "import torch\n\ndef compute_attention_scores(queries, keys):\n    # queries: [batch, num_heads, seq_len, head_dim]\n    # keys: [batch, num_heads, seq_len, head_dim]\n    \n    # Matrix multiplication: Q @ K^T\n    scores = torch.matmul(queries, keys.transpose(-2, -1))\n    # scores: [batch, num_heads, seq_len, seq_len]\n    \n    return scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "attn-norm": {
+      "id": "attn-norm",
+      "title": "Attention Layer Normalization",
+      "equations": [
+        {
+          "id": "attn-norm-1",
+          "title": "RMS Calculation",
+          "explanation": "Compute root mean square of the input.",
+          "equation": "\\text{RMS}(x) = \\sqrt{\\frac{1}{d}\\sum_{i=1}^{d} x_i^2 + \\epsilon}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "attn-norm-2",
+          "title": "RMSNorm Output",
+          "explanation": "Normalize by RMS and apply learnable scale.",
+          "equation": "\\text{RMSNorm}(x) = \\frac{x}{\\text{RMS}(x)} \\odot \\gamma",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "attn-norm-init",
+        "title": "RMSNorm Initialization",
+        "explanation": "Initialize RMSNorm with learnable scale parameter.",
+        "codeAnswer": "import torch\nimport torch.nn as nn\n\nclass RMSNorm(nn.Module):\n    def __init__(self, hidden_dim, eps=1e-6):\n        super().__init__()\n        self.eps = eps\n        self.weight = nn.Parameter(torch.ones(hidden_dim))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "attn-norm-forward",
+        "title": "RMSNorm Forward Pass",
+        "explanation": "Apply RMS normalization.",
+        "codeAnswer": "def forward(self, x):\n    # Compute variance (mean of squares)\n    variance = x.pow(2).mean(dim=-1, keepdim=True)\n    \n    # Normalize: x / sqrt(variance + eps)\n    x_normed = x * torch.rsqrt(variance + self.eps)\n    \n    # Apply learnable scale\n    return x_normed * self.weight",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "center-shift": {
+      "id": "center-shift",
+      "title": "Center and Shift Normalization",
+      "equations": [
+        {
+          "id": "center-1",
+          "title": "Mean Subtraction",
+          "explanation": "Center the input by subtracting the mean.",
+          "equation": "x_{\\text{centered}} = x - \\text{mean}(x, \\text{dim}=-1)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "center-2",
+          "title": "Add Shift",
+          "explanation": "Add 1.0 to prevent zero-centered activations.",
+          "equation": "x_{\\text{out}} = x_{\\text{centered}} + 1.0",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "center-init",
+        "title": "Center Shift (Functional)",
+        "explanation": "No parameters needed for centering operation.",
+        "codeAnswer": "# Center and shift is a functional operation\n# No trainable parameters required",
+        "language": "python"
+      },
+      "forward": {
+        "id": "center-forward",
+        "title": "Apply Center and Shift",
+        "explanation": "Center by mean and add shift.",
+        "codeAnswer": "import torch\n\ndef center_and_shift(x):\n    # Subtract mean along last dimension\n    x_centered = x - x.mean(dim=-1, keepdim=True)\n    \n    # Add shift of 1.0\n    x_out = x_centered + 1.0\n    \n    return x_out",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "concatenate": {
+      "id": "concatenate",
+      "title": "Concatenate Query/Key Components",
+      "equations": [
+        {
+          "id": "concat-1",
+          "title": "Concatenate Q Parts",
+          "explanation": "Combine non-rotary and rotary query components.",
+          "equation": "Q = [Q_c; Q_r] \\in \\mathbb{R}^{B \\times H \\times L \\times (d_h + d_r)}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "concat-2",
+          "title": "Concatenate K Parts",
+          "explanation": "Combine non-rotary and rotary key components.",
+          "equation": "K = [K_c; K_r] \\in \\mathbb{R}^{B \\times H \\times L \\times (d_h + d_r)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "concat-init",
+        "title": "Concatenation (Functional)",
+        "explanation": "Concatenation is a functional operation.",
+        "codeAnswer": "import torch\n\n# No initialization needed for concatenation",
+        "language": "python"
+      },
+      "forward": {
+        "id": "concat-forward",
+        "title": "Concatenate Tensors",
+        "explanation": "Concatenate along head dimension.",
+        "codeAnswer": "import torch\n\ndef concatenate_qk_parts(q_c, q_r, k_c, k_r):\n    # q_c, q_r: [batch, heads, seq_len, head_dim/rope_dim]\n    # k_c, k_r: [batch, heads, seq_len, head_dim/rope_dim]\n    \n    # Concatenate along last dimension\n    queries = torch.cat([q_c, q_r], dim=-1)\n    keys = torch.cat([k_c, k_r], dim=-1)\n    \n    return queries, keys",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "context-matmul": {
+      "id": "context-matmul",
+      "title": "Context Matrix Multiplication",
+      "equations": [
+        {
+          "id": "context-matmul-1",
+          "title": "Attention-Weighted Values",
+          "explanation": "Multiply attention probabilities with values to get context.",
+          "equation": "\\text{context} = \\text{attn\\_probs} @ V \\in \\mathbb{R}^{B \\times H \\times L \\times d_h}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "context-matmul-init",
+        "title": "Context MatMul (Functional)",
+        "explanation": "Matrix multiplication operation.",
+        "codeAnswer": "import torch\n\n# No initialization for matrix multiplication",
+        "language": "python"
+      },
+      "forward": {
+        "id": "context-matmul-forward",
+        "title": "Compute Context Vector",
+        "explanation": "Apply attention to values.",
+        "codeAnswer": "import torch\n\ndef compute_context(attn_probs, values):\n    # attn_probs: [batch, heads, seq_len, seq_len]\n    # values: [batch, heads, seq_len, head_dim]\n    \n    # Matrix multiplication\n    context = torch.matmul(attn_probs, values)\n    # context: [batch, heads, seq_len, head_dim]\n    \n    return context",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "kv-compression": {
+      "id": "kv-compression",
+      "title": "Key-Value Compression",
+      "equations": [
+        {
+          "id": "kv-comp-1",
+          "title": "KV Compression Layer",
+          "explanation": "Compress input to low-dimensional latent space for KV cache efficiency.",
+          "equation": "C_{KV} = xW_{\\text{down}}^{KV} \\in \\mathbb{R}^{B \\times L \\times d_c^{KV}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "kv-comp-2",
+          "title": "Compression Dimension",
+          "explanation": "DeepSeek-V3 compresses from 7168 to a smaller dimension.",
+          "equation": "d = 7168 \\rightarrow d_c^{KV} = 512",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "kv-comp-init",
+        "title": "KV Compression Layer Init",
+        "explanation": "Linear layer for KV compression.",
+        "codeAnswer": "import torch.nn as nn\n\nclass KVCompression(nn.Module):\n    def __init__(self, hidden_dim, kv_compression_dim):\n        super().__init__()\n        self.kv_down = nn.Linear(hidden_dim, kv_compression_dim, bias=False)\n\n# For DeepSeek-V3: hidden_dim=7168, kv_compression_dim=512\nkv_comp = KVCompression(7168, 512)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "kv-comp-forward",
+        "title": "KV Compression Forward",
+        "explanation": "Compress input representation.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim=7168]\n    \n    # Compress to latent space\n    kv_compressed = self.kv_down(x)\n    # kv_compressed: [batch, seq_len, kv_compression_dim=512]\n    \n    return kv_compressed",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "query-compression": {
+      "id": "query-compression",
+      "title": "Query Compression",
+      "equations": [
+        {
+          "id": "q-comp-1",
+          "title": "Query Compression Layer",
+          "explanation": "Compress input to low-dimensional latent space for queries.",
+          "equation": "C_Q = xW_{\\text{down}}^{Q} \\in \\mathbb{R}^{B \\times L \\times d_c^{Q}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "q-comp-2",
+          "title": "Query Compression Dimension",
+          "explanation": "DeepSeek-V3 compresses queries from 7168 to 1536.",
+          "equation": "d = 7168 \\rightarrow d_c^{Q} = 1536",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "q-comp-init",
+        "title": "Query Compression Layer Init",
+        "explanation": "Linear layer for query compression.",
+        "codeAnswer": "import torch.nn as nn\n\nclass QueryCompression(nn.Module):\n    def __init__(self, hidden_dim, query_compression_dim):\n        super().__init__()\n        self.query_down = nn.Linear(hidden_dim, query_compression_dim, bias=False)\n\n# For DeepSeek-V3: hidden_dim=7168, query_compression_dim=1536\nq_comp = QueryCompression(7168, 1536)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "q-comp-forward",
+        "title": "Query Compression Forward",
+        "explanation": "Compress input for query projection.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim=7168]\n    \n    # Compress to query latent space\n    query_compressed = self.query_down(x)\n    # query_compressed: [batch, seq_len, query_compression_dim=1536]\n    \n    return query_compressed",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "key-up": {
+      "id": "key-up",
+      "title": "Key Up-Projection",
+      "equations": [
+        {
+          "id": "key-up-1",
+          "title": "Expand to Multi-Head Keys",
+          "explanation": "Project compressed KV to multi-head key space.",
+          "equation": "K_c = C_{KV} W_{\\text{up}}^{K} \\in \\mathbb{R}^{B \\times L \\times (H \\times d_h)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "key-up-init",
+        "title": "Key Up-Projection Init",
+        "explanation": "Linear layer to expand compressed KV to keys.",
+        "codeAnswer": "import torch.nn as nn\n\nclass KeyUpProjection(nn.Module):\n    def __init__(self, kv_compression_dim, num_heads, head_dim):\n        super().__init__()\n        self.key_up = nn.Linear(\n            kv_compression_dim, \n            num_heads * head_dim, \n            bias=False\n        )\n        self.num_heads = num_heads\n        self.head_dim = head_dim",
+        "language": "python"
+      },
+      "forward": {
+        "id": "key-up-forward",
+        "title": "Key Up-Projection Forward",
+        "explanation": "Expand and reshape to multi-head format.",
+        "codeAnswer": "def forward(self, kv_compressed):\n    # kv_compressed: [batch, seq_len, kv_compression_dim]\n    batch, seq_len, _ = kv_compressed.shape\n    \n    # Project to multi-head keys\n    keys = self.key_up(kv_compressed)\n    \n    # Reshape to multi-head format\n    keys = keys.view(batch, seq_len, self.num_heads, self.head_dim)\n    keys = keys.transpose(1, 2)  # [batch, heads, seq_len, head_dim]\n    \n    return keys",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "value-up": {
+      "id": "value-up",
+      "title": "Value Up-Projection",
+      "equations": [
+        {
+          "id": "value-up-1",
+          "title": "Expand to Multi-Head Values",
+          "explanation": "Project compressed KV to multi-head value space.",
+          "equation": "V = C_{KV} W_{\\text{up}}^{V} \\in \\mathbb{R}^{B \\times L \\times (H \\times d_h)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "value-up-init",
+        "title": "Value Up-Projection Init",
+        "explanation": "Linear layer to expand compressed KV to values.",
+        "codeAnswer": "import torch.nn as nn\n\nclass ValueUpProjection(nn.Module):\n    def __init__(self, kv_compression_dim, num_heads, head_dim):\n        super().__init__()\n        self.value_up = nn.Linear(\n            kv_compression_dim, \n            num_heads * head_dim, \n            bias=False\n        )\n        self.num_heads = num_heads\n        self.head_dim = head_dim",
+        "language": "python"
+      },
+      "forward": {
+        "id": "value-up-forward",
+        "title": "Value Up-Projection Forward",
+        "explanation": "Expand and reshape to multi-head format.",
+        "codeAnswer": "def forward(self, kv_compressed):\n    # kv_compressed: [batch, seq_len, kv_compression_dim]\n    batch, seq_len, _ = kv_compressed.shape\n    \n    # Project to multi-head values\n    values = self.value_up(kv_compressed)\n    \n    # Reshape to multi-head format\n    values = values.view(batch, seq_len, self.num_heads, self.head_dim)\n    values = values.transpose(1, 2)  # [batch, heads, seq_len, head_dim]\n    \n    return values",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "key-rope": {
+      "id": "key-rope",
+      "title": "Key RoPE Projection",
+      "equations": [
+        {
+          "id": "key-rope-1",
+          "title": "Project to RoPE Dimensions",
+          "explanation": "Project compressed KV to rotary embedding space for keys.",
+          "equation": "K_r = C_{KV} W_{\\text{rope}}^{K} \\in \\mathbb{R}^{B \\times L \\times (H \\times d_r)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "key-rope-init",
+        "title": "Key RoPE Projection Init",
+        "explanation": "Linear layer for key RoPE components.",
+        "codeAnswer": "import torch.nn as nn\n\nclass KeyRoPEProjection(nn.Module):\n    def __init__(self, kv_compression_dim, num_heads, rope_dim):\n        super().__init__()\n        self.key_rope = nn.Linear(\n            kv_compression_dim, \n            num_heads * rope_dim, \n            bias=False\n        )\n        self.num_heads = num_heads\n        self.rope_dim = rope_dim",
+        "language": "python"
+      },
+      "forward": {
+        "id": "key-rope-forward",
+        "title": "Key RoPE Projection Forward",
+        "explanation": "Project and reshape for RoPE application.",
+        "codeAnswer": "def forward(self, kv_compressed):\n    # kv_compressed: [batch, seq_len, kv_compression_dim]\n    batch, seq_len, _ = kv_compressed.shape\n    \n    # Project to RoPE dimensions\n    key_rope = self.key_rope(kv_compressed)\n    \n    # Reshape to multi-head format\n    key_rope = key_rope.view(batch, seq_len, self.num_heads, self.rope_dim)\n    key_rope = key_rope.transpose(1, 2)  # [batch, heads, seq_len, rope_dim]\n    \n    return key_rope",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "query-up": {
+      "id": "query-up",
+      "title": "Query Up-Projection",
+      "equations": [
+        {
+          "id": "query-up-1",
+          "title": "Expand to Multi-Head Queries",
+          "explanation": "Project compressed query to multi-head query space.",
+          "equation": "Q_c = C_Q W_{\\text{up}}^{Q} \\in \\mathbb{R}^{B \\times L \\times (H \\times d_h)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "query-up-init",
+        "title": "Query Up-Projection Init",
+        "explanation": "Linear layer to expand compressed query.",
+        "codeAnswer": "import torch.nn as nn\n\nclass QueryUpProjection(nn.Module):\n    def __init__(self, query_compression_dim, num_heads, head_dim):\n        super().__init__()\n        self.query_up = nn.Linear(\n            query_compression_dim, \n            num_heads * head_dim, \n            bias=False\n        )\n        self.num_heads = num_heads\n        self.head_dim = head_dim",
+        "language": "python"
+      },
+      "forward": {
+        "id": "query-up-forward",
+        "title": "Query Up-Projection Forward",
+        "explanation": "Expand and reshape to multi-head format.",
+        "codeAnswer": "def forward(self, query_compressed):\n    # query_compressed: [batch, seq_len, query_compression_dim]\n    batch, seq_len, _ = query_compressed.shape\n    \n    # Project to multi-head queries\n    queries = self.query_up(query_compressed)\n    \n    # Reshape to multi-head format\n    queries = queries.view(batch, seq_len, self.num_heads, self.head_dim)\n    queries = queries.transpose(1, 2)  # [batch, heads, seq_len, head_dim]\n    \n    return queries",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "query-rope": {
+      "id": "query-rope",
+      "title": "Query RoPE Projection",
+      "equations": [
+        {
+          "id": "query-rope-1",
+          "title": "Project to RoPE Dimensions",
+          "explanation": "Project compressed query to rotary embedding space.",
+          "equation": "Q_r = C_Q W_{\\text{rope}}^{Q} \\in \\mathbb{R}^{B \\times L \\times (H \\times d_r)}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "query-rope-init",
+        "title": "Query RoPE Projection Init",
+        "explanation": "Linear layer for query RoPE components.",
+        "codeAnswer": "import torch.nn as nn\n\nclass QueryRoPEProjection(nn.Module):\n    def __init__(self, query_compression_dim, num_heads, rope_dim):\n        super().__init__()\n        self.query_rope = nn.Linear(\n            query_compression_dim, \n            num_heads * rope_dim, \n            bias=False\n        )\n        self.num_heads = num_heads\n        self.rope_dim = rope_dim",
+        "language": "python"
+      },
+      "forward": {
+        "id": "query-rope-forward",
+        "title": "Query RoPE Projection Forward",
+        "explanation": "Project and reshape for RoPE application.",
+        "codeAnswer": "def forward(self, query_compressed):\n    # query_compressed: [batch, seq_len, query_compression_dim]\n    batch, seq_len, _ = query_compressed.shape\n    \n    # Project to RoPE dimensions\n    query_rope = self.query_rope(query_compressed)\n    \n    # Reshape to multi-head format\n    query_rope = query_rope.view(batch, seq_len, self.num_heads, self.rope_dim)\n    query_rope = query_rope.transpose(1, 2)  # [batch, heads, seq_len, rope_dim]\n    \n    return query_rope",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "masked-fill": {
+      "id": "masked-fill",
+      "title": "Masked Fill",
+      "equations": [
+        {
+          "id": "masked-fill-1",
+          "title": "Causal Masking",
+          "explanation": "Set future positions to large negative value before softmax.",
+          "equation": "\\text{scores}_{ij} = \\begin{cases} \\text{scores}_{ij} & \\text{if } i \\geq j \\\\ -10^9 & \\text{if } i < j \\end{cases}",
+          "canvasHeight": 180
+        }
+      ],
+      "initialization": {
+        "id": "masked-fill-init",
+        "title": "Create Causal Mask",
+        "explanation": "Precompute causal mask matrix.",
+        "codeAnswer": "import torch\n\ndef create_causal_mask(seq_len, device):\n    # Upper triangular matrix (exclude diagonal)\n    mask = torch.triu(\n        torch.ones(seq_len, seq_len, device=device, dtype=torch.bool),\n        diagonal=1\n    )\n    return mask",
+        "language": "python"
+      },
+      "forward": {
+        "id": "masked-fill-forward",
+        "title": "Apply Masked Fill",
+        "explanation": "Apply causal mask to attention scores.",
+        "codeAnswer": "import torch\n\ndef apply_masked_fill(scores, mask):\n    # scores: [batch, heads, seq_len, seq_len]\n    # mask: [seq_len, seq_len] boolean mask\n    \n    # Fill masked positions with large negative value\n    scores = scores.masked_fill(mask, float('-1e9'))\n    \n    return scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "scale": {
+      "id": "scale",
+      "title": "Attention Scaling",
+      "equations": [
+        {
+          "id": "scale-1",
+          "title": "Scale by Dimension",
+          "explanation": "Scale attention scores by square root of total dimension.",
+          "equation": "\\text{scores}_{\\text{scaled}} = \\frac{\\text{scores}}{\\sqrt{d_h + d_r}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "scale-2",
+          "title": "DeepSeek-V3 Scaling",
+          "explanation": "Scale factor for DeepSeek-V3 attention.",
+          "equation": "\\text{scale} = \\frac{1}{\\sqrt{d_h + d_r}} = \\frac{1}{\\sqrt{128 + 64}} = \\frac{1}{\\sqrt{192}}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "scale-init",
+        "title": "Compute Scale Factor",
+        "explanation": "Precompute attention scale factor.",
+        "codeAnswer": "import math\n\nclass ScaledAttention:\n    def __init__(self, head_dim, rope_dim):\n        self.scale = 1.0 / math.sqrt(head_dim + rope_dim)\n        # For DeepSeek-V3: scale = 1/sqrt(192)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "scale-forward",
+        "title": "Scale Attention Scores",
+        "explanation": "Apply scaling to attention scores.",
+        "codeAnswer": "import math\n\ndef scale_attention(scores, head_dim, rope_dim):\n    # scores: [batch, heads, seq_len, seq_len]\n    \n    # Compute scale factor\n    scale = 1.0 / math.sqrt(head_dim + rope_dim)\n    \n    # Scale scores\n    scaled_scores = scores * scale\n    \n    return scaled_scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "softmax": {
+      "id": "softmax",
+      "title": "Attention Softmax",
+      "equations": [
+        {
+          "id": "softmax-1",
+          "title": "Softmax Operation",
+          "explanation": "Convert attention scores to probabilities.",
+          "equation": "\\text{softmax}(x_i) = \\frac{e^{x_i}}{\\sum_j e^{x_j}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "softmax-2",
+          "title": "Attention Probabilities",
+          "explanation": "Apply softmax along sequence dimension.",
+          "equation": "\\text{attn\\_probs} = \\text{softmax}(\\text{scores}_{\\text{scaled}}, \\text{dim}=-1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "softmax-init",
+        "title": "Softmax (Functional)",
+        "explanation": "Softmax is a functional operation.",
+        "codeAnswer": "import torch.nn.functional as F\n\n# No initialization needed for softmax",
+        "language": "python"
+      },
+      "forward": {
+        "id": "softmax-forward",
+        "title": "Apply Softmax",
+        "explanation": "Compute attention probabilities.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\n\ndef compute_attention_probs(scaled_scores):\n    # scaled_scores: [batch, heads, seq_len, seq_len]\n    \n    # Apply softmax along last dimension\n    attn_probs = F.softmax(scaled_scores, dim=-1)\n    \n    # Each row now sums to 1\n    return attn_probs",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "transpose-reshape": {
+      "id": "transpose-reshape",
+      "title": "Transpose and Reshape",
+      "equations": [
+        {
+          "id": "transpose-1",
+          "title": "Transpose Heads",
+          "explanation": "Move sequence dimension back after attention.",
+          "equation": "\\text{context}: (B, H, L, d_h) \\rightarrow (B, L, H, d_h)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "transpose-2",
+          "title": "Reshape to Output",
+          "explanation": "Combine heads into single dimension.",
+          "equation": "\\text{output}: (B, L, H, d_h) \\rightarrow (B, L, H \\times d_h)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "transpose-init",
+        "title": "Transpose Reshape (Functional)",
+        "explanation": "Functional operations, no parameters.",
+        "codeAnswer": "import torch\n\n# No initialization for transpose and reshape",
+        "language": "python"
+      },
+      "forward": {
+        "id": "transpose-forward",
+        "title": "Transpose and Reshape Output",
+        "explanation": "Prepare attention output for projection.",
+        "codeAnswer": "import torch\n\ndef transpose_reshape(context):\n    # context: [batch, heads, seq_len, head_dim]\n    batch, heads, seq_len, head_dim = context.shape\n    \n    # Transpose: [batch, seq_len, heads, head_dim]\n    context = context.transpose(1, 2)\n    \n    # Reshape: [batch, seq_len, heads * head_dim]\n    output = context.contiguous().view(batch, seq_len, heads * head_dim)\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "output-proj": {
+      "id": "output-proj",
+      "title": "Attention Output Projection",
+      "equations": [
+        {
+          "id": "output-proj-1",
+          "title": "Project to Hidden Dimension",
+          "explanation": "Final linear layer to combine multi-head outputs.",
+          "equation": "\\text{out} = \\text{context} \\cdot W_O \\in \\mathbb{R}^{B \\times L \\times d}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-proj-init",
+        "title": "Output Projection Init",
+        "explanation": "Linear layer for output projection.",
+        "codeAnswer": "import torch.nn as nn\n\nclass OutputProjection(nn.Module):\n    def __init__(self, num_heads, head_dim, hidden_dim):\n        super().__init__()\n        self.output_proj = nn.Linear(\n            num_heads * head_dim, \n            hidden_dim, \n            bias=False\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-proj-forward",
+        "title": "Output Projection Forward",
+        "explanation": "Project attention output back to model dimension.",
+        "codeAnswer": "def forward(self, context):\n    # context: [batch, seq_len, num_heads * head_dim]\n    \n    # Project to hidden dimension\n    output = self.output_proj(context)\n    # output: [batch, seq_len, hidden_dim]\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "output-dropout": {
+      "id": "output-dropout",
+      "title": "Output Dropout",
+      "equations": [
+        {
+          "id": "output-dropout-1",
+          "title": "Dropout on Output",
+          "explanation": "Apply dropout before residual connection.",
+          "equation": "\\text{out}' = \\text{Dropout}(\\text{out}, p=0.1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "output-dropout-init",
+        "title": "Output Dropout Init",
+        "explanation": "Initialize dropout layer.",
+        "codeAnswer": "import torch.nn as nn\n\nclass AttentionWithDropout(nn.Module):\n    def __init__(self, dropout_rate=0.1):\n        super().__init__()\n        self.dropout = nn.Dropout(dropout_rate)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "output-dropout-forward",
+        "title": "Apply Output Dropout",
+        "explanation": "Dropout on attention output.",
+        "codeAnswer": "def forward(self, output):\n    # output: [batch, seq_len, hidden_dim]\n    \n    # Apply dropout\n    output = self.dropout(output)\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "residual-1": {
+      "id": "residual-1",
+      "title": "First Residual Connection",
+      "equations": [
+        {
+          "id": "residual-1-1",
+          "title": "Add Skip Connection",
+          "explanation": "Add input to attention output for gradient flow.",
+          "equation": "x' = x + \\text{Attention}(\\text{Norm}(x))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "residual-1-init",
+        "title": "Residual Connection (No Init)",
+        "explanation": "Element-wise addition, no parameters.",
+        "codeAnswer": "# Residual connections are parameter-free\n# Just x + f(x)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "residual-1-forward",
+        "title": "First Residual Forward",
+        "explanation": "Add skip connection after attention.",
+        "codeAnswer": "def forward(self, x, attention_output):\n    # x: original input [batch, seq_len, hidden_dim]\n    # attention_output: [batch, seq_len, hidden_dim]\n    \n    # Add residual connection\n    x = x + attention_output\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "moe-norm": {
+      "id": "moe-norm",
+      "title": "MoE Layer Normalization",
+      "equations": [
+        {
+          "id": "moe-norm-1",
+          "title": "RMSNorm Before MoE",
+          "explanation": "Normalize input before MoE routing.",
+          "equation": "x_{\\text{norm}} = \\text{RMSNorm}(x)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "moe-norm-init",
+        "title": "MoE Norm Initialization",
+        "explanation": "RMSNorm before MoE layer.",
+        "codeAnswer": "import torch.nn as nn\n\nclass TransformerLayer(nn.Module):\n    def __init__(self, hidden_dim):\n        super().__init__()\n        self.moe_norm = RMSNorm(hidden_dim, eps=1e-6)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "moe-norm-forward",
+        "title": "MoE Norm Forward",
+        "explanation": "Normalize before MoE.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim]\n    \n    # Apply RMSNorm\n    x_normed = self.moe_norm(x)\n    \n    return x_normed",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "gate": {
+      "id": "gate",
+      "title": "Expert Gate",
+      "equations": [
+        {
+          "id": "gate-1",
+          "title": "Gating Scores",
+          "explanation": "Compute routing scores for each expert.",
+          "equation": "s = xW_g \\in \\mathbb{R}^{B \\times L \\times E}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "gate-2",
+          "title": "DeepSeek-V3 Gate",
+          "explanation": "Gate projects to 256 routed experts.",
+          "equation": "E = 256, \\quad d = 7168",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "gate-init",
+        "title": "Expert Gate Initialization",
+        "explanation": "Linear layer for expert routing.",
+        "codeAnswer": "import torch.nn as nn\n\nclass ExpertGate(nn.Module):\n    def __init__(self, hidden_dim, num_experts):\n        super().__init__()\n        self.gate = nn.Linear(hidden_dim, num_experts, bias=False)\n        \n        # Initialize with smaller variance\n        nn.init.normal_(self.gate.weight, mean=0.0, std=0.02 / (hidden_dim ** 0.5))\n\n# For DeepSeek-V3: hidden_dim=7168, num_experts=256\ngate = ExpertGate(7168, 256)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "gate-forward",
+        "title": "Gate Forward Pass",
+        "explanation": "Compute routing scores for all experts.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim]\n    \n    # Compute gating scores for each expert\n    gate_scores = self.gate(x)\n    # gate_scores: [batch, seq_len, num_experts]\n    \n    return gate_scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "sigmoid-bias": {
+      "id": "sigmoid-bias",
+      "title": "Sigmoid with Load Balancing Bias",
+      "equations": [
+        {
+          "id": "sigmoid-bias-1",
+          "title": "Sigmoid Activation",
+          "explanation": "Apply sigmoid to gate scores.",
+          "equation": "\\sigma(s) = \\frac{1}{1 + e^{-s}}",
+          "canvasHeight": 150
+        },
+        {
+          "id": "sigmoid-bias-2",
+          "title": "Add Load Balancing Bias",
+          "explanation": "Add learnable bias for auxiliary-loss-free balancing.",
+          "equation": "s' = \\sigma(s + b_{\\text{balance}})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "sigmoid-bias-init",
+        "title": "Initialize Load Balancing Bias",
+        "explanation": "Learnable bias for load balancing.",
+        "codeAnswer": "import torch\nimport torch.nn as nn\n\nclass SigmoidWithBias(nn.Module):\n    def __init__(self, num_experts):\n        super().__init__()\n        # Initialize bias to zero\n        self.bias = nn.Parameter(torch.zeros(num_experts))\n        \n        # EMA of expert loads for balancing\n        self.register_buffer('expert_load_ema', torch.zeros(num_experts))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "sigmoid-bias-forward",
+        "title": "Apply Sigmoid with Bias",
+        "explanation": "Sigmoid activation with load balancing.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\n\ndef forward(self, gate_scores):\n    # gate_scores: [batch, seq_len, num_experts]\n    \n    # Add load balancing bias\n    scores_with_bias = gate_scores + self.bias\n    \n    # Apply sigmoid activation\n    scores = torch.sigmoid(scores_with_bias)\n    \n    return scores",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "topk": {
+      "id": "topk",
+      "title": "Top-K Expert Selection",
+      "equations": [
+        {
+          "id": "topk-1",
+          "title": "Select Top-K Experts",
+          "explanation": "Select the k experts with highest scores for each token.",
+          "equation": "s_{\\text{top}}, i_{\\text{top}} = \\text{topk}(s, k=8)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "topk-init",
+        "title": "TopK Configuration",
+        "explanation": "Set top-k parameter.",
+        "codeAnswer": "class MoERouter:\n    def __init__(self, num_experts, top_k):\n        self.num_experts = num_experts  # 256\n        self.top_k = top_k  # 8 for DeepSeek-V3",
+        "language": "python"
+      },
+      "forward": {
+        "id": "topk-forward",
+        "title": "Apply Top-K Selection",
+        "explanation": "Select top-k experts per token.",
+        "codeAnswer": "import torch\n\ndef select_topk(scores, k=8):\n    # scores: [batch, seq_len, num_experts]\n    \n    # Select top-k scores and indices\n    top_scores, top_indices = torch.topk(scores, k, dim=-1)\n    # top_scores: [batch, seq_len, k]\n    # top_indices: [batch, seq_len, k]\n    \n    return top_scores, top_indices",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "normalize-scores": {
+      "id": "normalize-scores",
+      "title": "Normalize Routing Scores",
+      "equations": [
+        {
+          "id": "normalize-1",
+          "title": "Normalize Top-K Scores",
+          "explanation": "Normalize selected routing scores to sum to 1.",
+          "equation": "w_i = \\frac{s_i}{\\sum_{j=1}^{k} s_j}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "normalize-init",
+        "title": "Normalize (Functional)",
+        "explanation": "Normalization is a functional operation.",
+        "codeAnswer": "import torch\n\n# No initialization for normalization",
+        "language": "python"
+      },
+      "forward": {
+        "id": "normalize-forward",
+        "title": "Normalize Scores",
+        "explanation": "Normalize top-k scores.",
+        "codeAnswer": "import torch\n\ndef normalize_scores(top_scores):\n    # top_scores: [batch, seq_len, k]\n    \n    # Normalize to sum to 1 along k dimension\n    normalized = top_scores / (top_scores.sum(dim=-1, keepdim=True) + 1e-6)\n    \n    return normalized",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "routed-expert": {
+      "id": "routed-expert",
+      "title": "Routed Expert FFN",
+      "equations": [
+        {
+          "id": "routed-expert-1",
+          "title": "Expert FFN",
+          "explanation": "Standard feed-forward network for each expert.",
+          "equation": "\\text{Expert}_i(x) = \\text{dropout}(\\text{GELU}(xW_{\\text{up}}^i))W_{\\text{down}}^i",
+          "canvasHeight": 150
+        },
+        {
+          "id": "routed-expert-2",
+          "title": "Weighted Expert Output",
+          "explanation": "Weight each expert's output by routing score.",
+          "equation": "y_i = w_i \\cdot \\text{Expert}_{i_{\\text{top}}}(x)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "routed-expert-init",
+        "title": "Routed Expert Initialization",
+        "explanation": "Initialize expert FFN layers.",
+        "codeAnswer": "import torch.nn as nn\n\nclass ExpertFFN(nn.Module):\n    def __init__(self, hidden_dim, intermediate_dim, dropout_rate=0.1):\n        super().__init__()\n        self.up = nn.Linear(hidden_dim, intermediate_dim, bias=False)\n        self.gelu = nn.GELU()\n        self.dropout = nn.Dropout(dropout_rate)\n        self.down = nn.Linear(intermediate_dim, hidden_dim, bias=False)\n\n# For DeepSeek-V3: hidden_dim=7168, intermediate_dim=18432 (2.57x)\nexperts = nn.ModuleList([ExpertFFN(7168, 18432) for _ in range(256)])",
+        "language": "python"
+      },
+      "forward": {
+        "id": "routed-expert-forward",
+        "title": "Routed Expert Forward",
+        "explanation": "Apply expert FFN to tokens routed to it.",
+        "codeAnswer": "def forward(self, x):\n    # x: [num_tokens_for_this_expert, hidden_dim]\n    \n    # Up-project and activate\n    h = self.gelu(self.up(x))\n    \n    # Dropout\n    h = self.dropout(h)\n    \n    # Down-project\n    output = self.down(h)\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "shared-expert": {
+      "id": "shared-expert",
+      "title": "Shared Expert FFN",
+      "equations": [
+        {
+          "id": "shared-expert-1",
+          "title": "Shared Expert Computation",
+          "explanation": "A shared expert processes all tokens.",
+          "equation": "y_{\\text{shared}} = 0.1 \\cdot \\text{Expert}_{\\text{shared}}(x)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "shared-expert-init",
+        "title": "Shared Expert Initialization",
+        "explanation": "Initialize shared expert FFN.",
+        "codeAnswer": "import torch.nn as nn\n\nclass SharedExpert(nn.Module):\n    def __init__(self, hidden_dim, intermediate_dim, dropout_rate=0.1):\n        super().__init__()\n        self.expert = ExpertFFN(hidden_dim, intermediate_dim, dropout_rate)\n        self.scale = 0.1  # Scaling factor for shared expert",
+        "language": "python"
+      },
+      "forward": {
+        "id": "shared-expert-forward",
+        "title": "Shared Expert Forward",
+        "explanation": "Apply shared expert to all tokens.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim]\n    batch, seq_len, hidden_dim = x.shape\n    \n    # Flatten for expert processing\n    x_flat = x.view(-1, hidden_dim)\n    \n    # Apply shared expert\n    output = self.expert(x_flat)\n    \n    # Scale and reshape\n    output = output.view(batch, seq_len, hidden_dim) * self.scale\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "expert-combine": {
+      "id": "expert-combine",
+      "title": "Combine Expert Outputs",
+      "equations": [
+        {
+          "id": "expert-combine-1",
+          "title": "Weighted Sum of Routed Experts",
+          "explanation": "Sum weighted outputs from selected experts.",
+          "equation": "y_{\\text{routed}} = \\sum_{i=1}^{k} w_i \\cdot \\text{Expert}_{i_{\\text{top}}}(x)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "expert-combine-2",
+          "title": "Add Shared Expert",
+          "explanation": "Add scaled shared expert output.",
+          "equation": "y = y_{\\text{routed}} + y_{\\text{shared}}",
+          "canvasHeight": 120
+        }
+      ],
+      "initialization": {
+        "id": "expert-combine-init",
+        "title": "Expert Combine (Functional)",
+        "explanation": "Combining outputs is functional.",
+        "codeAnswer": "# Expert combination is a functional operation\n# No parameters needed",
+        "language": "python"
+      },
+      "forward": {
+        "id": "expert-combine-forward",
+        "title": "Combine Expert Outputs",
+        "explanation": "Sum routed and shared expert outputs.",
+        "codeAnswer": "import torch\n\ndef combine_expert_outputs(routed_outputs, shared_output, routing_weights, routing_indices):\n    # Initialize combined output\n    batch, seq_len, hidden_dim = shared_output.shape\n    combined = torch.zeros_like(shared_output)\n    \n    # Add weighted routed expert outputs\n    # (This is simplified; actual implementation uses scatter operations)\n    for i in range(routing_indices.size(-1)):  # For each of top-k\n        expert_idx = routing_indices[:, :, i]\n        weight = routing_weights[:, :, i].unsqueeze(-1)\n        combined += routed_outputs[i] * weight\n    \n    # Add shared expert output (already scaled by 0.1)\n    combined += shared_output\n    \n    return combined",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "moe-dropout": {
+      "id": "moe-dropout",
+      "title": "MoE Dropout",
+      "equations": [
+        {
+          "id": "moe-dropout-1",
+          "title": "Dropout on MoE Output",
+          "explanation": "Apply dropout to combined expert output.",
+          "equation": "y' = \\text{Dropout}(y, p=0.1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "moe-dropout-init",
+        "title": "MoE Dropout Initialization",
+        "explanation": "Dropout layer for MoE output.",
+        "codeAnswer": "import torch.nn as nn\n\nclass MoELayer(nn.Module):\n    def __init__(self, dropout_rate=0.1):\n        super().__init__()\n        self.dropout = nn.Dropout(dropout_rate)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "moe-dropout-forward",
+        "title": "Apply MoE Dropout",
+        "explanation": "Dropout before residual connection.",
+        "codeAnswer": "def forward(self, moe_output):\n    # moe_output: [batch, seq_len, hidden_dim]\n    \n    # Apply dropout\n    output = self.dropout(moe_output)\n    \n    return output",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "residual-2": {
+      "id": "residual-2",
+      "title": "Second Residual Connection",
+      "equations": [
+        {
+          "id": "residual-2-1",
+          "title": "Add MoE Residual",
+          "explanation": "Add input to MoE output.",
+          "equation": "x'' = x' + \\text{MoE}(\\text{Norm}(x'))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "residual-2-init",
+        "title": "Second Residual (No Init)",
+        "explanation": "Element-wise addition.",
+        "codeAnswer": "# Residual connections are parameter-free",
+        "language": "python"
+      },
+      "forward": {
+        "id": "residual-2-forward",
+        "title": "Second Residual Forward",
+        "explanation": "Add skip connection after MoE.",
+        "codeAnswer": "def forward(self, x, moe_output):\n    # x: input after first residual [batch, seq_len, hidden_dim]\n    # moe_output: [batch, seq_len, hidden_dim]\n    \n    # Add residual connection\n    x = x + moe_output\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "final-norm": {
+      "id": "final-norm",
+      "title": "Final Layer Normalization",
+      "equations": [
+        {
+          "id": "final-norm-1",
+          "title": "Final RMSNorm",
+          "explanation": "Normalize before output heads.",
+          "equation": "h_{\\text{final}} = \\text{RMSNorm}(x^{(L)})",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "final-norm-init",
+        "title": "Final Norm Initialization",
+        "explanation": "RMSNorm before output projection.",
+        "codeAnswer": "import torch.nn as nn\n\nclass DeepSeekV3Model(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # ... layers ...\n        self.final_norm = RMSNorm(config['hidden_dim'], eps=1e-6)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "final-norm-forward",
+        "title": "Final Norm Forward",
+        "explanation": "Apply final normalization.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim]\n    # After all transformer layers\n    \n    # Final normalization\n    x = self.final_norm(x)\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "final-dropout": {
+      "id": "final-dropout",
+      "title": "Final Dropout",
+      "equations": [
+        {
+          "id": "final-dropout-1",
+          "title": "Dropout Before Output",
+          "explanation": "Final dropout before prediction heads.",
+          "equation": "h' = \\text{Dropout}(h_{\\text{final}}, p=0.1)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "final-dropout-init",
+        "title": "Final Dropout Initialization",
+        "explanation": "Dropout before output heads.",
+        "codeAnswer": "import torch.nn as nn\n\nclass DeepSeekV3Model(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # ... layers ...\n        self.final_dropout = nn.Dropout(config.get('dropout_rate', 0.1))",
+        "language": "python"
+      },
+      "forward": {
+        "id": "final-dropout-forward",
+        "title": "Final Dropout Forward",
+        "explanation": "Apply final dropout.",
+        "codeAnswer": "def forward(self, x):\n    # x: [batch, seq_len, hidden_dim]\n    # After final normalization\n    \n    # Apply dropout\n    x = self.final_dropout(x)\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "language-model-head": {
+      "id": "language-model-head",
+      "title": "Language Model Output Head",
+      "equations": [
+        {
+          "id": "lm-head-1",
+          "title": "Project to Vocabulary",
+          "explanation": "Main output projection for next token prediction.",
+          "equation": "\\text{logits} = h W_{\\text{vocab}} \\in \\mathbb{R}^{B \\times L \\times V}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "lm-head-init",
+        "title": "LM Head Initialization",
+        "explanation": "Output projection to vocabulary.",
+        "codeAnswer": "import torch.nn as nn\n\nclass DeepSeekV3Model(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        # ... layers ...\n        self.lm_head = nn.Linear(\n            config['hidden_dim'],  # 7168\n            config['vocab_size'],  # 128000\n            bias=False\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "lm-head-forward",
+        "title": "LM Head Forward",
+        "explanation": "Project to vocabulary logits.",
+        "codeAnswer": "def forward(self, hidden_states):\n    # hidden_states: [batch, seq_len, hidden_dim]\n    \n    # Project to vocabulary\n    logits = self.lm_head(hidden_states)\n    # logits: [batch, seq_len, vocab_size]\n    \n    return logits",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "logits": {
+      "id": "logits",
+      "title": "Next-Token Logits",
+      "equations": [
+        {
+          "id": "logits-1",
+          "title": "Next Token Probabilities",
+          "explanation": "Convert logits to probabilities for next token.",
+          "equation": "P(x_{t+1} | x_{\\leq t}) = \\text{softmax}(\\text{logits}_t)",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "logits-init",
+        "title": "Logits (Output)",
+        "explanation": "Logits are model output.",
+        "codeAnswer": "# Logits are the output of lm_head\n# No separate initialization",
+        "language": "python"
+      },
+      "forward": {
+        "id": "logits-forward",
+        "title": "Sample Next Token",
+        "explanation": "Use logits for generation.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\n\ndef sample_next_token(logits, temperature=1.0):\n    # logits: [batch, seq_len, vocab_size]\n    \n    # Get logits for last position\n    next_token_logits = logits[:, -1, :] / temperature\n    \n    # Sample from distribution\n    probs = F.softmax(next_token_logits, dim=-1)\n    next_token = torch.multinomial(probs, num_samples=1)\n    \n    return next_token",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "mtp-outputs": {
+      "id": "mtp-outputs",
+      "title": "Multi-Token Prediction Outputs",
+      "equations": [
+        {
+          "id": "mtp-1",
+          "title": "Multiple Future Predictions",
+          "explanation": "Predict multiple future tokens simultaneously.",
+          "equation": "\\text{MTP\\_logits}^{(d)} \\in \\mathbb{R}^{B \\times L \\times V}, \\quad d \\in \\{1, ..., D\\}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "mtp-init",
+        "title": "MTP Outputs (Output)",
+        "explanation": "MTP outputs from MTP module.",
+        "codeAnswer": "# MTP outputs come from MultiTokenPrediction module\n# Shape: [batch, depth, seq_len, vocab_size]",
+        "language": "python"
+      },
+      "forward": {
+        "id": "mtp-forward",
+        "title": "Use MTP for Training",
+        "explanation": "Multi-token prediction loss.",
+        "codeAnswer": "import torch\nimport torch.nn.functional as F\n\ndef compute_mtp_loss(mtp_logits, target_ids, depth):\n    # mtp_logits: [batch, depth, seq_len, vocab_size]\n    # target_ids: [batch, seq_len]\n    \n    total_loss = 0\n    for d in range(depth):\n        # Predict d+1 tokens ahead\n        shifted_targets = target_ids[:, d+1:]\n        predictions = mtp_logits[:, d, :shifted_targets.size(1), :]\n        \n        # Compute cross-entropy loss\n        loss = F.cross_entropy(\n            predictions.reshape(-1, predictions.size(-1)),\n            shifted_targets.reshape(-1),\n            ignore_index=-100\n        )\n        total_loss += loss\n    \n    return total_loss / depth",
+        "language": "python"
+      },
+      "type": "custom"
+    },
+    "transformer-layer-container": {
+      "id": "transformer-layer-container",
+      "title": "Transformer Layer",
+      "equations": [
+        {
+          "id": "layer-1",
+          "title": "Pre-Norm Attention Block",
+          "explanation": "Apply normalization, center-shift, attention, and residual.",
+          "equation": "x' = x + \\text{Attn}(\\text{center}(\\text{Norm}(x)) + 1.0)",
+          "canvasHeight": 150
+        },
+        {
+          "id": "layer-2",
+          "title": "Pre-Norm MoE Block",
+          "explanation": "Apply normalization, MoE, and residual.",
+          "equation": "x'' = x' + \\text{MoE}(\\text{Norm}(x'))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "layer-init",
+        "title": "Transformer Layer Initialization",
+        "explanation": "Initialize complete transformer layer.",
+        "codeAnswer": "import torch.nn as nn\n\nclass DeepSeekV3TransformerLayer(nn.Module):\n    def __init__(self, config):\n        super().__init__()\n        \n        # Attention block\n        self.attn_norm = RMSNorm(config['hidden_dim'])\n        self.attention = MultiHeadLatentAttention(config)\n        \n        # MoE block\n        self.moe_norm = RMSNorm(config['hidden_dim'])\n        self.moe = DeepSeekMoE(config)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "layer-forward",
+        "title": "Transformer Layer Forward",
+        "explanation": "Complete layer with attention and MoE.",
+        "codeAnswer": "def forward(self, x, attention_mask=None):\n    # Attention block\n    residual = x\n    x = self.attn_norm(x)\n    # Center and shift\n    x = x - x.mean(dim=-1, keepdim=True) + 1.0\n    x = self.attention(x, attention_mask)\n    x = x + residual\n    \n    # MoE block\n    residual = x\n    x = self.moe_norm(x)\n    x = self.moe(x)\n    x = x + residual\n    \n    return x",
+        "language": "python"
+      },
+      "type": "custom"
     }
   }
 }

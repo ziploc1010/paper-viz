@@ -20,6 +20,8 @@ const MathDerivation = ({ derivationId }) => {
     const derivationFiles = {
       'diffusion-models': 'diffusion.json',
       'schrodinger-equation': 'schrodinger.json',
+      'euler-lagrange': 'euler-lagrange.json',
+      'general-relativity': 'generalrelativity.json',
       // Add more derivations here as they're created
       // 'fourier-transform': 'fourier.json',
       // 'navier-stokes': 'navier-stokes.json',

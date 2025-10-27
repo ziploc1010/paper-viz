@@ -1,21 +1,676 @@
 {
-  "componentQuizzes": {},
+  "id": "qwen3-architecture-model",
+  "title": "Qwen3 Model Architecture",
+  "subtitle": "Complete Interactive Learning Experience",
+  "description": "Learn about the Qwen3 architecture through interactive diagrams and coding exercises",
+  "componentMatchers": {
+    "input-tokens": [
+      "Input Tokens"
+    ],
+    "main-container": [
+      "Qwen3Model",
+      "Decoder"
+    ],
+    "token-embedding": [
+      "Embedding",
+      "tok_emb"
+    ],
+    "transformerblock-container": [
+      "TransformerBlock"
+    ],
+    "rmsnorm-1": [
+      "RMSNorm",
+      "norm1"
+    ],
+    "groupedqueryattention-container": [
+      "GroupedQueryAttention"
+    ],
+    "qkv-projections": [
+      "W_query",
+      "W_key",
+      "W_value",
+      "Linear"
+    ],
+    "qk-norm": [
+      "q_norm",
+      "k_norm",
+      "qk_norm"
+    ],
+    "apply-rope": [
+      "apply_rope"
+    ],
+    "repeat-interleave": [
+      "repeat_interleave"
+    ],
+    "attention-scores": [
+      "matmul"
+    ],
+    "causal-mask": [
+      "masked_fill",
+      "causal mask"
+    ],
+    "scale-softmax": [
+      "scale",
+      "softmax",
+      "\u221ahead_dim"
+    ],
+    "attention-output": [
+      "attention weights",
+      "weighted sum"
+    ],
+    "out-proj": [
+      "out_proj",
+      "Output"
+    ],
+    "residual-1": [
+      "shortcut",
+      "residual"
+    ],
+    "feedforward-container": [
+      "FeedForward",
+      "SwiGLU",
+      "ff"
+    ],
+    "swiglu": [
+      "SwiGLU",
+      "SiLU"
+    ],
+    "residual-2": [
+      "shortcut",
+      "residual"
+    ],
+    "final-norm": [
+      "final_norm",
+      "Final"
+    ],
+    "language-model-head": [
+      "out_head",
+      "lm_head"
+    ],
+    "output-logits": [
+      "Output Logits",
+      "logits"
+    ]
+  },
   "componentExplanations": {
-    "input": {
+    "input-tokens": {
       "title": "Input Tokens",
-      "explanation": "Qwen3 tokenizer with vocabulary size 151,936. Supports contexts up to 40,960 tokens."
+      "explanation": "The starting point of Qwen3. Input tokens are numerical indices representing words or subwords from the vocabulary. They're organized in batches of sequences for efficient processing. Each token is mapped to a unique index from the 151,936-word vocabulary."
     },
-    "embedding": {
-      "title": "Token Embeddings",
-      "explanation": "Maps tokens to 1024-dimensional vectors (0.6B model). Position info comes from RoPE."
+    "main-container": {
+      "title": "Qwen3 Decoder Model",
+      "explanation": "The main Qwen3 model class that combines token embeddings, transformer blocks, and a language modeling head. Unlike encoder models like BERT, Qwen3 is a decoder-only architecture similar to GPT, designed for autoregressive text generation."
     },
-    "gqa": {
-      "title": "Grouped Query Attention",
-      "explanation": "16 query heads, 8 KV groups (2:1 ratio). 128-dim heads with RoPE."
+    "token-embedding": {
+      "title": "Token Embedding",
+      "explanation": "Maps each token ID to a dense 1024-dimensional vector (for the 0.6B model). With 151,936 tokens in the vocabulary, this creates a large embedding matrix that captures semantic relationships between words. Similar words have similar embeddings."
+    },
+    "transformerblock-container": {
+      "title": "Transformer Block",
+      "explanation": "A single decoder layer containing RMSNorm, grouped-query attention (GQA), and a SwiGLU feed-forward network. The 0.6B model stacks 28 identical blocks. Each layer has pre-normalization and residual connections, following the modern decoder architecture pattern."
+    },
+    "rmsnorm-1": {
+      "title": "RMS Normalization",
+      "explanation": "Root Mean Square Layer Normalization, a simpler and more efficient alternative to LayerNorm. It normalizes activations using only the RMS statistic without mean centering or bias, which reduces computation while maintaining training stability."
+    },
+    "groupedqueryattention-container": {
+      "title": "Grouped Query Attention (GQA)",
+      "explanation": "An efficient attention mechanism that reduces the number of key-value heads while keeping all query heads. For Qwen3-0.6B, there are 16 query heads but only 8 key-value groups. This reduces memory and computation while maintaining model quality."
+    },
+    "qkv-projections": {
+      "title": "Query, Key, Value Projections",
+      "explanation": "Three separate linear transformations that project input embeddings into query, key, and value spaces. Queries have shape (n_heads \u00d7 head_dim), while keys and values have shape (n_kv_groups \u00d7 head_dim) for efficiency."
+    },
+    "qk-norm": {
+      "title": "Query-Key Normalization",
+      "explanation": "Optional RMSNorm applied to queries and keys before attention computation. Qwen3 uses this feature (qk_norm=True) to improve training stability and attention quality, especially for longer context lengths."
+    },
+    "apply-rope": {
+      "title": "Rotary Position Embedding (RoPE)",
+      "explanation": "A position encoding method that applies rotary transformations to queries and keys. RoPE naturally encodes relative positions and enables length extrapolation. Qwen3 uses a theta_base of 1,000,000 for very long context support (up to 40,960 tokens)."
+    },
+    "repeat-interleave": {
+      "title": "Key-Value Repeat",
+      "explanation": "Expands the key-value groups to match the number of query heads. With 16 query heads and 8 KV groups, each KV group is repeated 2 times. This allows grouped-query attention to work with standard attention mechanisms."
+    },
+    "attention-scores": {
+      "title": "Attention Score Computation",
+      "explanation": "Computes similarity between queries and keys using matrix multiplication: Q @ K^T. The resulting attention scores represent how much each token should attend to every other token in the sequence."
+    },
+    "causal-mask": {
+      "title": "Causal Masking",
+      "explanation": "Applies a causal (autoregressive) mask by setting future positions to -infinity. This ensures each token can only attend to previous tokens and itself, enabling left-to-right language modeling."
+    },
+    "scale-softmax": {
+      "title": "Scale and Softmax",
+      "explanation": "Scales attention scores by 1/\u221ahead_dim (1/\u221a128 for Qwen3) to prevent vanishing gradients, then applies softmax to convert scores into probability distributions that sum to 1."
+    },
+    "attention-output": {
+      "title": "Attention Weighted Sum",
+      "explanation": "Multiplies attention weights with values to compute a weighted sum. This aggregates information from different positions based on the attention patterns learned by the model."
+    },
+    "out-proj": {
+      "title": "Output Projection",
+      "explanation": "Projects the concatenated multi-head attention output back to the model dimension (1024 for 0.6B model). This linear layer combines information from all attention heads into a unified representation."
+    },
+    "residual-1": {
+      "title": "First Residual Connection",
+      "explanation": "Adds the attention output to the original input (shortcut = x). Residual connections help with gradient flow in deep networks and allow the model to learn incremental refinements."
+    },
+    "feedforward-container": {
+      "title": "SwiGLU Feed-Forward Network",
+      "explanation": "A gated feed-forward network using the SwiGLU activation. It consists of three linear transformations: fc1 (gate), fc2 (up projection), and fc3 (down projection). The gating mechanism allows more expressive transformations."
     },
     "swiglu": {
-      "title": "SwiGLU FFN",
-      "explanation": "3-layer FFN with gated activation. Expands to 3072 dimensions (3× multiplier)."
+      "title": "SwiGLU Activation",
+      "explanation": "Gated Linear Unit with Swish/SiLU activation: SwiGLU(x) = SiLU(fc1(x)) * fc2(x). This combines gating and non-linearity, providing better performance than standard activations like ReLU or GELU."
+    },
+    "residual-2": {
+      "title": "Second Residual Connection",
+      "explanation": "Adds the feed-forward output to the post-attention representation. This completes the transformer block, allowing both attention and FFN to contribute to the final representation."
+    },
+    "final-norm": {
+      "title": "Final RMS Normalization",
+      "explanation": "The last normalization layer applied after all transformer blocks. It ensures the final hidden states are well-scaled before projection to vocabulary, which is important for stable training and generation."
+    },
+    "language-model-head": {
+      "title": "Language Model Head",
+      "explanation": "The final linear layer that projects from embedding dimension (1024) to vocabulary size (151,936). In Qwen3, this often shares weights with the input embeddings (tied weights), reducing parameters and ensuring consistency."
+    },
+    "output-logits": {
+      "title": "Output Logits",
+      "explanation": "The final output: raw scores (logits) for each vocabulary token at each position. During training, these are compared with the true next tokens using cross-entropy loss. During generation, the highest scoring token is selected (or sampled)."
+    }
+  },
+  "componentQuizzes": {
+    "input-tokens": {
+      "id": "input-tokens",
+      "title": "Input Tokens",
+      "equations": [
+        {
+          "id": "input-1",
+          "title": "Token Input Shape",
+          "explanation": "Input is a batch of token ID sequences from the tokenizer.",
+          "equation": "\\text{input\\_ids} \\in \\mathbb{Z}^{B \\times L}, \\quad 0 \\leq \\text{input\\_ids}_{ij} < V = 151936",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "input-func",
+        "title": "Input Tokens - Usage",
+        "explanation": "Input tokens are provided by tokenizer and passed to model.",
+        "codeAnswer": "# From qwen-architecture.py:\n# Tokenizer creates input token IDs\ntokenizer = Qwen3Tokenizer(tokenizer_file_path=...)\ninput_token_ids = tokenizer.encode(prompt)\ninput_ids = torch.tensor([input_token_ids], device=device)\n\n# Pass to model (from Qwen3Model.forward line 156):\ndef forward(self, in_idx):\n    tok_embeds = self.tok_emb(in_idx)  # in_idx shape: [batch, seq_len]\n    # ...",
+        "language": "python"
+      }
+    },
+    "token-embedding": {
+      "id": "token-embedding",
+      "title": "Token Embedding (nn.Embedding)",
+      "equations": [
+        {
+          "id": "embed-1",
+          "title": "Embedding Lookup",
+          "explanation": "Map token IDs to dense vectors using embedding matrix.",
+          "equation": "\\mathbf{E} = \\text{tok\\_emb}(\\text{in\\_idx}) \\in \\mathbb{R}^{B \\times L \\times d}, \\quad d = 1024",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "embed-init",
+        "title": "Token Embedding Initialization",
+        "explanation": "From Qwen3Model.__init__ (line 146 in qwen-architecture.py)",
+        "codeAnswer": "# From line 146:\nclass Qwen3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        self.tok_emb = nn.Embedding(\n            cfg[\"vocab_size\"],  # 151_936\n            cfg[\"emb_dim\"],     # 1024\n            dtype=cfg[\"dtype\"]  # torch.bfloat16\n        )",
+        "language": "python"
+      },
+      "forward": {
+        "id": "embed-forward",
+        "title": "Token Embedding Forward",
+        "explanation": "From Qwen3Model.forward (lines 156-158)",
+        "codeAnswer": "# From lines 156-158:\ndef forward(self, in_idx):\n    tok_embeds = self.tok_emb(in_idx)\n    x = tok_embeds\n    # x shape: [batch, seq_len, 1024]",
+        "language": "python"
+      }
+    },
+    "main-container": {
+      "id": "main-container",
+      "title": "Qwen3Model (Custom Class)",
+      "equations": [
+        {
+          "id": "model-1",
+          "title": "Complete Model Flow",
+          "explanation": "Embedding \u2192 TransformerBlocks \u2192 Final Norm \u2192 Output Head",
+          "equation": "\\text{logits} = \\text{out\\_head}(\\text{final\\_norm}(\\text{TransformerBlocks}(\\text{tok\\_emb}(\\text{in\\_idx}))))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "model-init",
+        "title": "Qwen3Model Initialization",
+        "explanation": "From lines 143-154 in qwen-architecture.py",
+        "codeAnswer": "# From lines 143-154:\nclass Qwen3Model(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        self.tok_emb = nn.Embedding(cfg[\"vocab_size\"], cfg[\"emb_dim\"], dtype=cfg[\"dtype\"])\n        self.trf_blocks = nn.ModuleList([TransformerBlock(cfg) for _ in range(cfg[\"n_layers\"])])\n        self.final_norm = RMSNorm(cfg[\"emb_dim\"])\n        self.out_head = nn.Linear(cfg[\"emb_dim\"], cfg[\"vocab_size\"], bias=False, dtype=cfg[\"dtype\"])\n        head_dim = cfg[\"emb_dim\"] // cfg[\"n_heads\"] if cfg[\"head_dim\"] is None else cfg[\"head_dim\"]\n        cos, sin = compute_rope_params(head_dim=head_dim, theta_base=cfg[\"rope_base\"], \n                                        context_length=cfg[\"context_length\"])\n        self.register_buffer(\"cos\", cos, persistent=False)\n        self.register_buffer(\"sin\", sin, persistent=False)\n        self.cfg = cfg",
+        "language": "python"
+      },
+      "forward": {
+        "id": "model-forward",
+        "title": "Qwen3Model Forward",
+        "explanation": "From lines 156-165 in qwen-architecture.py",
+        "codeAnswer": "# From lines 156-165:\ndef forward(self, in_idx):\n    tok_embeds = self.tok_emb(in_idx)\n    x = tok_embeds\n    num_tokens = x.shape[1]\n    mask = torch.triu(torch.ones(num_tokens, num_tokens, device=x.device, dtype=torch.bool), diagonal=1)\n    for block in self.trf_blocks:\n        x = block(x, mask, self.cos, self.sin)\n    x = self.final_norm(x)\n    logits = self.out_head(x.to(self.cfg[\"dtype\"]))\n    return logits",
+        "language": "python"
+      }
+    },
+    "transformerblock-container": {
+      "id": "transformerblock-container",
+      "title": "TransformerBlock (Custom Class)",
+      "equations": [
+        {
+          "id": "block-1",
+          "title": "Transformer Block Flow",
+          "explanation": "Pre-norm architecture: norm before attention and feedforward, both with residual connections.",
+          "equation": "\\mathbf{x}' = \\mathbf{x} + \\text{Attention}(\\text{norm1}(\\mathbf{x})), \\quad \\mathbf{x}'' = \\mathbf{x}' + \\text{FF}(\\text{norm2}(\\mathbf{x}'))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "block-init",
+        "title": "TransformerBlock Initialization",
+        "explanation": "From lines 117-130 in qwen-architecture.py",
+        "codeAnswer": "# From lines 117-130:\nclass TransformerBlock(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        self.att = GroupedQueryAttention(\n            d_in=cfg[\"emb_dim\"],\n            num_heads=cfg[\"n_heads\"],\n            head_dim=cfg[\"head_dim\"],\n            num_kv_groups=cfg[\"n_kv_groups\"],\n            qk_norm=cfg[\"qk_norm\"],\n            dtype=cfg[\"dtype\"]\n        )\n        self.ff = FeedForward(cfg)\n        self.norm1 = RMSNorm(cfg[\"emb_dim\"], eps=1e-6)\n        self.norm2 = RMSNorm(cfg[\"emb_dim\"], eps=1e-6)",
+        "language": "python"
+      },
+      "forward": {
+        "id": "block-forward",
+        "title": "TransformerBlock Forward",
+        "explanation": "From lines 132-141 in qwen-architecture.py",
+        "codeAnswer": "# From lines 132-141:\ndef forward(self, x, mask, cos, sin):\n    shortcut = x\n    x = self.norm1(x)\n    x = self.att(x, mask, cos, sin)\n    x = x + shortcut\n    shortcut = x\n    x = self.norm2(x)\n    x = self.ff(x)\n    x = x + shortcut\n    return x",
+        "language": "python"
+      }
+    },
+    "rmsnorm-1": {
+      "id": "rmsnorm-1",
+      "title": "RMSNorm (Custom Class)",
+      "equations": [
+        {
+          "id": "rms-1",
+          "title": "RMS Normalization",
+          "explanation": "Normalize by root mean square, then scale by learnable parameter.",
+          "equation": "\\text{RMS}(\\mathbf{x}) = \\sqrt{\\frac{1}{d}\\sum_{i=1}^d x_i^2 + \\epsilon}, \\quad \\mathbf{y} = \\frac{\\mathbf{x}}{\\text{RMS}(\\mathbf{x})} \\odot \\text{scale}",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "rms-init",
+        "title": "RMSNorm Initialization",
+        "explanation": "From lines 34-40 in qwen-architecture.py",
+        "codeAnswer": "# From lines 34-40:\nclass RMSNorm(nn.Module):\n    def __init__(self, emb_dim, eps=1e-6, bias=False, qwen3_compatible=True):\n        super().__init__()\n        self.eps = eps\n        self.qwen3_compatible = qwen3_compatible\n        self.scale = nn.Parameter(torch.ones(emb_dim))\n        self.shift = nn.Parameter(torch.zeros(emb_dim)) if bias else None",
+        "language": "python"
+      },
+      "forward": {
+        "id": "rms-forward",
+        "title": "RMSNorm Forward",
+        "explanation": "From lines 42-51 in qwen-architecture.py",
+        "codeAnswer": "# From lines 42-51:\ndef forward(self, x):\n    input_dtype = x.dtype\n    if self.qwen3_compatible:\n        x = x.to(torch.float32)\n    variance = x.pow(2).mean(dim=-1, keepdim=True)\n    norm_x = x * torch.rsqrt(variance + self.eps)\n    norm_x = norm_x * self.scale\n    if self.shift is not None:\n        norm_x = norm_x + self.shift\n    return norm_x.to(input_dtype)",
+        "language": "python"
+      }
+    },
+    "groupedqueryattention-container": {
+      "id": "groupedqueryattention-container",
+      "title": "GroupedQueryAttention (Custom Class)",
+      "equations": [
+        {
+          "id": "gqa-1",
+          "title": "Complete GQA Flow",
+          "explanation": "Project Q/K/V \u2192 Apply RoPE \u2192 Expand K/V \u2192 Compute Attention \u2192 Output Projection",
+          "equation": "\\text{out} = \\text{out\\_proj}(\\text{Attention}(\\text{apply\\_rope}(Q, K), V))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "gqa-init",
+        "title": "GroupedQueryAttention Initialization",
+        "explanation": "From lines 74-94 in qwen-architecture.py",
+        "codeAnswer": "# From lines 74-94:\nclass GroupedQueryAttention(nn.Module):\n    def __init__(self, d_in, num_heads, num_kv_groups, head_dim=None, qk_norm=False, dtype=None):\n        super().__init__()\n        assert num_heads % num_kv_groups == 0\n        self.num_heads = num_heads\n        self.num_kv_groups = num_kv_groups\n        self.group_size = num_heads // num_kv_groups\n        if head_dim is None:\n            head_dim = d_in // num_heads\n        self.head_dim = head_dim\n        self.d_out = num_heads * head_dim\n        self.W_query = nn.Linear(d_in, self.d_out, bias=False, dtype=dtype)\n        self.W_key = nn.Linear(d_in, num_kv_groups * head_dim, bias=False, dtype=dtype)\n        self.W_value = nn.Linear(d_in, num_kv_groups * head_dim, bias=False, dtype=dtype)\n        self.out_proj = nn.Linear(self.d_out, d_in, bias=False, dtype=dtype)\n        if qk_norm:\n            self.q_norm = RMSNorm(head_dim, eps=1e-6)\n            self.k_norm = RMSNorm(head_dim, eps=1e-6)\n        else:\n            self.q_norm = self.k_norm = None",
+        "language": "python"
+      },
+      "forward": {
+        "id": "gqa-forward",
+        "title": "GroupedQueryAttention Forward",
+        "explanation": "From lines 96-115 in qwen-architecture.py",
+        "codeAnswer": "# From lines 96-115:\ndef forward(self, x, mask, cos, sin):\n    b, num_tokens, _ = x.shape\n    queries = self.W_query(x)\n    keys = self.W_key(x)\n    values = self.W_value(x)\n    queries = queries.view(b, num_tokens, self.num_heads, self.head_dim).transpose(1, 2)\n    keys = keys.view(b, num_tokens, self.num_kv_groups, self.head_dim).transpose(1, 2)\n    values = values.view(b, num_tokens, self.num_kv_groups, self.head_dim).transpose(1, 2)\n    if self.q_norm:\n        queries = self.q_norm(queries)\n        keys = self.k_norm(keys)\n    queries = apply_rope(queries, cos, sin)\n    keys = apply_rope(keys, cos, sin)\n    keys = keys.repeat_interleave(self.group_size, dim=1)\n    values = values.repeat_interleave(self.group_size, dim=1)\n    attn_scores = queries @ keys.transpose(2, 3)\n    attn_scores = attn_scores.masked_fill(mask, -torch.inf)\n    attn_weights = torch.softmax(attn_scores / self.head_dim**0.5, dim=-1)\n    context = (attn_weights @ values).transpose(1, 2).reshape(b, num_tokens, self.d_out)\n    return self.out_proj(context)",
+        "language": "python"
+      }
+    },
+    "feedforward-container": {
+      "id": "feedforward-container",
+      "title": "FeedForward / SwiGLU (Custom Class)",
+      "equations": [
+        {
+          "id": "ff-1",
+          "title": "SwiGLU Formula",
+          "explanation": "Gated activation: SiLU(fc1(x)) element-wise multiplied by fc2(x), then projected down.",
+          "equation": "\\text{out} = \\text{fc3}(\\text{SiLU}(\\text{fc1}(\\mathbf{x})) \\odot \\text{fc2}(\\mathbf{x}))",
+          "canvasHeight": 150
+        }
+      ],
+      "initialization": {
+        "id": "ff-init",
+        "title": "FeedForward Initialization",
+        "explanation": "From lines 21-26 in qwen-architecture.py",
+        "codeAnswer": "# From lines 21-26:\nclass FeedForward(nn.Module):\n    def __init__(self, cfg):\n        super().__init__()\n        self.fc1 = nn.Linear(cfg[\"emb_dim\"], cfg[\"hidden_dim\"], dtype=cfg[\"dtype\"], bias=False)\n        self.fc2 = nn.Linear(cfg[\"emb_dim\"], cfg[\"hidden_dim\"], dtype=cfg[\"dtype\"], bias=False)\n        self.fc3 = nn.Linear(cfg[\"hidden_dim\"], cfg[\"emb_dim\"], dtype=cfg[\"dtype\"], bias=False)\n        # emb_dim=1024, hidden_dim=3072",
+        "language": "python"
+      },
+      "forward": {
+        "id": "ff-forward",
+        "title": "FeedForward Forward (SwiGLU)",
+        "explanation": "From lines 28-32 in qwen-architecture.py",
+        "codeAnswer": "# From lines 28-32:\ndef forward(self, x):\n    x_fc1 = self.fc1(x)\n    x_fc2 = self.fc2(x)\n    x = nn.functional.silu(x_fc1) * x_fc2\n    return self.fc3(x)",
+        "language": "python"
+      }
+    },
+    "apply-rope": {
+      "id": "apply-rope",
+      "title": "apply_rope (Function)",
+      "equations": [
+        {
+          "id": "rope-1",
+          "title": "Rotary Position Embedding",
+          "explanation": "Apply rotation to pairs of dimensions for position encoding.",
+          "equation": "\\mathbf{x}_{\\text{rot}} = \\mathbf{x} \\odot \\cos + \\text{rotate}(\\mathbf{x}) \\odot \\sin",
+          "canvasHeight": 150
+        },
+        {
+          "id": "rope-2",
+          "title": "Rotation Operation",
+          "explanation": "Split in half and rotate: [-x2, x1]",
+          "equation": "\\text{rotate}([x_1, ..., x_{d/2}, x_{d/2+1}, ..., x_d]) = [-x_{d/2+1}, ..., -x_d, x_1, ..., x_{d/2}]",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "rope-func",
+        "title": "apply_rope Function",
+        "explanation": "Complete function from lines 63-72 in qwen-architecture.py",
+        "codeAnswer": "# From lines 63-72:\ndef apply_rope(x, cos, sin):\n    batch_size, num_heads, seq_len, head_dim = x.shape\n    assert head_dim % 2 == 0, \"Head dimension must be even\"\n    x1 = x[..., : head_dim // 2]\n    x2 = x[..., head_dim // 2 :]\n    cos = cos[:seq_len, :].unsqueeze(0).unsqueeze(0)\n    sin = sin[:seq_len, :].unsqueeze(0).unsqueeze(0)\n    rotated = torch.cat((-x2, x1), dim=-1)\n    x_rotated = (x * cos) + (rotated * sin)\n    return x_rotated.to(dtype=x.dtype)",
+        "language": "python"
+      }
+    },
+    "qkv-projections": {
+      "id": "qkv-projections",
+      "title": "QKV Linear Projections",
+      "equations": [
+        {
+          "id": "qkv-1",
+          "title": "Three Linear Projections",
+          "explanation": "Project input to Query, Key, Value spaces with different dimensions for GQA.",
+          "equation": "\\mathbf{Q} = \\mathbf{x}W_Q \\in \\mathbb{R}^{B \\times L \\times 1024}, \\; \\mathbf{K}, \\mathbf{V} \\in \\mathbb{R}^{B \\times L \\times 1024}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "qkv-func",
+        "title": "QKV Projections Usage",
+        "explanation": "From GroupedQueryAttention (lines 86-88 init, 98-100 forward)",
+        "codeAnswer": "# Initialization (lines 86-88):\nself.W_query = nn.Linear(d_in, self.d_out, bias=False, dtype=dtype)\nself.W_key = nn.Linear(d_in, num_kv_groups * head_dim, bias=False, dtype=dtype)\nself.W_value = nn.Linear(d_in, num_kv_groups * head_dim, bias=False, dtype=dtype)\n# d_in=1024, d_out=1024, num_kv_groups=8, head_dim=128\n\n# Forward pass (lines 98-100):\nqueries = self.W_query(x)\nkeys = self.W_key(x)\nvalues = self.W_value(x)",
+        "language": "python"
+      }
+    },
+    "qk-norm": {
+      "id": "qk-norm",
+      "title": "Query-Key Normalization (Optional)",
+      "equations": [
+        {
+          "id": "qk-norm-1",
+          "title": "Q/K RMSNorm",
+          "explanation": "Apply RMSNorm to Q and K if qk_norm=True (used in Qwen3).",
+          "equation": "\\mathbf{Q}' = \\text{q\\_norm}(\\mathbf{Q}), \\quad \\mathbf{K}' = \\text{k\\_norm}(\\mathbf{K})",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "qk-norm-func",
+        "title": "Q/K Norm Usage",
+        "explanation": "From GroupedQueryAttention (lines 90-94 init, 104-106 forward)",
+        "codeAnswer": "# Initialization (lines 90-94):\nif qk_norm:\n    self.q_norm = RMSNorm(head_dim, eps=1e-6)\n    self.k_norm = RMSNorm(head_dim, eps=1e-6)\nelse:\n    self.q_norm = self.k_norm = None\n\n# Forward pass (lines 104-106):\nif self.q_norm:\n    queries = self.q_norm(queries)\n    keys = self.k_norm(keys)",
+        "language": "python"
+      }
+    },
+    "repeat-interleave": {
+      "id": "repeat-interleave",
+      "title": "repeat_interleave (Function)",
+      "equations": [
+        {
+          "id": "repeat-1",
+          "title": "Expand KV for GQA",
+          "explanation": "Repeat each KV group to match number of query heads (16 heads / 8 groups = 2x repeat).",
+          "equation": "\\text{group\\_size} = \\frac{16}{8} = 2, \\quad K' = \\text{repeat\\_interleave}(K, 2, \\text{dim}=1)",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "repeat-func",
+        "title": "repeat_interleave Function",
+        "explanation": "From GroupedQueryAttention.forward (lines 109-110)",
+        "codeAnswer": "# From lines 109-110:\nkeys = keys.repeat_interleave(self.group_size, dim=1)\nvalues = values.repeat_interleave(self.group_size, dim=1)\n# Expands from [B, 8, L, 128] to [B, 16, L, 128]",
+        "language": "python"
+      }
+    },
+    "attention-scores": {
+      "id": "attention-scores",
+      "title": "Attention Score Matmul",
+      "equations": [
+        {
+          "id": "attn-scores-1",
+          "title": "Query-Key Dot Product",
+          "explanation": "Matrix multiply queries with transposed keys.",
+          "equation": "\\text{scores} = \\mathbf{Q} \\mathbf{K}^T \\in \\mathbb{R}^{B \\times 16 \\times L \\times L}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "attn-scores-func",
+        "title": "Attention Scores Computation",
+        "explanation": "From GroupedQueryAttention.forward (line 111)",
+        "codeAnswer": "# From line 111:\nattn_scores = queries @ keys.transpose(2, 3)\n# queries: [B, 16, L, 128]\n# keys.transpose(2, 3): [B, 16, 128, L]\n# result: [B, 16, L, L]",
+        "language": "python"
+      }
+    },
+    "causal-mask": {
+      "id": "causal-mask",
+      "title": "Causal Masking",
+      "equations": [
+        {
+          "id": "mask-1",
+          "title": "Apply Causal Mask",
+          "explanation": "Set future positions to -infinity to prevent attention to future tokens.",
+          "equation": "\\text{scores}_{\\text{masked}} = \\text{masked\\_fill}(\\text{scores}, \\text{mask}, -\\infty)",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "mask-func",
+        "title": "Causal Mask Application",
+        "explanation": "Mask creation (line 160) and application (line 112)",
+        "codeAnswer": "# Mask creation in Qwen3Model.forward (line 160):\nmask = torch.triu(torch.ones(num_tokens, num_tokens, device=x.device, dtype=torch.bool), diagonal=1)\n\n# Apply mask in GroupedQueryAttention.forward (line 112):\nattn_scores = attn_scores.masked_fill(mask, -torch.inf)\n# Replaces positions where mask=True with -inf",
+        "language": "python"
+      }
+    },
+    "scale-softmax": {
+      "id": "scale-softmax",
+      "title": "Scale and Softmax",
+      "equations": [
+        {
+          "id": "scale-1",
+          "title": "Scaled Softmax",
+          "explanation": "Scale by sqrt(head_dim) and apply softmax.",
+          "equation": "\\text{weights} = \\text{softmax}\\left(\\frac{\\text{scores}}{\\sqrt{d_h}}\\right), \\quad d_h = 128",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "scale-softmax-func",
+        "title": "Scale and Softmax Implementation",
+        "explanation": "From GroupedQueryAttention.forward (line 113)",
+        "codeAnswer": "# From line 113:\nattn_weights = torch.softmax(attn_scores / self.head_dim**0.5, dim=-1)\n# Divide by sqrt(128) \u2248 11.31, then softmax along last dimension",
+        "language": "python"
+      }
+    },
+    "attention-output": {
+      "id": "attention-output",
+      "title": "Attention Output (Weighted Sum)",
+      "equations": [
+        {
+          "id": "attn-out-1",
+          "title": "Apply Weights to Values",
+          "explanation": "Multiply attention weights with values to get context.",
+          "equation": "\\text{context} = \\text{weights} \\times \\mathbf{V} \\in \\mathbb{R}^{B \\times 16 \\times L \\times 128}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "attn-out-func",
+        "title": "Attention Output Computation",
+        "explanation": "From GroupedQueryAttention.forward (line 114)",
+        "codeAnswer": "# From line 114:\ncontext = (attn_weights @ values).transpose(1, 2).reshape(b, num_tokens, self.d_out)\n# attn_weights: [B, 16, L, L]\n# values: [B, 16, L, 128]\n# matmul result: [B, 16, L, 128]\n# after transpose and reshape: [B, L, 1024]",
+        "language": "python"
+      }
+    },
+    "out-proj": {
+      "id": "out-proj",
+      "title": "Output Projection",
+      "equations": [
+        {
+          "id": "out-proj-1",
+          "title": "Attention Output Projection",
+          "explanation": "Project concatenated heads back to model dimension.",
+          "equation": "\\text{out} = \\text{context} \\times W_O \\in \\mathbb{R}^{B \\times L \\times 1024}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "out-proj-func",
+        "title": "Output Projection Usage",
+        "explanation": "From GroupedQueryAttention (line 89 init, 115 forward)",
+        "codeAnswer": "# Initialization (line 89):\nself.out_proj = nn.Linear(self.d_out, d_in, bias=False, dtype=dtype)\n# d_out=1024, d_in=1024\n\n# Forward (line 115):\nreturn self.out_proj(context)",
+        "language": "python"
+      }
+    },
+    "residual-1": {
+      "id": "residual-1",
+      "title": "First Residual Connection",
+      "equations": [
+        {
+          "id": "res1-1",
+          "title": "Attention Residual",
+          "explanation": "Add input to attention output for gradient flow.",
+          "equation": "\\mathbf{x}' = \\mathbf{x} + \\text{Attention}(\\text{norm1}(\\mathbf{x}))",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "res1-func",
+        "title": "First Residual Implementation",
+        "explanation": "From TransformerBlock.forward (lines 132-136)",
+        "codeAnswer": "# From lines 132-136:\nshortcut = x\nx = self.norm1(x)\nx = self.att(x, mask, cos, sin)\nx = x + shortcut",
+        "language": "python"
+      }
+    },
+    "swiglu": {
+      "id": "swiglu",
+      "title": "SwiGLU / SiLU Activation",
+      "equations": [
+        {
+          "id": "swiglu-1",
+          "title": "SiLU Formula",
+          "explanation": "Sigmoid Linear Unit (Swish) activation function.",
+          "equation": "\\text{SiLU}(x) = x \\cdot \\sigma(x) = \\frac{x}{1 + e^{-x}}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "swiglu-func",
+        "title": "SwiGLU Implementation",
+        "explanation": "From FeedForward.forward (lines 28-31)",
+        "codeAnswer": "# From lines 28-31:\nx_fc1 = self.fc1(x)\nx_fc2 = self.fc2(x)\nx = nn.functional.silu(x_fc1) * x_fc2\n# Element-wise multiply SiLU(fc1(x)) with fc2(x)",
+        "language": "python"
+      }
+    },
+    "residual-2": {
+      "id": "residual-2",
+      "title": "Second Residual Connection",
+      "equations": [
+        {
+          "id": "res2-1",
+          "title": "Feedforward Residual",
+          "explanation": "Add residual around feedforward network.",
+          "equation": "\\mathbf{x}'' = \\mathbf{x}' + \\text{FeedForward}(\\text{norm2}(\\mathbf{x}'))",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "res2-func",
+        "title": "Second Residual Implementation",
+        "explanation": "From TransformerBlock.forward (lines 137-141)",
+        "codeAnswer": "# From lines 137-141:\nshortcut = x\nx = self.norm2(x)\nx = self.ff(x)\nx = x + shortcut\nreturn x",
+        "language": "python"
+      }
+    },
+    "final-norm": {
+      "id": "final-norm",
+      "title": "Final RMSNorm",
+      "equations": [
+        {
+          "id": "final-norm-1",
+          "title": "Final Normalization",
+          "explanation": "Normalize before output projection (same RMSNorm class).",
+          "equation": "\\mathbf{h}_{\\text{norm}} = \\text{RMSNorm}(\\mathbf{h}_{\\text{final}})",
+          "canvasHeight": 120
+        }
+      ],
+      "function": {
+        "id": "final-norm-func",
+        "title": "Final RMSNorm Usage",
+        "explanation": "From Qwen3Model (line 148 init, 163 forward)",
+        "codeAnswer": "# Initialization (line 148):\nself.final_norm = RMSNorm(cfg[\"emb_dim\"])\n\n# Forward (line 163):\nx = self.final_norm(x)\nlogits = self.out_head(x.to(self.cfg[\"dtype\"]))",
+        "language": "python"
+      }
+    },
+    "language-model-head": {
+      "id": "language-model-head",
+      "title": "Language Model Head",
+      "equations": [
+        {
+          "id": "lm-head-1",
+          "title": "Vocabulary Projection",
+          "explanation": "Project to vocabulary size for token prediction.",
+          "equation": "\\text{logits} = \\mathbf{h} W_{out} \\in \\mathbb{R}^{B \\times L \\times 151936}",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "lm-head-func",
+        "title": "Language Model Head Usage",
+        "explanation": "From Qwen3Model (line 149 init, 164 forward)",
+        "codeAnswer": "# Initialization (line 149):\nself.out_head = nn.Linear(cfg[\"emb_dim\"], cfg[\"vocab_size\"], bias=False, dtype=cfg[\"dtype\"])\n# emb_dim=1024, vocab_size=151_936\n\n# Forward (line 164):\nlogits = self.out_head(x.to(self.cfg[\"dtype\"]))",
+        "language": "python"
+      }
+    },
+    "output-logits": {
+      "id": "output-logits",
+      "title": "Output Logits",
+      "equations": [
+        {
+          "id": "logits-1",
+          "title": "Next Token Prediction",
+          "explanation": "Logits represent scores for each vocabulary token. Argmax or sample to generate next token.",
+          "equation": "P(x_{t+1} | x_{\\leq t}) = \\text{softmax}(\\text{logits}_t)",
+          "canvasHeight": 150
+        }
+      ],
+      "function": {
+        "id": "logits-func",
+        "title": "Text Generation with Logits",
+        "explanation": "From generate_text_basic_stream (lines 371-381)",
+        "codeAnswer": "# From lines 371-381:\ndef generate_text_basic_stream(model, token_ids, max_new_tokens, eos_token_id=None):\n    model.eval()\n    with torch.no_grad():\n        for _ in range(max_new_tokens):\n            out = model(token_ids)[:, -1]  # Get logits for last position\n            next_token = torch.argmax(out, dim=-1, keepdim=True)\n            if (eos_token_id is not None and torch.all(next_token == eos_token_id)):\n                break\n            yield next_token\n            token_ids = torch.cat([token_ids, next_token], dim=1)",
+        "language": "python"
+      }
     }
   }
 }

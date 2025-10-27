@@ -51,6 +51,8 @@ const Sidebar = ({ isOpen, onClose, currentView, onNavigate }) => {
     // Mathematical Proofs
     { id: 'DiffusionModels', name: 'Diffusion Models Derivation', category: 'Mathematical Proofs' },
     { id: 'SchrodingerEquation', name: 'Schrödinger Equation', category: 'Mathematical Proofs' },
+    { id: 'EulerLagrange', name: 'Euler-Lagrange Equation', category: 'Mathematical Proofs' },
+    { id: 'GeneralRelativity', name: 'General Relativity', category: 'Mathematical Proofs' },
     
     // Placeholder for future pages
     // You can add more categories like:

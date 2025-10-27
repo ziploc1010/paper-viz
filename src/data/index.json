@@ -22,6 +22,22 @@
           "path": "derivations/schrodinger.json",
           "type": "derivation",
           "topics": ["quantum-mechanics", "wave-functions", "differential-equations"]
+        },
+        {
+          "id": "euler-lagrange",
+          "title": "Euler-Lagrange Equation",
+          "file": "euler-lagrange.json",
+          "path": "derivations/euler-lagrange.json",
+          "type": "derivation",
+          "topics": ["calculus-of-variations", "classical-mechanics", "differential-equations", "optimization"]
+        },
+        {
+          "id": "general-relativity",
+          "title": "Einstein Field Equations",
+          "file": "generalrelativity.json",
+          "path": "derivations/generalrelativity.json",
+          "type": "derivation",
+          "topics": ["general-relativity", "differential-geometry", "tensor-calculus", "einstein-equations", "gravitation"]
         }
       ]
     },

@@ -236,14 +236,14 @@
   <line x1="450" y1="1550" x2="450" y2="1565" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
   
   <!-- Final RMSNorm -->
-  <rect x="300" y="1565" width="300" height="35" fill="#ffe0b3" stroke="#666" stroke-width="1.5" rx="5" filter="url(#shadow)"/>
+  <rect x="300" y="1565" width="300" height="35" fill="#ffe0b3" stroke="#666" stroke-width="1.5" rx="5"/>
   <text x="450" y="1585" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">RMSNorm</text>
   <text x="450" y="1595" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">final_norm</text>
   
   <line x1="450" y1="1600" x2="450" y2="1625" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
   
   <!-- Output Head -->
-  <rect x="275" y="1625" width="350" height="40" fill="#cce5ff" stroke="#666" stroke-width="1.5" rx="5" filter="url(#shadow)"/>
+  <rect x="275" y="1625" width="350" height="40" fill="#cce5ff" stroke="#666" stroke-width="1.5" rx="5"/>
   <text x="450" y="1645" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">Linear</text>
   <text x="450" y="1657" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">out_head (lm_head)</text>
   <text x="540" y="1657" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888">emb_dim → vocab_size</text>
@@ -252,7 +252,7 @@
   <line x1="450" y1="1675" x2="450" y2="1690" stroke="#333" stroke-width="1" marker-end="url(#arrowhead)"/>
   
   <!-- Logits -->
-  <rect x="350" y="1690" width="200" height="40" fill="#c8f5c8" stroke="#666" stroke-width="1.5" rx="20" filter="url(#shadow)"/>
+  <rect x="350" y="1690" width="200" height="40" fill="#c8f5c8" stroke="#666" stroke-width="1.5" rx="20"/>
   <text x="450" y="1712" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600">Logits</text>
   <text x="450" y="1724" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">[batch, seq_len, vocab_size]</text>
   

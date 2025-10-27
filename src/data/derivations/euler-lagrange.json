@@ -1,0 +1,298 @@
+{
+  "id": "euler-lagrange",
+  "title": "Euler-Lagrange Equation",
+  "subtitle": "Complete Derivation from Calculus of Variations",
+  "description": "Derive the Euler-Lagrange equation from first principles using the calculus of variations to find paths that minimize functionals.",
+  "sections": [
+    {
+      "title": "Part 1: Introduction to Functionals",
+      "steps": [
+        {
+          "id": "el1-1",
+          "title": "1.1 What is a Functional?",
+          "explanation": "A functional maps functions to real numbers. We seek the function y(x) that minimizes J",
+          "equation": [
+            "J = \\int_a^b L(x, y, y') \\, dx"
+          ]
+        },
+        {
+          "id": "el1-2",
+          "title": "1.2 The Variational Problem",
+          "explanation": "We want to find y(x) that makes J stationary (usually a minimum) with boundary conditions y(a) = y_a and y(b) = y_b",
+          "equation": [
+            "J[y] = \\int_a^b L(x, y, y') \\, dx",
+            "y(a) = y_a, \\quad y(b) = y_b"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 2: The Variation Method",
+      "steps": [
+        {
+          "id": "el2-1",
+          "title": "2.1 Introducing a Small Variation",
+          "explanation": "Consider a small perturbation η(x) to the optimal path",
+          "equation": [
+            "y(x) \\rightarrow y(x) + \\epsilon\\eta(x)",
+            "y'(x) \\rightarrow y'(x) + \\epsilon\\eta'(x)"
+          ]
+        },
+        {
+          "id": "el2-2",
+          "title": "2.2 Properties of the Variation",
+          "explanation": "The variation must vanish at the boundaries",
+          "equation": [
+            "\\eta(a) = 0, \\quad \\eta(b) = 0"
+          ]
+        },
+        {
+          "id": "el2-3",
+          "title": "2.3 The Perturbed Functional",
+          "explanation": "Express J as a function of ε",
+          "equation": [
+            "J(\\epsilon) = \\int_a^b L(x, y + \\epsilon\\eta, y' + \\epsilon\\eta') \\, dx"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 3: Taylor Series Expansion",
+      "steps": [
+        {
+          "id": "el3-1",
+          "title": "3.1 Generic Taylor Expansion",
+          "explanation": "For a univariable function f(ε) around ε = 0, the Taylor expansion to first order is",
+          "equation": [
+            "f(\\epsilon) = f(0) + f'(0) \\epsilon + \\frac{1}{2} f''(0) \\epsilon^2 + \\cdots",
+            "f(\\epsilon) \\approx f(0) + f'(0) \\epsilon + O(\\epsilon^2)"
+          ]
+        },
+        {
+          "id": "el3-2",
+          "title": "3.2 Multivariable Chain Rule",
+          "explanation": "For L = L(x, u(ε), v(ε)) with u = y + εη and v = y' + εη', apply the chain rule",
+          "equation": [
+            "\\frac{dL}{d\\epsilon} = \\frac{\\partial L}{\\partial u} \\frac{du}{d\\epsilon} + \\frac{\\partial L}{\\partial v} \\frac{dv}{d\\epsilon}"
+          ]
+        },
+        {
+          "id": "el3-3",
+          "title": "3.3 Computing the Derivatives",
+          "explanation": "Calculate the derivatives of u and v with respect to ε",
+          "equation": [
+            "\\frac{du}{d\\epsilon} = \\eta, \\quad \\frac{dv}{d\\epsilon} = \\eta'"
+          ]
+        },
+        {
+          "id": "el3-4",
+          "title": "3.4 Derivative of L with Respect to ε",
+          "explanation": "Substitute the derivatives into the chain rule",
+          "equation": [
+            "\\frac{dL}{d\\epsilon} = \\frac{\\partial L}{\\partial u} \\eta + \\frac{\\partial L}{\\partial v} \\eta'"
+          ]
+        },
+        {
+          "id": "el3-5",
+          "title": "3.5 Evaluate at ε = 0",
+          "explanation": "At ε = 0, we have u = y and v = y', so",
+          "equation": [
+            "\\left. \\frac{dL}{d\\epsilon} \\right|_{\\epsilon=0} = \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta'"
+          ]
+        },
+        {
+          "id": "el3-6",
+          "title": "3.6 Taylor Expansion of L(ε)",
+          "explanation": "Using the generic Taylor formula, expand L around ε = 0",
+          "equation": [
+            "L(x, y + \\epsilon \\eta, y' + \\epsilon \\eta') \\approx L(x, y, y') + \\epsilon \\left( \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta' \\right) + O(\\epsilon^2)"
+          ]
+        },
+        {
+          "id": "el3-7",
+          "title": "3.7 Expansion of J(ε)",
+          "explanation": "Substitute the Taylor expansion of L into the functional J",
+          "equation": [
+            "J(\\epsilon) = \\int_a^b L(x, y + \\epsilon \\eta, y' + \\epsilon \\eta') \\, dx"
+          ]
+        },
+        {
+          "id": "el3-8",
+          "title": "3.8 Integrating the Taylor Expansion",
+          "explanation": "Distribute the integral over the Taylor series terms",
+          "equation": [
+            "J(\\epsilon) \\approx \\int_a^b L(x, y, y') \\, dx + \\epsilon \\int_a^b \\left( \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta' \\right) dx + O(\\epsilon^2)"
+          ]
+        },
+        {
+          "id": "el3-9",
+          "title": "3.9 Defining the First Variation",
+          "explanation": "Express J(ε) in terms of J(0) and the first variation δJ",
+          "equation": [
+            "J(\\epsilon) \\approx J(0) + \\epsilon \\, \\delta J + O(\\epsilon^2)",
+            "\\text{where } \\delta J = \\int_a^b \\left( \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta' \\right) dx"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 4: The Stationary Condition",
+      "steps": [
+        {
+          "id": "el4-1",
+          "title": "4.1 Condition for Stationarity",
+          "explanation": "For J to be stationary (minimum, maximum, or saddle point) at ε = 0, the first derivative must vanish",
+          "equation": [
+            "\\frac{dJ}{d\\epsilon}\\bigg|_{\\epsilon=0} = 0"
+          ]
+        },
+        {
+          "id": "el4-2",
+          "title": "4.2 Setting the First Variation to Zero",
+          "explanation": "From our Taylor expansion, dJ/dε|_{ε=0} equals δJ, so the first variation must vanish for all η",
+          "equation": [
+            "\\delta J = \\int_a^b \\left( \\frac{\\partial L}{\\partial y} \\eta + \\frac{\\partial L}{\\partial y'} \\eta' \\right) dx = 0"
+          ]
+        },
+        {
+          "id": "el4-3",
+          "title": "4.3 Arbitrary Variation Requirement",
+          "explanation": "This condition must hold for all admissible variations η(x) that satisfy the boundary conditions",
+          "equation": [
+            "\\delta J = 0 \\quad \\text{for all } \\eta \\text{ with } \\eta(a) = \\eta(b) = 0"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 5: Integration by Parts",
+      "steps": [
+        {
+          "id": "el5-1",
+          "title": "5.1 Integration by Parts Formula",
+          "explanation": "We need to eliminate η' by integrating by parts",
+          "equation": [
+            "\\int u \\, dv = uv - \\int v \\, du"
+          ]
+        },
+        {
+          "id": "el5-2",
+          "title": "5.2 Applying Integration by Parts",
+          "explanation": "Apply to the second term with u = ∂L/∂y' and dv = η' dx",
+          "equation": [
+            "\\int_a^b \\frac{\\partial L}{\\partial y'} \\eta' \\, dx = \\left[\\frac{\\partial L}{\\partial y'} \\eta\\right]_a^b - \\int_a^b \\eta \\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) dx"
+          ]
+        },
+        {
+          "id": "el5-3",
+          "title": "5.3 Using Boundary Conditions",
+          "explanation": "The boundary term vanishes since η(a) = η(b) = 0",
+          "equation": [
+            "\\left[\\frac{\\partial L}{\\partial y'} \\eta\\right]_a^b = 0"
+          ]
+        },
+        {
+          "id": "el5-4",
+          "title": "5.4 Substituting Back",
+          "explanation": "Replace in the variation equation",
+          "equation": [
+            "\\int_a^b \\eta\\frac{\\partial L}{\\partial y} \\, dx - \\int_a^b \\eta \\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) dx = 0"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 6: Deriving the Euler-Lagrange Equation",
+      "steps": [
+        {
+          "id": "el6-1",
+          "title": "6.1 Factoring Out η",
+          "explanation": "Combine the integrals",
+          "equation": [
+            "\\int_a^b \\eta \\left[ \\frac{\\partial L}{\\partial y} - \\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) \\right] dx = 0"
+          ]
+        },
+        {
+          "id": "el6-2",
+          "title": "6.2 The Fundamental Lemma",
+          "explanation": "Since η(x) is arbitrary (except at boundaries), the integrand must be zero",
+          "equation": [
+            "\\frac{\\partial L}{\\partial y} - \\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) = 0"
+          ]
+        },
+        {
+          "id": "el6-3",
+          "title": "6.3 The Euler-Lagrange Equation",
+          "explanation": "The fundamental equation of the calculus of variations",
+          "equation": [
+            "\\boxed{\\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) - \\frac{\\partial L}{\\partial y} = 0}"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 7: Extended Forms",
+      "steps": [
+        {
+          "id": "el7-1",
+          "title": "7.1 Multiple Variables Form",
+          "explanation": "For functionals with multiple dependent variables",
+          "equation": [
+            "J = \\int_a^b L(x, y_1, y_2, \\ldots, y_n, y_1', y_2', \\ldots, y_n') \\, dx",
+            "\\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y_i'}\\right) - \\frac{\\partial L}{\\partial y_i} = 0, \\quad i = 1, 2, \\ldots, n"
+          ]
+        },
+        {
+          "id": "el7-2",
+          "title": "7.2 Higher Derivatives Form",
+          "explanation": "When L depends on higher derivatives",
+          "equation": [
+            "J = \\int_a^b L(x, y, y', y'') \\, dx",
+            "\\frac{\\partial L}{\\partial y} - \\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) + \\frac{d^2}{dx^2}\\left(\\frac{\\partial L}{\\partial y''}\\right) = 0"
+          ]
+        },
+        {
+          "id": "el7-3",
+          "title": "7.3 Expanded Derivative Form",
+          "explanation": "Expanding the total derivative using the chain rule",
+          "equation": [
+            "\\frac{d}{dx}\\left(\\frac{\\partial L}{\\partial y'}\\right) = \\frac{\\partial^2 L}{\\partial x \\partial y'} + \\frac{\\partial^2 L}{\\partial y \\partial y'}y' + \\frac{\\partial^2 L}{\\partial y'^2}y''"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Part 8: Classical Mechanics Application",
+      "steps": [
+        {
+          "id": "el8-1",
+          "title": "8.1 The Lagrangian in Physics",
+          "explanation": "In mechanics, the Lagrangian is kinetic minus potential energy",
+          "equation": [
+            "L(x, \\dot{x}, t) = T - V = \\frac{1}{2}m\\dot{x}^2 - V(x)"
+          ]
+        },
+        {
+          "id": "el8-2",
+          "title": "8.2 Applying Euler-Lagrange",
+          "explanation": "Compute the partial derivatives",
+          "equation": [
+            "\\frac{\\partial L}{\\partial x} = -\\frac{\\partial V}{\\partial x}",
+            "\\frac{\\partial L}{\\partial \\dot{x}} = m\\dot{x}",
+            "\\frac{d}{dt}\\left(\\frac{\\partial L}{\\partial \\dot{x}}\\right) = m\\ddot{x}"
+          ]
+        },
+        {
+          "id": "el8-3",
+          "title": "8.3 Newton's Second Law",
+          "explanation": "The Euler-Lagrange equation gives F = ma",
+          "equation": [
+            "\\frac{d}{dt}\\left(\\frac{\\partial L}{\\partial \\dot{x}}\\right) - \\frac{\\partial L}{\\partial x} = 0",
+            "m\\ddot{x} + \\frac{\\partial V}{\\partial x} = 0",
+            "\\boxed{F = ma}"
+          ]
+        }
+      ]
+    }
+  ]
+}
