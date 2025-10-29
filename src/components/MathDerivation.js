@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { BlockMath, InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 import '../styles/math-derivation.css';
+import AISidebar from './AISidebar';
+import { useTextSelection } from '../hooks/useTextSelection';
 
 const MathDerivation = ({ derivationId }) => {
   const [flippedSteps, setFlippedSteps] = useState(new Set());
@@ -9,6 +11,21 @@ const MathDerivation = ({ derivationId }) => {
   const [canvasRefs] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // AI Assistant Sidebar state
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(null);
+  const { selection, clearSelection } = useTextSelection();
+
+  // Edit Mode state
+  const [editMode, setEditMode] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Callback for AI to update derivation
+  const handleDerivationUpdate = (updatedData) => {
+    setDerivationData(updatedData);
+    setHasUnsavedChanges(true);
+  };
 
   useEffect(() => {
     // Reset state when derivation changes
@@ -96,13 +113,101 @@ const MathDerivation = ({ derivationId }) => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold mb-4">{derivationData.title}</h1>
-        <h2 className="text-2xl text-gray-600 mb-2">{derivationData.subtitle}</h2>
-        <p className="text-gray-500 max-w-3xl mx-auto">{derivationData.description}</p>
-      </div>
+    <div className={editMode ? "edit-mode-container" : "max-w-5xl mx-auto px-4 py-8"}>
+      {editMode && (
+        <div className="edit-mode-banner">
+          <div className="flex items-center justify-between p-4 bg-purple-600 text-white">
+            <div className="flex items-center gap-3">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <span className="font-semibold">Edit Mode Active</span>
+              {hasUnsavedChanges && (
+                <span className="text-yellow-300 text-sm">● Unsaved changes</span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard them?')) {
+                    return;
+                  }
+                  setEditMode(false);
+                  setSidebarOpen(false);
+                  setHasUnsavedChanges(false);
+                }}
+                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  // Save changes
+                  try {
+                    const response = await fetch('/api/save-derivation', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        derivationId: derivationId,
+                        data: derivationData
+                      })
+                    });
+                    if (response.ok) {
+                      setHasUnsavedChanges(false);
+                      alert('Derivation saved successfully!');
+                    } else {
+                      alert('Error saving derivation');
+                    }
+                  } catch (err) {
+                    alert('Error saving: ' + err.message);
+                  }
+                }}
+                disabled={!hasUnsavedChanges}
+                className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed rounded transition font-semibold"
+              >
+                Save Changes
+              </button>
+              {!hasUnsavedChanges && (
+                <button
+                  onClick={() => {
+                    setEditMode(false);
+                    setSidebarOpen(false);
+                  }}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded transition font-semibold"
+                >
+                  Exit Edit Mode
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={editMode ? "edit-split-container" : ""}>
+        <div className={editMode ? "edit-preview-pane" : ""}>
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h1 className="text-4xl font-bold">{derivationData.title}</h1>
+              {!editMode && (
+                <button
+                  onClick={() => {
+                    setEditMode(true);
+                    setSidebarOpen(true);
+                  }}
+                  className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 text-sm transition"
+                  title="Edit this derivation with AI"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit
+                </button>
+              )}
+            </div>
+            <h2 className="text-2xl text-gray-600 mb-2">{derivationData.subtitle}</h2>
+            <p className="text-gray-500 max-w-3xl mx-auto">{derivationData.description}</p>
+          </div>
 
       {/* Instructions */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
@@ -114,17 +219,46 @@ const MathDerivation = ({ derivationId }) => {
       {/* Sections */}
       {derivationData.sections.map((section, sectionIndex) => (
         <div key={sectionIndex} className="mb-12">
-          <h3 className="text-2xl font-bold text-blue-600 mb-6">
-            {renderExplanation(section.title)}
-          </h3>
-          
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-blue-600">
+              {renderExplanation(section.title)}
+            </h3>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  // Show all steps in this section
+                  const newFlipped = new Set(flippedSteps);
+                  section.steps.forEach(step => newFlipped.add(step.id));
+                  setFlippedSteps(newFlipped);
+                }}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition"
+              >
+                Show All
+              </button>
+              <button
+                onClick={() => {
+                  // Hide all steps in this section
+                  const newFlipped = new Set(flippedSteps);
+                  section.steps.forEach(step => newFlipped.delete(step.id));
+                  setFlippedSteps(newFlipped);
+                }}
+                className="px-3 py-1.5 bg-gray-500 hover:bg-gray-600 text-white text-xs rounded transition"
+              >
+                Hide All
+              </button>
+            </div>
+          </div>
+
           {/* Steps */}
           {section.steps.map((step) => (
             <StepCard
               key={step.id}
               step={step}
               isFlipped={flippedSteps.has(step.id)}
-              onToggle={() => toggleStep(step.id)}
+              onToggle={() => {
+                toggleStep(step.id);
+                setCurrentStep(step);
+              }}
               canvasRef={(ref) => { if (ref) canvasRefs[step.id] = ref; }}
               onClear={() => clearCanvas(step.id)}
             />
@@ -144,6 +278,44 @@ const MathDerivation = ({ derivationId }) => {
           <span>Clear All</span>
         </button>
       </div>
+
+        {/* Floating "Ask about this" button */}
+        {selection.hasSelection && !sidebarOpen && !editMode && (
+          <button
+            className="floating-ask-button"
+            style={{
+              position: 'fixed',
+              left: `${selection.x}px`,
+              top: `${selection.y}px`,
+              transform: 'translateX(-50%)',
+              zIndex: 999,
+            }}
+            onClick={() => {
+              setSidebarOpen(true);
+            }}
+          >
+            💬 Ask about this
+          </button>
+        )}
+        </div> {/* Close edit-preview-pane */}
+
+        {/* AI Assistant Sidebar - in edit mode, it's part of the split layout */}
+        <AISidebar
+          isOpen={sidebarOpen}
+          onClose={() => {
+            if (!editMode) {
+              setSidebarOpen(false);
+            }
+            clearSelection();
+          }}
+          selectedText={selection.text}
+          derivationData={derivationData}
+          currentStep={currentStep}
+          editMode={editMode}
+          onDerivationUpdate={handleDerivationUpdate}
+          derivationId={derivationId}
+        />
+      </div> {/* Close edit-split-container */}
     </div>
   );
 };
